@@ -1,5 +1,6 @@
 require('ismawno.remap')
 require('ismawno.lazy_init')
+require('ismawno.set')
 
 local augroup = vim.api.nvim_create_augroup
 local ismawno_group = augroup('Ismawno', {})
@@ -44,19 +45,20 @@ autocmd('LspAttach', {
         -- a table of { mode, lhs, rhs } mappings
         local maps = {
             { 'n', 'gd', vim.lsp.buf.definition },
-            { 'n', 'K', vim.lsp.buf.hover },
+            -- { 'n', 'K', vim.lsp.buf.hover },
             { 'n', '<leader>vws', vim.lsp.buf.workspace_symbol },
             { 'n', '<leader>vd', vim.diagnostic.open_float },
             { 'n', '<leader>vca', vim.lsp.buf.code_action },
             { 'n', '<leader>vrr', vim.lsp.buf.references },
             { 'n', '<leader>vrn', vim.lsp.buf.rename },
-            { 'i', '<C-h>', vim.lsp.buf.signature_help },
-            { 'n', '[d', vim.diagnostic.goto_prev },
-            { 'n', ']d', vim.diagnostic.goto_next },
+            -- { 'i', '<C-h>', vim.lsp.buf.signature_help },
+            -- { 'n', '[d', vim.diagnostic.goto_prev },
+            -- { 'n', ']d', vim.diagnostic.goto_next },
         }
 
+        local utils = require('ismawno.utils')
         for _, m in ipairs(maps) do
-            vim.keymap.set(m[1], m[2], m[3], opts)
+            utils.mapkey(m[1], m[2], m[3], opts)
         end
     end,
 })

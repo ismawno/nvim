@@ -9,49 +9,72 @@ return {
 
     config = function()
         require('telescope').setup({})
-        local function grep_git_files(word)
-            require('telescope.builtin').grep_string({
+        local builtin = require('telescope.builtin')
+        local utils = require('ismawno.utils')
+
+        local function find_files()
+            builtin.find_files({
+                hidden = true,
+                no_ignore = true,
+                file_ignore_patterns = {
+                    '%.git/',
+                    '%.venv/',
+                    'build/',
+                },
+            })
+        end
+        local function git_files()
+            builtin.git_files({ hidden = true, file_ignore_patterns = { '%.git/' } })
+        end
+        local function grep_files(word)
+            builtin.grep_string({
                 search = word,
+                hidden = true,
+            })
+        end
+        local function grep_git_files(word)
+            builtin.grep_string({
+                search = word,
+                hidden = true,
                 search_dirs = vim.fn.systemlist('git ls-files'),
             })
         end
 
-        local builtin = require('telescope.builtin')
-        vim.keymap.set('n', '<leader>pf', builtin.find_files, {})
-        vim.keymap.set('n', '<leader>gf', builtin.git_files, {})
+        utils.mapkey('n', '<leader>pf', find_files)
+        utils.mapkey('n', '<leader>gf', git_files)
 
-        vim.keymap.set('n', '<leader>pw', function()
+        utils.mapkey('n', '<leader>pw', function()
             local word = vim.fn.expand('<cword>')
-            builtin.grep_string({ search = word })
+            grep_files(word)
         end)
-        vim.keymap.set('n', '<leader>gw', function()
+        utils.mapkey('n', '<leader>gw', function()
             local word = vim.fn.expand('<cword>')
             grep_git_files(word)
         end)
 
-        vim.keymap.set('n', '<leader>pW', function()
+        utils.mapkey('n', '<leader>pW', function()
             local word = vim.fn.expand('<cWORD>')
-            builtin.grep_string({ search = word })
+            grep_files(word)
         end)
-        vim.keymap.set('n', '<leader>gW', function()
+        utils.mapkey('n', '<leader>gW', function()
             local word = vim.fn.expand('<cWORD>')
             grep_git_files(word)
         end)
 
-        vim.keymap.set('n', '<leader>pg', function()
-            builtin.grep_string({ search = vim.fn.input('Grep > ') })
+        utils.mapkey('n', '<leader>pg', function()
+            grep_files(vim.fn.input('Grep > '))
         end)
-        vim.keymap.set('n', '<leader>gg', function()
+        utils.mapkey('n', '<leader>gg', function()
             grep_git_files(vim.fn.input('Grep > '))
         end)
 
-        vim.keymap.set('n', '<leader>ps', function()
-            builtin.grep_string({ search = '' })
+        utils.mapkey('n', '<leader>ps', function()
+            grep_files('')
         end)
-        vim.keymap.set('n', '<leader>gfs', function()
+        utils.mapkey('n', '<leader>gs', function()
             grep_git_files('')
         end)
 
-        vim.keymap.set('n', '<leader>vh', builtin.help_tags, {})
+        utils.mapkey('n', '<leader>vh', builtin.help_tags, {})
     end,
 }

@@ -1,7 +1,8 @@
 return {
     'tpope/vim-fugitive',
     config = function()
-        vim.keymap.set('n', '<leader>gs', vim.cmd.Git)
+        local utils = require('ismawno.utils')
+        utils.mapkey('n', '<leader>gi', vim.cmd.Git)
 
         local ismawno_fugitive = vim.api.nvim_create_augroup('ismawno_fugitive', {})
 
@@ -14,20 +15,20 @@ return {
                     return
                 end
 
-                local bufnr = vim.api.nvim_get_current_buf()
-                local opts = { buffer = bufnr, remap = false }
-                vim.keymap.set('n', '<leader>ga', ':G add .<CR>')
-                vim.keymap.set('n', '<leader>gc', ':G commit<CR>')
-                vim.keymap.set('n', '<leader>gp', ':G push<CR>')
-                vim.keymap.set('n', '<leader>gP', ':G pull<CR>')
+                utils.mapkey('n', '<leader>ga', ':G add .<CR>')
+                utils.mapkey('n', '<leader>gc', ':G commit<CR>')
+                utils.mapkey('n', '<leader>gp', ':G push<CR>')
+                utils.mapkey('n', '<leader>gP', ':G pull<CR>')
 
+                -- local bufnr = vim.api.nvim_get_current_buf()
+                -- local opts = { buffer = bufnr, remap = false }
                 -- NOTE: It allows me to easily set the branch i am pushing and any tracking
                 -- needed if i did not set the branch up correctly
-                --                vim.keymap.set("n", "<leader>t", ":Git push -u origin ", opts);
+                --                utils.mapkey("n", "<leader>t", ":Git push -u origin ", opts);
             end,
         })
 
-        vim.keymap.set('n', 'gu', '<cmd>diffget //2<CR>')
-        vim.keymap.set('n', 'gh', '<cmd>diffget //3<CR>')
+        utils.mapkey('n', 'gu', '<cmd>diffget //2<CR>')
+        utils.mapkey('n', 'gh', '<cmd>diffget //3<CR>')
     end,
 }
