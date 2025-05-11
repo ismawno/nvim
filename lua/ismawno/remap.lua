@@ -3,7 +3,7 @@ vim.g.maplocalleader = ' '
 
 local utils = require('ismawno.utils')
 utils.mapkey('n', '<leader>pv', vim.cmd.Ex, { desc = 'Open explorer' })
-utils.mapkey('n', '<C-n>', 'n&', { noremap = true, silent = true, desc = 'Go to next occurrence and apply replace' })
+-- utils.mapkey('n', '<C-n>', 'n&', { noremap = true, silent = true, desc = 'Go to next occurrence and apply replace' })
 
 utils.mapkey('n', '<C-b>', ":put=''<CR>", { silent = true, desc = 'Insert a blank line below the cursor' })
 utils.mapkey('n', '<C-S-B>', ":put!=''<CR>", { silent = true, desc = 'Insert a blank line above the cursor' })
