@@ -14,7 +14,7 @@ end
 
 local operators = { 'c', 'd', 'y' }
 local locations = { 'i', 'a' }
-local openers = { '(', '{', '[', '<' }
+local openers = { '(', '{', '[', '<', "'", '"' }
 
 for _, op in ipairs(operators) do
     for _, loc in ipairs(locations) do
@@ -22,14 +22,17 @@ for _, op in ipairs(operators) do
             utils.mapkey('n', termcodes(op .. 'm' .. loc .. opn), termcodes('/' .. opn .. '<CR>' .. op .. loc .. opn), {
                 noremap = true,
                 silent = true,
-                desc = 'Apply vim command ' .. op .. loc .. opn .. 'to the next occurrence of ' .. opn,
+                desc = 'Apply vim command ' .. op .. loc .. opn .. ' to the next occurrence of ' .. opn,
             })
         end
     end
 end
 
-utils.mapkey('n', '<C-j>', ':m .+1<CR>==', { silent = true })
-utils.mapkey('n', '<C-k>', ':m .-2<CR>==', { silent = true })
+utils.mapkey('n', '<C-j>', ':m .+1<CR>==', { silent = true, desc = 'Move current line down' })
+utils.mapkey('n', '<C-k>', ':m .-2<CR>==', { silent = true, desc = 'Move current line up' })
 
-utils.mapkey('v', '<C-j>', ":m '>+1<CR>gv=gv", { silent = true })
-utils.mapkey('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true })
+utils.mapkey('v', '<C-j>', ":m '>+1<CR>gv=gv", { silent = true, desc = 'Move current line down' })
+utils.mapkey('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move current line up' })
+
+utils.mapkey('n', 'J', 'mzJ`z', { desc = 'Bring line below cursor to the end of the current line' })
+utils.mapkey('x', '<leader>p', '"_dP')

@@ -41,6 +41,7 @@ return {
                 'pyright',
                 'clangd',
                 'bashls',
+                'neocmake',
             },
             handlers = {
                 function(server_name) -- default handler (optional)

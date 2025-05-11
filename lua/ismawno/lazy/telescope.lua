@@ -30,6 +30,12 @@ return {
             builtin.grep_string({
                 search = word,
                 hidden = true,
+                no_ignore = true,
+                file_ignore_patterns = {
+                    '%.git/',
+                    '%.venv/',
+                    'build/',
+                },
             })
         end
         local function grep_git_files(word)
@@ -40,41 +46,45 @@ return {
             })
         end
 
-        utils.mapkey('n', '<leader>pf', find_files)
-        utils.mapkey('n', '<leader>gf', git_files)
+        utils.mapkey('n', '<leader>pf', find_files, { desc = 'Find through all project' })
+        utils.mapkey('n', '<leader>gf', git_files, { desc = 'Find through all git tracked files' })
 
         utils.mapkey('n', '<leader>pw', function()
             local word = vim.fn.expand('<cword>')
             grep_files(word)
-        end)
+        end, { desc = 'Search the current word through all files' })
+
         utils.mapkey('n', '<leader>gw', function()
             local word = vim.fn.expand('<cword>')
             grep_git_files(word)
-        end)
+        end, { desc = 'Search the current word through all git tracked files' })
 
         utils.mapkey('n', '<leader>pW', function()
             local word = vim.fn.expand('<cWORD>')
             grep_files(word)
-        end)
+        end, { desc = 'Search the current expression through all files' })
+
         utils.mapkey('n', '<leader>gW', function()
             local word = vim.fn.expand('<cWORD>')
             grep_git_files(word)
-        end)
+        end, { desc = 'Search the current expression through all git tracked files' })
 
         utils.mapkey('n', '<leader>pg', function()
             grep_files(vim.fn.input('Grep > '))
-        end)
+        end, { desc = 'Search through all files' })
+
         utils.mapkey('n', '<leader>gg', function()
             grep_git_files(vim.fn.input('Grep > '))
-        end)
+        end, { desc = 'Search through all git tracked files' })
 
         utils.mapkey('n', '<leader>ps', function()
             grep_files('')
-        end)
+        end, { desc = 'Search through all files' })
+
         utils.mapkey('n', '<leader>gs', function()
             grep_git_files('')
-        end)
+        end, { desc = 'Search through all git tracked files' })
 
-        utils.mapkey('n', '<leader>vh', builtin.help_tags, {})
+        -- utils.mapkey('n', '<leader>vh', builtin.help_tags, { desc = '' })
     end,
 }

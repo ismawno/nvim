@@ -12,12 +12,12 @@ end
 local function find_map(mode, lhs, bufnr)
     bufnr = bufnr or 0
     -- check buffer-local first
-    for _, m in ipairs(vim.api.nvim_buf_get_keymap(bufnr, mode)) do
-        if startswith(m.lhs, termcodes(lhs)) or startswith(termcodes(lhs), m.lhs) then
-            return m
-        end
-    end
-    -- then check global
+    -- for _, m in ipairs(vim.api.nvim_buf_get_keymap(bufnr, mode)) do
+    --     if startswith(m.lhs, termcodes(lhs)) or startswith(termcodes(lhs), m.lhs) then
+    --         return m
+    --     end
+    -- end
+    -- -- then check global
     for _, m in ipairs(vim.api.nvim_get_keymap(mode)) do
         if startswith(m.lhs, termcodes(lhs)) or startswith(termcodes(lhs), m.lhs) then
             return m

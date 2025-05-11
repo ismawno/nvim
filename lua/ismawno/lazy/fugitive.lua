@@ -15,10 +15,10 @@ return {
                     return
                 end
 
-                utils.mapkey('n', '<leader>ga', ':G add .<CR>')
-                utils.mapkey('n', '<leader>gc', ':G commit<CR>')
-                utils.mapkey('n', '<leader>gp', ':G push<CR>')
-                utils.mapkey('n', '<leader>gP', ':G pull<CR>')
+                utils.mapkey('n', '<leader>ga', ':G add .<CR>', { desc = 'Execute git add .' })
+                utils.mapkey('n', '<leader>gc', ':G commit<CR>', { desc = 'Execute git commit' })
+                utils.mapkey('n', '<leader>gp', ':G push<CR>', { desc = 'Execute git push' })
+                utils.mapkey('n', '<leader>gP', ':G pull<CR>', { desc = 'Execute git pull' })
 
                 -- local bufnr = vim.api.nvim_get_current_buf()
                 -- local opts = { buffer = bufnr, remap = false }
@@ -28,7 +28,7 @@ return {
             end,
         })
 
-        utils.mapkey('n', 'gu', '<cmd>diffget //2<CR>')
-        utils.mapkey('n', 'gh', '<cmd>diffget //3<CR>')
+        -- utils.mapkey('n', 'gu', '<cmd>diffget //2<CR>')
+        -- utils.mapkey('n', 'gh', '<cmd>diffget //3<CR>')
     end,
 }
