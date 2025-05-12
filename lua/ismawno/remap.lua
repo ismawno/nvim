@@ -39,11 +39,18 @@ utils.mapkey('v', '<C-j>', ":m '>+1<CR>gv=gv", { silent = true, desc = 'Move cur
 utils.mapkey('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move current line up' })
 
 utils.mapkey('n', 'J', 'mzJ`z', { desc = 'Bring line below cursor to the end of the current line' })
-utils.mapkey('x', '<leader>p', '"_dP')
 
 utils.mapkey({ 'n', 'v' }, 'gj', '8j', { desc = 'Move cursor 8 lines down' })
 utils.mapkey({ 'n', 'v' }, 'gk', '8k', { desc = 'Move cursor 8 lines up' })
 utils.mapkey({ 'n', 'v', 'o' }, '¡', '$', { noremap = true, force = true, desc = 'Jump to the end of line' })
+
+-- greatest remap ever
+utils.mapkey('x', '<leader>p', [["_dP]])
+
+-- next greatest remap ever : asbjornHaland
+utils.mapkey({ 'n', 'v' }, '<leader>y', [["+y]])
+utils.mapkey('n', '<leader>Y', [["+Y]])
+utils.mapkey('n', '<leader>s', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
 
 local terminal_stack = {}
 utils.mapkey('n', '<leader>ot', function()

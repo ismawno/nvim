@@ -1,5 +1,7 @@
 vim.api.nvim_create_augroup('DapGroup', { clear = true })
 
+local utils = require('ismawno.utils')
+
 local function navigate(args)
     local buffer = args.buf
 
@@ -64,15 +66,15 @@ return {
             -- reuse the same setup for plain C files
             dap.configurations.c = dap.configurations.cpp
 
-            vim.keymap.set('n', '<F8>', dap.continue, { desc = 'Debug: Continue' })
-            vim.keymap.set('n', '<F10>', dap.step_over, { desc = 'Debug: Step Over' })
-            vim.keymap.set('n', '<F11>', dap.step_into, { desc = 'Debug: Step Into' })
-            vim.keymap.set('n', '<F12>', dap.step_out, { desc = 'Debug: Step Out' })
-            vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
-            vim.keymap.set('n', '<leader>B', function()
+            utils.mapkey('n', '<F8>', dap.continue, { desc = 'Debug: Continue' })
+            utils.mapkey('n', '<F10>', dap.step_over, { desc = 'Debug: Step Over' })
+            utils.mapkey('n', '<F11>', dap.step_into, { desc = 'Debug: Step Into' })
+            utils.mapkey('n', '<F12>', dap.step_out, { desc = 'Debug: Step Out' })
+            utils.mapkey('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
+            utils.mapkey('n', '<leader>B', function()
                 dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
             end, { desc = 'Debug: Set Conditional Breakpoint' })
-            vim.keymap.set('n', '<leader>dt', dap.terminate, { desc = 'Debug: Stop debugger' })
+            utils.mapkey('n', '<leader>dt', dap.terminate, { desc = 'Debug: Stop debugger' })
         end,
     },
 
@@ -123,25 +125,25 @@ return {
                 pcall(dapui.toggle, layout_config.index)
             end
 
-            vim.keymap.set('n', '<leader>dr', function()
+            utils.mapkey('n', '<leader>dr', function()
                 toggle_debug_ui('repl')
             end, { desc = 'Debug: toggle repl ui' })
-            vim.keymap.set('n', '<leader>ds', function()
+            utils.mapkey('n', '<leader>ds', function()
                 toggle_debug_ui('stacks')
             end, { desc = 'Debug: toggle stacks ui' })
-            vim.keymap.set('n', '<leader>dw', function()
+            utils.mapkey('n', '<leader>dw', function()
                 toggle_debug_ui('watches')
             end, { desc = 'Debug: toggle watches ui' })
-            vim.keymap.set('n', '<leader>db', function()
+            utils.mapkey('n', '<leader>db', function()
                 toggle_debug_ui('breakpoints')
             end, { desc = 'Debug: toggle breakpoints ui' })
-            vim.keymap.set('n', '<leader>dS', function()
+            utils.mapkey('n', '<leader>dS', function()
                 toggle_debug_ui('scopes')
             end, { desc = 'Debug: toggle scopes ui' })
-            vim.keymap.set('n', '<leader>dc', function()
+            utils.mapkey('n', '<leader>dc', function()
                 toggle_debug_ui('console')
             end, { desc = 'Debug: toggle console ui' })
-            vim.keymap.set('n', '<leader>dx', dapui.close, { desc = 'Debug: Close all ui' })
+            utils.mapkey('n', '<leader>dx', dapui.close, { desc = 'Debug: Close all ui' })
 
             vim.api.nvim_create_autocmd('BufEnter', {
                 group = 'DapGroup',
