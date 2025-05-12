@@ -16,6 +16,7 @@ return {
                 file_ignore_patterns = {
                     '%.git/',
                     '%.venv/',
+                    '%.cache/',
                     'build/',
                 },
             })
