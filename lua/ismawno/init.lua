@@ -45,13 +45,13 @@ autocmd('LspAttach', {
         -- a table of { mode, lhs, rhs } mappings
         local maps = {
             { 'n', 'gd', vim.lsp.buf.definition },
-            -- { 'n', 'K', vim.lsp.buf.hover },
+            { 'n', '<leader>vh', vim.lsp.buf.hover },
             { 'n', '<leader>vws', vim.lsp.buf.workspace_symbol },
             { 'n', '<leader>vd', vim.diagnostic.open_float },
             { 'n', '<leader>vca', vim.lsp.buf.code_action },
             { 'n', '<leader>vrr', vim.lsp.buf.references },
             { 'n', '<leader>vrn', vim.lsp.buf.rename },
-            -- { 'i', '<C-h>', vim.lsp.buf.signature_help },
+            { 'n', '<leader>vsh', vim.lsp.buf.signature_help },
             -- { 'n', '[d', vim.diagnostic.goto_prev },
             -- { 'n', ']d', vim.diagnostic.goto_next },
         }

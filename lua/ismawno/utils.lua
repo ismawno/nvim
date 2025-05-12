@@ -27,6 +27,12 @@ local function find_map(mode, lhs, bufnr)
 end
 
 function M.mapkey(mode, lhs, rhs, opts)
+    if type(mode) == 'table' then
+        for _, md in ipairs(mode) do
+            M.mapkey(md, lhs, rhs, opts)
+        end
+        return
+    end
     opts = opts or {}
     local force = opts.force
     opts.force = nil
