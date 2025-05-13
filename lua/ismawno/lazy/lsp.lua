@@ -49,7 +49,17 @@ return {
                         capabilities = capabilities,
                     })
                 end,
-
+                ['clangd'] = function()
+                    local lspconfig = require('lspconfig')
+                    local util = require('ismawno.utils')
+                    local root = util.find_root()
+                    local ccmd = root .. '/build'
+                    lspconfig.clangd.setup({
+                        capabilities = capabilities,
+                        root_dir = root,
+                        cmd = { 'clangd', '--function-arg-placeholders=0', '--compile-commands-dir=' .. ccmd },
+                    })
+                end,
                 ['lua_ls'] = function()
                     local lspconfig = require('lspconfig')
                     lspconfig.lua_ls.setup({
@@ -82,7 +92,7 @@ return {
             },
         })
 
-        -- local cmp_select = { behavior = cmp.SelectBehavior.Select }
+        local cmp_select = { behavior = cmp.SelectBehavior.Select }
         cmp.setup({
             snippet = {
                 expand = function(args)
@@ -90,8 +100,8 @@ return {
                 end,
             },
             mapping = cmp.mapping.preset.insert({
-                --                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-                --                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
+                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
+                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
                 ['<Tab>'] = cmp.mapping.confirm({ select = true }),
                 ['<C-Space>'] = cmp.mapping.complete(),
             }),

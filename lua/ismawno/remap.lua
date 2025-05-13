@@ -66,4 +66,4 @@ utils.mapkey('n', '<leader>ct', function()
     end
 end, { silent = true, desc = 'Open a new terminal' })
 
-utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from temrinal mode' })
+utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })

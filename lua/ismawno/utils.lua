@@ -50,4 +50,10 @@ function M.mapkey(mode, lhs, rhs, opts)
     vim.keymap.set(mode, lhs, rhs, opts)
 end
 
+function M.find_root(fname)
+local util = require('lspconfig.util')
+    fname = fname or vim.api.nvim_buf_get_name(0)
+    return util.root_pattern('.git')(fname) or vim.fn.getcwd()
+end
+
 return M

@@ -36,6 +36,7 @@ end
 return {
     {
         'mfussenegger/nvim-dap',
+        dependencies = { 'neovim/nvim-lspconfig' },
         lazy = false,
         config = function()
             local dap = require('dap')
@@ -49,6 +50,7 @@ return {
                     args = { '--port', '${port}' },
                 },
             }
+            local root = utils.find_root()
 
             dap.configurations.cpp = {
                 {
@@ -56,9 +58,9 @@ return {
                     type = 'codelldb',
                     request = 'launch',
                     program = function()
-                        return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+                        return vim.fn.input('Path to executable: ', root .. '/', 'file')
                     end,
-                    cwd = '${workspaceFolder}',
+                    cwd = root,
                     stopOnEntry = false,
                     args = {},
                 },
@@ -206,6 +208,15 @@ return {
             -- mason’s debugpy venv:
             local python_path = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python'
             require('dap-python').setup(python_path)
+            require('dap').configurations.python = {
+                {
+                    type = 'python',
+                    request = 'launch',
+                    name = 'Launch current file',
+                    program = '${file}',
+                    console = 'integratedTerminal',
+                },
+            }
         end,
     },
 }
