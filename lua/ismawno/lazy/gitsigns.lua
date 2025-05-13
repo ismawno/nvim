@@ -28,8 +28,41 @@ return {
 
             map('n', '<leader>ms', gs.stage_hunk)
             map('n', '<leader>mr', gs.reset_hunk)
-            map('n', '<leader>mb', gs.blame_line)
+
+            map('v', '<leader>ms', function()
+                gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+            end)
+
+            map('v', '<leader>mr', function()
+                gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+            end)
+
+            map('n', '<leader>mS', gs.stage_buffer)
+            map('n', '<leader>mR', gs.reset_buffer)
+            map('n', '<leader>mp', gs.preview_hunk)
+            map('n', '<leader>mi', gs.preview_hunk_inline)
+
+            map('n', '<leader>mb', function()
+                gs.blame_line({ full = true })
+            end)
+
             map('n', '<leader>md', gs.diffthis)
+
+            map('n', '<leader>mD', function()
+                gs.diffthis('~')
+            end)
+
+            map('n', '<leader>mQ', function()
+                gs.setqflist('all')
+            end)
+            map('n', '<leader>mq', gs.setqflist)
+
+            -- Toggles
+            map('n', '<leader>tb', gs.toggle_current_line_blame)
+            map('n', '<leader>tw', gs.toggle_word_diff)
+
+            -- Text object
+            map({ 'o', 'x' }, 'ih', gs.select_hunk)
         end,
         signs_staged_enable = true,
         signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
