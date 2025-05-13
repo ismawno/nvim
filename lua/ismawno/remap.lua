@@ -2,7 +2,9 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 local utils = require('ismawno.utils')
-utils.mapkey('n', '<leader>pv', vim.cmd.Ex, { desc = 'Open explorer' })
+utils.mapkey('n', '<leader>pv', function()
+    vim.cmd('Oil')
+end, { desc = 'Open explorer' })
 -- utils.mapkey('n', '<C-n>', 'n&', { noremap = true, silent = true, desc = 'Go to next occurrence and apply replace' })
 
 utils.mapkey('n', '<C-b>', ":put=''<CR>", { silent = true, desc = 'Insert a blank line below the cursor' })
@@ -40,8 +42,14 @@ utils.mapkey('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move cur
 
 -- vim.keymap.set('n', '<C-h>', '<cmd>cnext<CR>zz')
 -- vim.keymap.set('n', '<C-l>', '<cmd>cprev<CR>zz')
-utils.mapkey('n', 'H', '<cmd>cnext<CR>zz')
-utils.mapkey('n', 'L', '<cmd>cprev<CR>zz')
+utils.mapkey('n', 'H', '<cmd>cprev<CR>zz', { desc = 'Go to previous quickfix element' })
+utils.mapkey('n', 'L', '<cmd>cnext<CR>zz', { desc = 'Go to next quickfix element' })
+utils.mapkey(
+    'n',
+    '<leader>r',
+    [[:cdo %s///ge | update<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>]],
+    { desc = 'Insert a global search and replace pattern' }
+)
 
 utils.mapkey('n', 'J', 'mzJ`z', { desc = 'Bring line below cursor to the end of the current line' })
 
@@ -49,13 +57,23 @@ utils.mapkey({ 'n', 'v' }, 'qj', '8j', { desc = 'Move cursor 8 lines down' })
 utils.mapkey({ 'n', 'v' }, 'qk', '8k', { desc = 'Move cursor 8 lines up' })
 utils.mapkey({ 'n', 'v', 'o' }, '¡', '$', { noremap = true, force = true, desc = 'Jump to the end of line' })
 
+utils.mapkey('n', '<leader>pr', function()
+    local root = utils.find_root()
+    vim.cmd('Oil ' .. root)
+end, { desc = 'Navigate to root' })
+
 -- greatest remap ever
-utils.mapkey('x', '<leader>p', [["_dP]])
+utils.mapkey('x', '<leader>p', [["_dP]], { desc = 'Paste selection without copying it' })
 
 -- next greatest remap ever : asbjornHaland
-utils.mapkey({ 'n', 'v' }, '<leader>y', [["+y]])
-utils.mapkey('n', '<leader>Y', [["+Y]])
-utils.mapkey('n', '<leader>s', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+utils.mapkey({ 'n', 'v' }, '<leader>y', [["+y]], { desc = 'Copy to system clipboard' })
+utils.mapkey('n', '<leader>Y', [["+Y]], { desc = 'Copy line to system clipboard' })
+utils.mapkey(
+    'n',
+    '<leader>s',
+    [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+    { desc = 'Create a replace template for the current word' }
+)
 
 local terminal_stack = {}
 utils.mapkey('n', '<leader>ot', function()
