@@ -38,10 +38,15 @@ utils.mapkey('n', '<C-l>', '<C-w>l', { silent = true, desc = 'Move to right wind
 utils.mapkey('v', '<C-j>', ":m '>+1<CR>gv=gv", { silent = true, desc = 'Move current line down' })
 utils.mapkey('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move current line up' })
 
+-- vim.keymap.set('n', '<C-h>', '<cmd>cnext<CR>zz')
+-- vim.keymap.set('n', '<C-l>', '<cmd>cprev<CR>zz')
+utils.mapkey('n', 'H', '<cmd>cnext<CR>zz')
+utils.mapkey('n', 'L', '<cmd>cprev<CR>zz')
+
 utils.mapkey('n', 'J', 'mzJ`z', { desc = 'Bring line below cursor to the end of the current line' })
 
-utils.mapkey({ 'n', 'v' }, 'gj', '8j', { desc = 'Move cursor 8 lines down' })
-utils.mapkey({ 'n', 'v' }, 'gk', '8k', { desc = 'Move cursor 8 lines up' })
+utils.mapkey({ 'n', 'v' }, 'qj', '8j', { desc = 'Move cursor 8 lines down' })
+utils.mapkey({ 'n', 'v' }, 'qk', '8k', { desc = 'Move cursor 8 lines up' })
 utils.mapkey({ 'n', 'v', 'o' }, '¡', '$', { noremap = true, force = true, desc = 'Jump to the end of line' })
 
 -- greatest remap ever

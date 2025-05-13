@@ -54,10 +54,15 @@ return {
                     local util = require('ismawno.utils')
                     local root = util.find_root()
                     local ccmd = root .. '/build'
+                    print(root)
                     lspconfig.clangd.setup({
                         capabilities = capabilities,
                         root_dir = root,
-                        cmd = { 'clangd', '--function-arg-placeholders=0', '--compile-commands-dir=' .. ccmd },
+                        cmd = {
+                            'clangd',
+                            '--function-arg-placeholders=0',
+                            '--compile-commands-dir=' .. ccmd,
+                        },
                     })
                 end,
                 ['lua_ls'] = function()
