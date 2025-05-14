@@ -90,20 +90,59 @@ utils.mapkey('i', '<C-i>', '<C-R>"', { desc = 'Copy into the line, even if its a
 --     end
 -- end, { silent = true, desc = 'Open a new terminal' })
 
-utils.mapkey('n', '<leader>ot', function()
-    utils.open_terminal({ direction = 'horizontal' }):toggle()
-end)
-utils.mapkey('n', '<leader>oT', function()
-    utils
-        .open_terminal({
-            direction = 'float',
-            float_opts = {
-                width = math.floor(vim.o.columns * 0.8),
-                height = math.floor(vim.o.lines * 0.8),
-                border = 'rounded',
-            },
-        })
-        :toggle()
-end, { desc = 'Open a new terminal at the bottom' })
+local last_terminal = nil
 
+local function open_horizontal_terminal()
+    local trm = utils.open_terminal({ direction = 'horizontal' })
+    trm:toggle()
+    last_terminal = trm
+    return trm
+end
+local function open_float_terminal()
+    local trm = utils.open_terminal({
+        direction = 'float',
+        float_opts = {
+            width = math.floor(vim.o.columns * 0.8),
+            height = math.floor(vim.o.lines * 0.8),
+            border = 'rounded',
+        },
+    })
+    trm:toggle()
+    last_terminal = trm
+    return trm
+end
+utils.mapkey('n', '<leader>ot', open_horizontal_terminal, { desc = 'Open a terminal (bottom horizontal)' })
+utils.mapkey('n', '<leader>oT', open_float_terminal, { desc = 'Open a terminal (float)' })
+
+local function setup_cmake(type)
+    if not last_terminal or not last_terminal:is_open() then
+        last_terminal = open_horizontal_terminal()
+    end
+
+    local path = last_terminal.dir .. '/setup/build.py'
+    if vim.fn.filereadable(path) then
+        last_terminal:send('python ' .. path .. ' -v --build-type ' .. type)
+    end
+end
+
+utils.mapkey('n', '<leader>pbde', function()
+    setup_cmake('Debug')
+end)
+utils.mapkey('n', '<leader>pbre', function()
+    setup_cmake('Release')
+end)
+utils.mapkey('n', '<leader>pbdi', function()
+    setup_cmake('Dist')
+end)
+utils.mapkey('n', '<leader>pc', function()
+    if not last_terminal or not last_terminal:is_open() then
+        last_terminal = open_horizontal_terminal()
+    end
+    local path = last_terminal.dir .. '/build'
+    if vim.fn.isdirectory(path) == 1 then
+        last_terminal:send('cd ' .. path)
+        last_terminal:send('make -j 4')
+        last_terminal:send('cd ..')
+    end
+end)
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
