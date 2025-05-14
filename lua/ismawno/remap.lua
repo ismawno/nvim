@@ -74,7 +74,8 @@ utils.mapkey(
     [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
     { desc = 'Create a replace template for the current word' }
 )
-
+utils.mapkey('n', '<leader>ip', 'i<C-R>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
+utils.mapkey('i', '<C-i>', '<C-R>"', { desc = 'Copy into the line, even if its a whole line' })
 -- local terminal_stack = {}
 -- utils.mapkey('n', '<leader>ot', function()
 --     vim.cmd('belowright 8split | terminal')
