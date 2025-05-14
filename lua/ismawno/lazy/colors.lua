@@ -8,7 +8,7 @@ function ApplyColor(color)
     vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'none', ctermbg = 'none' })
     vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none', ctermbg = 'none' })
     vim.api.nvim_set_hl(0, 'StatusLineNC', { bg = 'none', ctermbg = 'none' })
-    local groups = {
+    local tgroups = {
         'TelescopeNormal',
         'TelescopeBorder',
         'TelescopePromptBorder',
@@ -18,9 +18,14 @@ function ApplyColor(color)
         'TelescopeResultsNormal',
         'TelescopePreviewNormal',
     }
-    for _, grp in ipairs(groups) do
+    for _, grp in ipairs(tgroups) do
         vim.api.nvim_set_hl(0, grp, { bg = 'none', ctermbg = 'none' })
     end
+
+    -- local llinegroups = { 'Normal', 'Insert', 'Visual', 'Replace', 'Command', 'Inactive' }
+    -- for _, grp in ipairs(llinegroups) do
+    --     vim.api.nvim_set_hl(0, 'LualineC' .. grp, { bg = 'none', ctermbg = 'none' })
+    -- end
 end
 
 return {
