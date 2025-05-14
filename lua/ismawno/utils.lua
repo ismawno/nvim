@@ -51,9 +51,25 @@ function M.mapkey(mode, lhs, rhs, opts)
 end
 
 function M.find_root(fname)
-local util = require('lspconfig.util')
+    local util = require('lspconfig.util')
     fname = fname or vim.api.nvim_buf_get_name(0)
     return util.root_pattern('.git')(fname) or vim.fn.getcwd()
+end
+
+function M.open_terminal(opts)
+    local terminal = require('toggleterm.terminal').Terminal
+    opts = vim.tbl_extend('force', {
+        on_open = function(term)
+            -- if .venv exists, source it
+            local activate = term.dir .. '/.venv/bin/activate'
+            if vim.fn.filereadable(activate) == 1 then
+                -- send the source command and clear the screen
+                term:send('source ' .. activate)
+                term:send('clear')
+            end
+        end,
+    }, opts)
+    return terminal:new(opts)
 end
 
 return M

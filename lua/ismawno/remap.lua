@@ -75,18 +75,34 @@ utils.mapkey(
     { desc = 'Create a replace template for the current word' }
 )
 
-local terminal_stack = {}
-utils.mapkey('n', '<leader>ot', function()
-    vim.cmd('belowright 8split | terminal')
-    local bufnr = vim.api.nvim_get_current_buf()
-    table.insert(terminal_stack, bufnr)
-end, { silent = true, desc = 'Open a new terminal' })
+-- local terminal_stack = {}
+-- utils.mapkey('n', '<leader>ot', function()
+--     vim.cmd('belowright 8split | terminal')
+--     local bufnr = vim.api.nvim_get_current_buf()
+--     table.insert(terminal_stack, bufnr)
+-- end, { silent = true, desc = 'Open a new terminal' })
+--
+-- utils.mapkey('n', '<leader>ct', function()
+--     local bufnr = table.remove(terminal_stack)
+--     if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+--         vim.api.nvim_buf_delete(bufnr, { force = true })
+--     end
+-- end, { silent = true, desc = 'Open a new terminal' })
 
-utils.mapkey('n', '<leader>ct', function()
-    local bufnr = table.remove(terminal_stack)
-    if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
-        vim.api.nvim_buf_delete(bufnr, { force = true })
-    end
-end, { silent = true, desc = 'Open a new terminal' })
+utils.mapkey('n', '<leader>ot', function()
+    utils.open_terminal({ direction = 'horizontal' }):toggle()
+end)
+utils.mapkey('n', '<leader>oT', function()
+    utils
+        .open_terminal({
+            direction = 'float',
+            float_opts = {
+                width = math.floor(vim.o.columns * 0.8),
+                height = math.floor(vim.o.lines * 0.8),
+                border = 'rounded',
+            },
+        })
+        :toggle()
+end, { desc = 'Open a new terminal at the bottom' })
 
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })

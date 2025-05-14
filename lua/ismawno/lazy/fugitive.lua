@@ -1,5 +1,8 @@
 return {
     'tpope/vim-fugitive',
+    init = function()
+        vim.g.fugitive_no_maps = 1
+    end,
     config = function()
         local utils = require('ismawno.utils')
         utils.mapkey('n', '<leader>gi', vim.cmd.Git)
