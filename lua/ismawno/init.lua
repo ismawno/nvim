@@ -12,6 +12,17 @@ function R(name)
     require('plenary.reload').reload_module(name)
 end
 
+-- vim.o.winborder = 'rounded'
+
+vim.g.load_doxygen_syntax = 1
+autocmd('FileType', {
+    group = ismawno_group,
+    pattern = { 'c', 'cpp', 'java', 'idl' },
+    callback = function()
+        vim.cmd('setlocal syntax=cpp.doxygen')
+    end,
+})
+
 autocmd('TextYankPost', {
     group = yank_group,
     pattern = '*',
@@ -45,7 +56,13 @@ autocmd('LspAttach', {
         -- a table of { mode, lhs, rhs } mappings
         local maps = {
             { 'n', 'gd', vim.lsp.buf.definition },
-            { 'n', '<leader>vh', vim.lsp.buf.hover },
+            {
+                'n',
+                '<leader>vh',
+                function()
+                    vim.lsp.buf.hover({ border = 'rounded' })
+                end,
+            },
             { 'n', '<leader>vws', vim.lsp.buf.workspace_symbol },
             { 'n', '<leader>vd', vim.diagnostic.open_float },
             { 'n', '<leader>vca', vim.lsp.buf.code_action },

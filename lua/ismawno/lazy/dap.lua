@@ -50,23 +50,25 @@ return {
                     args = { '--port', '${port}' },
                 },
             }
-            local root = utils.find_root()
+            dap.adapters.lldb = dap.adapters.codelldb
+            dap.configurations = {}
+            -- local root = utils.find_root()
 
-            dap.configurations.cpp = {
-                {
-                    name = 'Launch executable',
-                    type = 'codelldb',
-                    request = 'launch',
-                    program = function()
-                        return vim.fn.input('Path to executable: ', root .. '/', 'file')
-                    end,
-                    cwd = root,
-                    stopOnEntry = false,
-                    args = {},
-                },
-            }
-            -- reuse the same setup for plain C files
-            dap.configurations.c = dap.configurations.cpp
+            -- dap.configurations.cpp = {
+            --     {
+            --         name = 'CodeLLDB Launch executable',
+            --         type = 'codelldb',
+            --         request = 'launch',
+            --         program = function()
+            --             return vim.fn.input('Path to executable: ', root .. '/', 'file')
+            --         end,
+            --         cwd = root,
+            --         stopOnEntry = true,
+            --         args = {},
+            --     },
+            -- }
+            -- -- reuse the same setup for plain C files
+            -- dap.configurations.c = dap.configurations.cpp
 
             utils.mapkey('n', '<F8>', dap.continue, { desc = 'Debug: Continue' })
             utils.mapkey('n', '<F10>', dap.step_over, { desc = 'Debug: Step Over' })
@@ -76,7 +78,9 @@ return {
             utils.mapkey('n', '<leader>B', function()
                 dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
             end, { desc = 'Debug: Set Conditional Breakpoint' })
-            utils.mapkey('n', '<leader>dt', dap.terminate, { desc = 'Debug: Stop debugger' })
+            utils.mapkey('n', '<leader>dt', function()
+                dap.disconnect({ terminateDebuggee = true })
+            end, { desc = 'Debug: Stop debugger' })
         end,
     },
 
@@ -112,6 +116,9 @@ return {
             end
 
             local function toggle_debug_ui(name)
+                if not dap.session() then
+                    return
+                end
                 dapui.close()
                 local layout_config = name_to_layout[name]
 
@@ -164,15 +171,13 @@ return {
             })
 
             dap.listeners.before.event_terminated.dapui_config = function()
-                dapui.close()
+                if dap.session() then
+                    dapui.close()
+                end
             end
             dap.listeners.before.event_exited.dapui_config = function()
-                dapui.close()
-            end
-
-            dap.listeners.after.event_output.dapui_config = function(_, body)
-                if body.category == 'console' then
-                    dapui.eval(body.output) -- Sends stdout/stderr to Console
+                if dap.session() then
+                    dapui.close()
                 end
             end
         end,
@@ -195,6 +200,7 @@ return {
                 handlers = {
                     function(config)
                         require('mason-nvim-dap').default_setup(config)
+                        require('dap').configurations = {}
                     end,
                 },
             })
@@ -208,15 +214,16 @@ return {
             -- mason’s debugpy venv:
             local python_path = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python'
             require('dap-python').setup(python_path)
-            require('dap').configurations.python = {
-                {
-                    type = 'python',
-                    request = 'launch',
-                    name = 'Launch current file',
-                    program = '${file}',
-                    console = 'integratedTerminal',
-                },
-            }
+            require('dap').configurations = {}
+            -- require('dap').configurations.python = {
+            --     {
+            --         type = 'python',
+            --         request = 'launch',
+            --         name = 'Launch current file',
+            --         program = '${file}',
+            --         console = 'integratedTerminal',
+            --     },
+            -- }
         end,
     },
 }
