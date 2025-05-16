@@ -155,4 +155,55 @@ utils.mapkey('n', '<leader>pc', function()
         vim.notify(string.format('Build folder not found at: %s', path), vim.log.levels.WARN)
     end
 end)
+
+local last_exec = nil
+local function load_exec_table()
+    local execs = io.open(vim.fn.stdpath('data') .. '/executables.json', 'r')
+    if not execs then
+        return nil
+    end
+    local content = execs:read('*a')
+    execs:close()
+    return vim.fn.json_decode(content)
+end
+local function load_executable()
+    if last_exec then
+        return last_exec
+    end
+    local execs = load_exec_table()
+    if not execs then
+        return nil
+    end
+
+    local root = utils.find_root()
+    last_exec = execs[root]
+    return last_exec
+end
+
+local function save_executable()
+    local root = utils.find_root()
+    local path = vim.fn.input('Path to executable: ', root, 'file')
+    local execs = load_exec_table() or {}
+    execs[root] = path
+    last_exec = path
+
+    local epath = vim.fn.stdpath('data') .. '/executables.json'
+    local efile = io.open(epath, 'w')
+    if not efile then
+        vim.notify(string.format('Executables file %s not found'), vim.log.levels.WARN)
+        return path
+    end
+
+    local json = vim.fn.json_encode(execs)
+    efile:write(json)
+    efile:close()
+    return path
+end
+
+utils.mapkey('n', '<leader>pX', save_executable, { desc = 'Save an executable shortcut for this workspace' })
+utils.mapkey('n', '<leader>px', function()
+    local trm = get_a_terminal()
+    local exec = load_executable() or save_executable()
+    trm:send(exec)
+end)
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })

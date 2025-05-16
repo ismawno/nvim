@@ -59,7 +59,7 @@ return {
             --         type = 'codelldb',
             --         request = 'launch',
             --         program = function()
-            --             return vim.fn.input('Path to executable: ', root .. '/', 'file')
+            --             return vim.fn.input('Path to executable: ', root, 'file')
             --         end,
             --         cwd = root,
             --         stopOnEntry = true,

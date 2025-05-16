@@ -53,7 +53,8 @@ end
 function M.find_root(fname)
     local util = require('lspconfig.util')
     fname = fname or vim.api.nvim_buf_get_name(0)
-    return util.root_pattern('.git')(fname) or vim.fn.getcwd()
+    local root = util.root_pattern('.git')(fname) or vim.fn.getcwd()
+    return vim.fn.fnamemodify(root, ':p')
 end
 
 function M.open_terminal(opts)
