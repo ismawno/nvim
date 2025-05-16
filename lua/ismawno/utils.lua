@@ -58,14 +58,19 @@ end
 
 function M.open_terminal(opts)
     local terminal = require('toggleterm.terminal').Terminal
+    local possible_venvs = { '.venv', 'venv' }
+
     opts = vim.tbl_extend('force', {
         on_open = function(term)
-            -- if .venv exists, source it
-            local activate = term.dir .. '/.venv/bin/activate'
-            if vim.fn.filereadable(activate) == 1 then
-                -- send the source command and clear the screen
-                term:send('source ' .. activate)
-                term:send('clear')
+            -- if a venv exists, source it
+            for _, v in ipairs(possible_venvs) do
+                local activate = term.dir .. '/' .. v .. '/bin/activate'
+                if vim.fn.filereadable(activate) == 1 then
+                    -- send the source command and clear the screen
+                    term:send('source ' .. activate)
+                    term:send('clear')
+                    break
+                end
             end
         end,
     }, opts)

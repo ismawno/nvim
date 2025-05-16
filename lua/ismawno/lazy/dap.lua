@@ -52,7 +52,6 @@ return {
             }
             dap.adapters.lldb = dap.adapters.codelldb
             dap.configurations = {}
-            -- local root = utils.find_root()
 
             -- dap.configurations.cpp = {
             --     {
@@ -116,9 +115,6 @@ return {
             end
 
             local function toggle_debug_ui(name)
-                if not dap.session() then
-                    return
-                end
                 dapui.close()
                 local layout_config = name_to_layout[name]
 
@@ -171,14 +167,10 @@ return {
             })
 
             dap.listeners.before.event_terminated.dapui_config = function()
-                if dap.session() then
-                    dapui.close()
-                end
+                dapui.close()
             end
             dap.listeners.before.event_exited.dapui_config = function()
-                if dap.session() then
-                    dapui.close()
-                end
+                dapui.close()
             end
         end,
     },

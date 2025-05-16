@@ -71,9 +71,11 @@ utils.mapkey('n', '<leader>Y', [["+Y]], { desc = 'Copy line to system clipboard'
 utils.mapkey(
     'n',
     '<leader>s',
-    [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+    [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]],
     { desc = 'Create a replace template for the current word' }
 )
+utils.mapkey('n', '<leader>f', [[/<C-r><C-w>]], { desc = 'Create a find template for the current word' })
+
 utils.mapkey('n', '<leader>ip', 'i<C-R>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
 utils.mapkey('i', '<C-i>', '<C-R>"', { desc = 'Copy into the line, even if its a whole line' })
 -- local terminal_stack = {}
@@ -96,7 +98,7 @@ local function open_horizontal_terminal()
     local trm = utils.open_terminal({ direction = 'horizontal' })
     trm:toggle()
     last_terminal = trm
-    return trm
+    return trm -- just to avoid a nil warning
 end
 local function open_float_terminal()
     local trm = utils.open_terminal({
@@ -109,19 +111,27 @@ local function open_float_terminal()
     })
     trm:toggle()
     last_terminal = trm
-    return trm
+    return trm -- just to avoid a nil warning
 end
+
 utils.mapkey('n', '<leader>ot', open_horizontal_terminal, { desc = 'Open a terminal (bottom horizontal)' })
 utils.mapkey('n', '<leader>oT', open_float_terminal, { desc = 'Open a terminal (float)' })
 
-local function setup_cmake(type)
+local function get_a_terminal()
     if not last_terminal or not last_terminal:is_open() then
-        last_terminal = open_horizontal_terminal()
+        return open_horizontal_terminal()
     end
+    return last_terminal
+end
 
-    local path = last_terminal.dir .. '/setup/build.py'
-    if vim.fn.filereadable(path) then
-        last_terminal:send('python ' .. path .. ' -v --build-type ' .. type)
+local function setup_cmake(btype)
+    local trm = get_a_terminal()
+
+    local path = trm.dir .. '/setup/build.py'
+    if vim.fn.filereadable(path) == 1 then
+        trm:send('python ' .. path .. ' -v --build-type ' .. btype)
+    else
+        vim.notify(string.format('Build script not found at: %s', path), vim.log.levels.WARN)
     end
 end
 
@@ -135,14 +145,14 @@ utils.mapkey('n', '<leader>pbdi', function()
     setup_cmake('Dist')
 end)
 utils.mapkey('n', '<leader>pc', function()
-    if not last_terminal or not last_terminal:is_open() then
-        last_terminal = open_horizontal_terminal()
-    end
-    local path = last_terminal.dir .. '/build'
+    local trm = get_a_terminal()
+    local path = trm.dir .. '/build'
     if vim.fn.isdirectory(path) == 1 then
-        last_terminal:send('cd ' .. path)
-        last_terminal:send('make -j 4')
-        last_terminal:send('cd ..')
+        trm:send('cd ' .. path)
+        trm:send('make -j 4')
+        trm:send('cd ..')
+    else
+        vim.notify(string.format('Build folder not found at: %s', path), vim.log.levels.WARN)
     end
 end)
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
