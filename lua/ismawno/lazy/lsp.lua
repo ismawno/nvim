@@ -22,6 +22,7 @@ return {
                 cpp = { 'clang_format' },
                 bash = { 'shfmt' },
             },
+            formatters = { black = { prepend_args = { '--line-length', '119' } } },
         })
         local cmp = require('cmp')
         local cmp_lsp = require('cmp_nvim_lsp')
