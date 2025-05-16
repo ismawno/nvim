@@ -70,11 +70,11 @@ utils.mapkey({ 'n', 'v' }, '<leader>y', [["+y]], { desc = 'Copy to system clipbo
 utils.mapkey('n', '<leader>Y', [["+Y]], { desc = 'Copy line to system clipboard' })
 utils.mapkey(
     'n',
-    '<leader>s',
+    '<leader>W',
     [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]],
     { desc = 'Create a replace template for the current word' }
 )
-utils.mapkey('n', '<leader>f', [[/<C-r><C-w>]], { desc = 'Create a find template for the current word' })
+utils.mapkey('n', '<leader>w', [[/<C-r><C-w>]], { desc = 'Create a find template for the current word' })
 
 utils.mapkey('n', '<leader>ip', 'i<C-R>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
 utils.mapkey('i', '<C-i>', '<C-R>"', { desc = 'Copy into the line, even if its a whole line' })
