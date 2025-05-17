@@ -183,6 +183,9 @@ end
 local function save_executable()
     local root = utils.find_root()
     local path = vim.fn.input('Path to executable: ', root, 'file')
+    if not path or vim.fn.filereadable(path) == 0 then
+        return nil
+    end
     local execs = load_exec_table() or {}
     execs[root] = path
     last_exec = path
@@ -202,8 +205,10 @@ end
 
 utils.mapkey('n', '<leader>pX', save_executable, { desc = 'Save an executable shortcut for this workspace' })
 utils.mapkey('n', '<leader>px', function()
-    local trm = get_a_terminal()
     local exec = load_executable() or save_executable()
-    trm:send(exec)
+    if exec then
+        local trm = get_a_terminal()
+        trm:send(exec)
+    end
 end)
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
