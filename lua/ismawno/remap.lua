@@ -29,7 +29,7 @@ for _, op in ipairs(operators) do
                 silent = true,
                 desc = 'Apply vim command ' .. op .. loc .. opn .. ' to the next occurrence of ' .. opn,
             })
-            custom_motions[lhs] = rhs
+            -- custom_motions[lhs] = rhs
         end
     end
 end
