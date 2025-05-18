@@ -17,15 +17,19 @@ end
 local operators = { 'c', 'd', 'y' }
 local locations = { 'i', 'a' }
 local openers = { '(', '{', '[', '<', "'", '"' }
+local custom_motions = {}
 
 for _, op in ipairs(operators) do
     for _, loc in ipairs(locations) do
         for _, opn in ipairs(openers) do
-            utils.mapkey('n', termcodes(op .. 'm' .. loc .. opn), termcodes('/' .. opn .. '<CR>' .. op .. loc .. opn), {
+            local lhs = termcodes(op .. 'm' .. loc .. opn)
+            local rhs = termcodes('/' .. opn .. '<CR>' .. op .. loc .. opn)
+            utils.mapkey('n', lhs, rhs, {
                 noremap = true,
                 silent = true,
                 desc = 'Apply vim command ' .. op .. loc .. opn .. ' to the next occurrence of ' .. opn,
             })
+            custom_motions[lhs] = rhs
         end
     end
 end
@@ -56,6 +60,8 @@ utils.mapkey('n', 'J', 'mzJ`z', { desc = 'Bring line below cursor to the end of 
 utils.mapkey({ 'n', 'v' }, 'qj', '8j', { desc = 'Move cursor 8 lines down' })
 utils.mapkey({ 'n', 'v' }, 'qk', '8k', { desc = 'Move cursor 8 lines up' })
 utils.mapkey({ 'n', 'v', 'o' }, '¡', '$', { noremap = true, force = true, desc = 'Jump to the end of line' })
+
+custom_motions['¡'] = '$'
 
 utils.mapkey('n', '<leader>pr', function()
     local root = utils.find_root()
@@ -212,3 +218,5 @@ utils.mapkey('n', '<leader>px', function()
     end
 end)
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
+
+vim.g.VM_custom_motions = custom_motions
