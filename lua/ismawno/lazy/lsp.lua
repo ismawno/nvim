@@ -50,12 +50,22 @@ return {
                         capabilities = capabilities,
                     })
                 end,
+                ['pyright'] = function()
+                    local lspconfig = require('lspconfig')
+                    local util = require('ismawno.utils')
+                    local root = util.find_root()
+                    lspconfig.pyright.setup({
+                        capabilities = capabilities,
+                        settings = {
+                            python = { analysis = { autoSearchPaths = true, extraPaths = { root, root .. '/src' } } },
+                        },
+                    })
+                end,
                 ['clangd'] = function()
                     local lspconfig = require('lspconfig')
                     local util = require('ismawno.utils')
                     local root = util.find_root()
                     local ccmd = root .. '/build'
-                    print(root)
                     lspconfig.clangd.setup({
                         capabilities = capabilities,
                         root_dir = root,
