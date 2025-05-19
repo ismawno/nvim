@@ -29,41 +29,9 @@ function ApplyColor(color)
 end
 
 return {
-
-    {
-        'erikbackman/brightburn.vim',
-        opts = {},
-        config = function()
-            ApplyColor()
-        end,
-    },
-
-    {
-        'folke/tokyonight.nvim',
-        opts = {},
-        config = function()
-            ApplyColor()
-        end,
-    },
-    {
-        'ellisonleao/gruvbox.nvim',
-        opts = {},
-        config = function()
-            ApplyColor()
-        end,
-    },
-    {
-        'folke/tokyonight.nvim',
-        opts = {},
-        config = function()
-            ApplyColor()
-        end,
-    },
-    {
-        'rose-pine/neovim',
-        opts = {},
-        config = function()
-            ApplyColor()
-        end,
-    },
+    'rose-pine/neovim',
+    opts = {},
+    config = function()
+        ApplyColor()
+    end,
 }

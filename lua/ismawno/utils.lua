@@ -27,26 +27,27 @@ local function find_map(mode, lhs, bufnr)
 end
 
 function M.mapkey(mode, lhs, rhs, opts)
-    if type(mode) == 'table' then
-        for _, md in ipairs(mode) do
-            M.mapkey(md, lhs, rhs, opts)
-        end
-        return
-    end
+    -- Uncomment this to check if there are repeated bindings
+    -- if type(mode) == 'table' then
+    --     for _, md in ipairs(mode) do
+    --         M.mapkey(md, lhs, rhs, opts)
+    --     end
+    --     return
+    -- end
     opts = opts or {}
-    local force = opts.force
+    -- local force = opts.force
+    --
+    -- local existing = find_map(mode, lhs, opts.buffer)
+    -- if existing and not force then
+    --     rhs = existing.rhs or '<display unavailable>'
+    --     vim.notify(
+    --         string.format('Keymap for [%s] in mode [%s] already exists: %s -> %s', lhs, mode, existing.lhs, rhs),
+    --         vim.log.levels.WARN
+    --     )
+    --     return
+    -- end
+    --
     opts.force = nil
-
-    local existing = find_map(mode, lhs, opts.buffer)
-    if existing and not force then
-        rhs = existing.rhs or '<display unavailable>'
-        vim.notify(
-            string.format('Keymap for [%s] in mode [%s] already exists: %s -> %s', lhs, mode, existing.lhs, rhs),
-            vim.log.levels.WARN
-        )
-        return
-    end
-
     vim.keymap.set(mode, lhs, rhs, opts)
 end
 
