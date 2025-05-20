@@ -69,10 +69,10 @@ return {
             -- -- reuse the same setup for plain C files
             -- dap.configurations.c = dap.configurations.cpp
 
-            utils.mapkey('n', '<F8>', dap.continue, { desc = 'Debug: Continue' })
-            utils.mapkey('n', '<F10>', dap.step_over, { desc = 'Debug: Step Over' })
-            utils.mapkey('n', '<F11>', dap.step_into, { desc = 'Debug: Step Into' })
-            utils.mapkey('n', '<F12>', dap.step_out, { desc = 'Debug: Step Out' })
+            utils.mapkey('n', '<leader>dc', dap.continue, { desc = 'Debug: Continue' })
+            utils.mapkey('n', '<leader>dn', dap.step_over, { desc = 'Debug: Step Over' })
+            utils.mapkey('n', '<leader>di', dap.step_into, { desc = 'Debug: Step Into' })
+            utils.mapkey('n', '<leader>do', dap.step_out, { desc = 'Debug: Step Out' })
             utils.mapkey('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
             utils.mapkey('n', '<leader>B', function()
                 dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
@@ -145,7 +145,7 @@ return {
             utils.mapkey('n', '<leader>dS', function()
                 toggle_debug_ui('scopes')
             end, { desc = 'Debug: toggle scopes ui' })
-            utils.mapkey('n', '<leader>dc', function()
+            utils.mapkey('n', '<leader>dC', function()
                 toggle_debug_ui('console')
             end, { desc = 'Debug: toggle console ui' })
             utils.mapkey('n', '<leader>dx', dapui.close, { desc = 'Debug: Close all ui' })

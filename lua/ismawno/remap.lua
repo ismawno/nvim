@@ -151,6 +151,7 @@ utils.mapkey('n', '<leader>pc', function()
         vim.notify(string.format('Build folder not found at: %s', path), vim.log.levels.WARN)
     end
 end)
+utils.mapkey('n', '<leader>pC', ':make -C build/ -j 4<CR>')
 
 local last_exec = nil
 local function load_exec_table()
