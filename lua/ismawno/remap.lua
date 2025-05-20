@@ -9,6 +9,7 @@ end, { desc = 'Open explorer' })
 
 utils.mapkey('n', '<C-b>', ":put=''<CR>", { silent = true, desc = 'Insert a blank line below the cursor' })
 utils.mapkey('n', '<C-S-B>', ":put!=''<CR>", { silent = true, desc = 'Insert a blank line above the cursor' })
+utils.mapkey({ 'n', 'v', 'o' }, '0', '^', { noremap = true, desc = 'Go to the first character of the line' })
 
 local function termcodes(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
@@ -86,22 +87,8 @@ utils.mapkey('n', '<leader>w', [[/<C-r><C-w>]], { desc = 'Create a find template
 
 utils.mapkey('n', '<leader>ip', 'i<C-R>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
 utils.mapkey('i', '<C-i>', '<C-R>"', { desc = 'Copy into the line, even if its a whole line' })
--- local terminal_stack = {}
--- utils.mapkey('n', '<leader>ot', function()
---     vim.cmd('belowright 8split | terminal')
---     local bufnr = vim.api.nvim_get_current_buf()
---     table.insert(terminal_stack, bufnr)
--- end, { silent = true, desc = 'Open a new terminal' })
---
--- utils.mapkey('n', '<leader>ct', function()
---     local bufnr = table.remove(terminal_stack)
---     if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
---         vim.api.nvim_buf_delete(bufnr, { force = true })
---     end
--- end, { silent = true, desc = 'Open a new terminal' })
 
 local last_terminal = nil
-
 local function open_horizontal_terminal()
     local trm = utils.open_terminal({ direction = 'horizontal' })
     trm:toggle()
