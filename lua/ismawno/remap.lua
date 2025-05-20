@@ -18,6 +18,7 @@ local operators = { 'c', 'd', 'y' }
 local locations = { 'i', 'a' }
 local openers = { '(', '{', '[', '<', "'", '"' }
 local custom_motions = {}
+-- local user_operators = {}
 
 for _, op in ipairs(operators) do
     for _, loc in ipairs(locations) do
@@ -29,6 +30,7 @@ for _, op in ipairs(operators) do
                 silent = true,
                 desc = 'Apply vim command ' .. op .. loc .. opn .. ' to the next occurrence of ' .. opn,
             })
+            -- user_operators[lhs] = rhs
             -- custom_motions[lhs] = rhs
         end
     end
@@ -220,3 +222,4 @@ end)
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
 
 vim.g.VM_custom_motions = custom_motions
+-- vim.g.VM_user_operators = user_operators
