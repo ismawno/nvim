@@ -208,6 +208,21 @@ utils.mapkey('n', '<leader>px', function()
         trm:send(exec)
     end
 end)
+utils.mapkey('n', '<leader>pd', function()
+    local exec = load_executable() or save_executable()
+    if exec then
+        local root = utils.find_root()
+        require('dap').run({
+            type = 'lldb',
+            request = 'launch',
+            name = 'Custom launch',
+            program = exec,
+            justMyCode = false,
+            cwd = root,
+        })
+    end
+end)
+
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
 
 vim.g.VM_custom_motions = custom_motions

@@ -80,6 +80,34 @@ return {
             utils.mapkey('n', '<leader>dt', function()
                 dap.disconnect({ terminateDebuggee = true })
             end, { desc = 'Debug: Stop debugger' })
+
+            vim.fn.sign_define('DapBreakpoint', {
+                text = '🔴', -- Icon for breakpoint
+                texthl = 'DiagnosticSignError',
+                linehl = '',
+                numhl = '',
+            })
+
+            vim.fn.sign_define('DapBreakpointCondition', {
+                text = '🔶',
+                texthl = 'DiagnosticSignWarn',
+                linehl = '',
+                numhl = '',
+            })
+
+            vim.fn.sign_define('DapBreakpointRejected', {
+                text = '❌',
+                texthl = 'DiagnosticSignInfo',
+                linehl = '',
+                numhl = '',
+            })
+
+            vim.fn.sign_define('DapStopped', {
+                text = '👉',
+                texthl = 'DiagnosticSignHint',
+                linehl = 'Visual', -- Highlights the current line
+                numhl = '',
+            })
         end,
     },
 
