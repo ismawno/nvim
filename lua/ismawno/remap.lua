@@ -225,5 +225,38 @@ end)
 
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
 
+local function toggle_header_source()
+    local path = vim.api.nvim_buf_get_name(0)
+    if path == '' then
+        return
+    end
+
+    -- split off the “stem” and the “ext”
+    local stem, ext = path:match('(.+)%.([hc]p?p?)$')
+    if not stem or not ext then
+        return
+    end
+
+    -- extension map
+    local maps = { {
+        h = 'c',
+        c = 'h',
+        hpp = 'cpp',
+        cpp = 'hpp',
+    }, { h = 'cpp' } }
+
+    for _, map in ipairs(maps) do
+        local target_ext = map[ext]
+        if target_ext then
+            local target = stem .. '.' .. target_ext
+            if vim.fn.filereadable(target) == 1 then
+                -- safely escape in case there’s spaces, etc.
+                vim.cmd('edit ' .. vim.fn.fnameescape(target))
+            end
+        end
+    end
+end
+utils.mapkey('n', '<leader>sf', toggle_header_source, { desc = 'Switch between C/C++ header and source files' })
+
 vim.g.VM_custom_motions = custom_motions
 -- vim.g.VM_user_operators = user_operators
