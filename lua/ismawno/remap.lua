@@ -7,6 +7,54 @@ utils.mapkey('n', '<leader>pv', function()
 end, { desc = 'Open explorer' })
 -- utils.mapkey('n', '<C-n>', 'n&', { noremap = true, silent = true, desc = 'Go to next occurrence and apply replace' })
 
+local function navigate_file(dir)
+    local current_path = vim.fn.expand('%:p')
+    local parent_dir = vim.fn.expand('%:p:h')
+    if current_path == '' or parent_dir == '' then
+        return
+    end
+
+    local files = vim.fn.glob(parent_dir .. '/*', false, true)
+    table.sort(files, function(a, b)
+        if dir == 'next' then
+            return a < b
+        else
+            return a > b
+        end
+    end)
+
+    -- Find index of current file
+    local idx = nil
+    for i, entry in ipairs(files) do
+        if entry == current_path then
+            idx = i
+            break
+        end
+    end
+    if not idx then
+        return
+    end
+
+    -- If next file exists and is a file, open it
+    idx = idx + 1
+    local next_entry = files[idx]
+    while next_entry do
+        if vim.fn.filereadable(next_entry) == 1 then
+            vim.cmd('edit ' .. vim.fn.fnameescape(next_entry))
+            break
+        end
+        idx = idx + 1
+        next_entry = files[idx]
+    end
+end
+utils.mapkey('n', '<C-m>', function()
+    navigate_file('next')
+end, { desc = 'Go to next file in explorer' })
+
+utils.mapkey('n', '<C-u>', function()
+    navigate_file('prev')
+end, { desc = 'Go to prev file in explorer' })
+
 utils.mapkey('n', '<C-b>', ":put=''<CR>", { silent = true, desc = 'Insert a blank line below the cursor' })
 utils.mapkey('n', '<C-S-B>', ":put!=''<CR>", { silent = true, desc = 'Insert a blank line above the cursor' })
 utils.mapkey({ 'n', 'v', 'o' }, '0', '^', { noremap = true, desc = 'Go to the first character of the line' })
