@@ -82,28 +82,28 @@ return {
             end, { desc = 'Debug: Stop debugger' })
 
             vim.fn.sign_define('DapBreakpoint', {
-                text = '🔴', -- Icon for breakpoint
+                text = '●', -- Icon for breakpoint
                 texthl = 'DiagnosticSignError',
                 linehl = '',
                 numhl = '',
             })
 
             vim.fn.sign_define('DapBreakpointCondition', {
-                text = '🔶',
+                text = '◆',
                 texthl = 'DiagnosticSignWarn',
                 linehl = '',
                 numhl = '',
             })
 
             vim.fn.sign_define('DapBreakpointRejected', {
-                text = '❌',
+                text = '○',
                 texthl = 'DiagnosticSignInfo',
                 linehl = '',
                 numhl = '',
             })
 
             vim.fn.sign_define('DapStopped', {
-                text = '👉',
+                text = '▶',
                 texthl = 'DiagnosticSignHint',
                 linehl = 'Visual', -- Highlights the current line
                 numhl = '',

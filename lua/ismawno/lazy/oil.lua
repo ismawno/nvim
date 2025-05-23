@@ -14,18 +14,25 @@ return {
     -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
     lazy = false,
     opts = {
+        keymaps = {
+            ['<leader>vs'] = 'actions.select_vsplit',
+            ['<leader>hs'] = 'actions.select_split',
+            ['<C-s>'] = false,
+            ['<C-h>'] = false,
+            ['<C-t>'] = false,
+        },
         use_default_keymaps = true,
         view_options = { show_hidden = true },
         git = { -- enable `git add` on new files
-            add = function(path)
+            add = function()
                 return in_git_repo()
             end,
             -- enable `git mv` on renames
-            mv = function(src, dest)
+            mv = function()
                 return in_git_repo()
             end,
             -- enable `git rm` on deletes
-            rm = function(path)
+            rm = function()
                 return in_git_repo()
             end,
         },
