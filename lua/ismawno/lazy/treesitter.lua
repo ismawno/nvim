@@ -10,6 +10,7 @@ return {
                     'cpp',
                     'bash',
                     'python',
+                    'cmake',
                     'lua',
                     'vim',
                     'vimdoc',

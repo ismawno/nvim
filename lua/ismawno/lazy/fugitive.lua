@@ -22,6 +22,8 @@ return {
                 utils.mapkey('n', '<leader>gc', ':G commit<CR>', { desc = 'Execute git commit', force = true })
                 utils.mapkey('n', '<leader>gp', ':G push<CR>', { desc = 'Execute git push', force = true })
                 utils.mapkey('n', '<leader>gP', ':G pull<CR>', { desc = 'Execute git pull', force = true })
+                utils.mapkey('n', '<leader>gt', ':G stash<CR>', { desc = 'Execute git stash', force = true })
+                utils.mapkey('n', '<leader>gT', ':G stash pop<CR>', { desc = 'Execute git stash pop', force = true })
 
                 -- local bufnr = vim.api.nvim_get_current_buf()
                 -- local opts = { buffer = bufnr, remap = false }

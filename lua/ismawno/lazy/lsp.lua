@@ -21,6 +21,7 @@ return {
                 c = { 'clang_format' },
                 cpp = { 'clang_format' },
                 bash = { 'shfmt' },
+                cmake = { 'cmake_format' },
             },
             formatters = { black = { prepend_args = { '--line-length', '119' } } },
         })
