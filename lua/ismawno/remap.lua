@@ -102,7 +102,7 @@ utils.mapkey('n', 'H', '<cmd>cprev<CR>zz', { desc = 'Go to previous quickfix ele
 utils.mapkey('n', 'L', '<cmd>cnext<CR>zz', { desc = 'Go to next quickfix element' })
 utils.mapkey(
     'n',
-    '<leader>r',
+    '<leader>R',
     [[:cdo %s///ge | update<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>]],
     { desc = 'Insert a global search and replace pattern' }
 )
@@ -128,7 +128,7 @@ utils.mapkey({ 'n', 'v' }, '<leader>y', [["+y]], { desc = 'Copy to system clipbo
 utils.mapkey('n', '<leader>Y', [["+Y]], { desc = 'Copy line to system clipboard' })
 utils.mapkey(
     'n',
-    '<leader>W',
+    '<leader>r',
     [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]],
     { desc = 'Create a replace template for the current word' }
 )
