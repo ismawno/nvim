@@ -56,9 +56,7 @@ utils.mapkey('n', '<C-u>', function()
 end, { desc = 'Go to prev file in explorer' })
 
 utils.mapkey('n', '<C-b>', ":put=''<CR>", { silent = true, desc = 'Insert a blank line below the cursor' })
-utils.mapkey('n', '<C-S-B>', ":put!=''<CR>", { silent = true, desc = 'Insert a blank line above the cursor' })
-utils.mapkey({ 'n', 'v', 'o' }, '0', '^', { noremap = true, desc = 'Go to the first character of the line' })
-utils.mapkey({ 'n', 'v', 'o' }, 'M', '%', { noremap = true, desc = 'Go to matching opener/closer' })
+-- utils.mapkey('n', '<C-B>', ":put!=''<CR>", { silent = true, desc = 'Insert a blank line above the cursor' })
 
 local function termcodes(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
@@ -112,8 +110,15 @@ utils.mapkey('n', 'J', 'mzJ`z', { desc = 'Bring line below cursor to the end of 
 utils.mapkey({ 'n', 'v' }, 'qj', '8j', { desc = 'Move cursor 8 lines down' })
 utils.mapkey({ 'n', 'v' }, 'qk', '8k', { desc = 'Move cursor 8 lines up' })
 utils.mapkey({ 'n', 'v', 'o' }, '¡', '$', { noremap = true, force = true, desc = 'Jump to the end of line' })
+utils.mapkey({ 'n', 'v', 'o' }, '¿', '0', { noremap = true, force = true, desc = 'Jump to the end of line' })
+
+utils.mapkey({ 'n', 'v', 'o' }, '0', '^', { noremap = true, desc = 'Go to the first character of the line' })
+utils.mapkey({ 'n', 'v', 'o' }, 'M', '%', { noremap = true, desc = 'Go to matching opener/closer' })
 
 custom_motions['¡'] = '$'
+custom_motions['¿'] = '0'
+custom_motions['0'] = '^'
+custom_motions['M'] = '%'
 
 utils.mapkey('n', '<leader>pr', function()
     local root = utils.find_root()
@@ -134,8 +139,8 @@ utils.mapkey(
 )
 utils.mapkey('n', '<leader>w', [[/<C-r><C-w>]], { desc = 'Create a find template for the current word' })
 
-utils.mapkey('n', '<leader>ip', 'i<C-R>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
-utils.mapkey('i', '<C-i>', '<C-R>"', { desc = 'Copy into the line, even if its a whole line' })
+utils.mapkey('n', '<leader>ip', 'i<C-r>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
+utils.mapkey('i', '<C-p>', '<C-r>"', { noremap = true, desc = 'Copy into the line, even if its a whole line' })
 
 local last_terminal = nil
 local function open_horizontal_terminal()
@@ -168,12 +173,16 @@ local function get_a_terminal()
     return last_terminal
 end
 
-local function setup_cmake(btype)
+local function setup_cmake(btype, fetch)
     local trm = get_a_terminal()
 
     local path = trm.dir .. '/setup/build.py'
     if vim.fn.filereadable(path) == 1 then
-        trm:send('python ' .. path .. ' -v --build-type ' .. btype)
+        if fetch then
+            trm:send('python ' .. path .. ' -v --build-type ' .. btype .. ' --fetch-dependencies ' .. fetch)
+        else
+            trm:send('python ' .. path .. ' -v --build-type ' .. btype)
+        end
     else
         vim.notify(string.format('Build script not found at: %s', path), vim.log.levels.WARN)
     end
@@ -188,6 +197,16 @@ end)
 utils.mapkey('n', '<leader>pbdi', function()
     setup_cmake('Dist')
 end)
+utils.mapkey('n', '<leader>pbrde', function()
+    setup_cmake('Debug', vim.fn.input('Dependencies to remove: '))
+end)
+utils.mapkey('n', '<leader>pbrre', function()
+    setup_cmake('Release', vim.fn.input('Dependencies to remove: '))
+end)
+utils.mapkey('n', '<leader>pbrdi', function()
+    setup_cmake('Dist', vim.fn.input('Dependencies to remove: '))
+end)
+
 utils.mapkey('n', '<leader>pc', function()
     local trm = get_a_terminal()
     local path = trm.dir .. '/build'
