@@ -23,7 +23,7 @@ autocmd('FileType', {
     end,
 })
 autocmd('FileType', {
-    pattern = 'markdown',
+    pattern = { 'markdown', 'text' },
     callback = function()
         vim.opt_local.wrap = true
         vim.opt_local.linebreak = true -- don't break in the middle of words

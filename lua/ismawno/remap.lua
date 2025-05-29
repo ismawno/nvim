@@ -289,6 +289,10 @@ utils.mapkey('n', '<leader>pd', function()
         })
     end
 end)
+utils.mapkey('n', '<leader>ppf', function()
+    local trm = get_a_terminal()
+    trm:send('/Users/ismael/tracy/profiler/build/tracy-profiler')
+end)
 
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
 
