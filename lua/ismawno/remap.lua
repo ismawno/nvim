@@ -47,13 +47,6 @@ local function navigate_file(dir)
         next_entry = files[idx]
     end
 end
-utils.mapkey('n', '<C-m>', function()
-    navigate_file('next')
-end, { desc = 'Go to next file in explorer' })
-
-utils.mapkey('n', '<C-u>', function()
-    navigate_file('prev')
-end, { desc = 'Go to prev file in explorer' })
 
 utils.mapkey('n', '<C-b>', ":put=''<CR>", { silent = true, desc = 'Insert a blank line below the cursor' })
 -- utils.mapkey('n', '<C-B>', ":put!=''<CR>", { silent = true, desc = 'Insert a blank line above the cursor' })
@@ -94,8 +87,19 @@ utils.mapkey('n', '<C-l>', '<C-w>l', { silent = true, desc = 'Move to right wind
 utils.mapkey('v', '<C-j>', ":m '>+1<CR>gv=gv", { silent = true, desc = 'Move current line down' })
 utils.mapkey('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move current line up' })
 
+utils.mapkey('n', '<leader>ws', '<C-w><C-s>', { noremap = true, desc = 'Split current buffer' })
+
+utils.mapkey('n', '<leader>fn', function()
+    navigate_file('next')
+end, { desc = 'Go to next file in explorer' })
+
+utils.mapkey('n', '<leader>fp', function()
+    navigate_file('prev')
+end, { desc = 'Go to prev file in explorer' })
+
 -- vim.keymap.set('n', '<C-h>', '<cmd>cnext<CR>zz')
 -- vim.keymap.set('n', '<C-l>', '<cmd>cprev<CR>zz')
+
 utils.mapkey('n', 'H', '<cmd>cprev<CR>zz', { desc = 'Go to previous quickfix element' })
 utils.mapkey('n', 'L', '<cmd>cnext<CR>zz', { desc = 'Go to next quickfix element' })
 utils.mapkey(
@@ -105,12 +109,10 @@ utils.mapkey(
     { desc = 'Insert a global search and replace pattern' }
 )
 
-utils.mapkey('n', 'J', 'mzJ`z', { desc = 'Bring line below cursor to the end of the current line' })
-
-utils.mapkey({ 'n', 'v' }, '1j', '8j', { desc = 'Move cursor 8 lines down' })
-utils.mapkey({ 'n', 'v' }, '1k', '8k', { desc = 'Move cursor 8 lines up' })
+utils.mapkey({ 'n', 'v' }, 'J', '8j', { desc = 'Move cursor 8 lines down' })
+utils.mapkey({ 'n', 'v' }, 'K', '8k', { desc = 'Move cursor 8 lines up' })
 utils.mapkey({ 'n', 'v', 'o' }, '¡', '$', { noremap = true, force = true, desc = 'Jump to the end of line' })
-utils.mapkey({ 'n', 'v', 'o' }, '¿', '0', { noremap = true, force = true, desc = 'Jump to the end of line' })
+utils.mapkey({ 'n', 'v', 'o' }, '¿', '0', { noremap = true, force = true, desc = 'Jump to the start of line' })
 
 utils.mapkey({ 'n', 'v', 'o' }, '0', '^', { noremap = true, desc = 'Go to the first character of the line' })
 utils.mapkey({ 'n', 'v', 'o' }, 'M', '%', { noremap = true, desc = 'Go to matching opener/closer' })
@@ -140,7 +142,7 @@ utils.mapkey(
 utils.mapkey('n', '<leader>w', [[/<C-r><C-w>]], { desc = 'Create a find template for the current word' })
 
 utils.mapkey('n', '<leader>ip', 'i<C-r>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
-utils.mapkey('i', '<C-p>', '<C-r>"', { noremap = true, desc = 'Copy into the line, even if its a whole line' })
+utils.mapkey('i', '<C-i>', '<C-r>"', { noremap = true, desc = 'Copy into the line, even if its a whole line' })
 
 local last_terminal = nil
 local function open_horizontal_terminal()
@@ -230,28 +232,35 @@ local function load_exec_table()
     execs:close()
     return vim.fn.json_decode(content)
 end
-local function load_executable()
-    if last_exec then
+local function load_executable(index)
+    if last_exec and not index then
         return last_exec
     end
+    index = index or 0
+
     local execs = load_exec_table()
     if not execs then
         return nil
     end
 
     local root = utils.find_root()
-    last_exec = execs[root]
+    last_exec = execs[root][index]
     return last_exec
 end
 
-local function save_executable()
+local function save_executable(index)
     local root = utils.find_root()
     local path = vim.fn.input('Path to executable: ', root, 'file')
     if not path or vim.fn.filereadable(path) == 0 then
         return nil
     end
+    index = index or 0
+
     local execs = load_exec_table() or {}
-    execs[root] = path
+    local ntable = execs[root] or {}
+    ntable[index] = path
+    execs[root] = ntable
+
     last_exec = path
 
     local epath = vim.fn.stdpath('data') .. '/executables.json'
@@ -267,28 +276,49 @@ local function save_executable()
     return path
 end
 
-utils.mapkey('n', '<leader>pX', save_executable, { desc = 'Save an executable shortcut for this workspace' })
-utils.mapkey('n', '<leader>px', function()
-    local exec = load_executable() or save_executable()
-    if exec then
-        local trm = get_a_terminal()
-        trm:send(exec)
-    end
-end)
-utils.mapkey('n', '<leader>pd', function()
-    local exec = load_executable() or save_executable()
-    if exec then
-        local root = utils.find_root()
-        require('dap').run({
-            type = 'lldb',
-            request = 'launch',
-            name = 'Custom launch',
-            program = exec,
-            justMyCode = false,
-            cwd = root,
-        })
-    end
-end)
+local function register_save_exec(index)
+    local lhs = index and termcodes('<leader>p' .. index .. 'X') or termcodes('<leader>pX')
+    utils.mapkey('n', lhs, function()
+        save_executable(index)
+    end, { desc = 'Save an executable shortcut for this workspace in slot ' .. (index or 0) })
+end
+local function register_run_exec(index)
+    local lhs = index and termcodes('<leader>p' .. index .. 'x') or termcodes('<leader>px')
+    utils.mapkey('n', lhs, function()
+        local exec = load_executable(index) or save_executable(index)
+        if exec then
+            local trm = get_a_terminal()
+            trm:send(exec)
+        end
+    end, { desc = 'Run an executable from shortcut slot ' .. (index or 0) })
+end
+local function register_debug_exec(index)
+    local lhs = index and termcodes('<leader>p' .. index .. 'd') or termcodes('<leader>pd')
+    utils.mapkey('n', lhs, function()
+        local exec = load_executable(index) or save_executable(index)
+        if exec then
+            local root = utils.find_root()
+            require('dap').run({
+                type = 'lldb',
+                request = 'launch',
+                name = 'Custom launch',
+                program = exec,
+                justMyCode = false,
+                cwd = root,
+            })
+        end
+    end)
+end
+
+register_save_exec()
+register_run_exec()
+register_debug_exec()
+for i = 0, 9 do
+    register_save_exec(i)
+    register_run_exec(i)
+    register_debug_exec(i)
+end
+
 utils.mapkey(
     'n',
     '<leader>ppf',
@@ -296,7 +326,7 @@ utils.mapkey(
     { silent = true, desc = 'Execute tracy proxiler' }
 )
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
-utils.mapkey('n', '<C-i>', '<C-a>', { noremap = true, desc = 'Increase number' })
+utils.mapkey('n', '<C-s>', '<C-a>', { noremap = true, desc = 'Increase number' })
 
 local function toggle_header_source()
     local path = vim.api.nvim_buf_get_name(0)
