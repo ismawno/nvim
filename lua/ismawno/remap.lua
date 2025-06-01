@@ -107,8 +107,8 @@ utils.mapkey(
 
 utils.mapkey('n', 'J', 'mzJ`z', { desc = 'Bring line below cursor to the end of the current line' })
 
-utils.mapkey({ 'n', 'v' }, 'qj', '8j', { desc = 'Move cursor 8 lines down' })
-utils.mapkey({ 'n', 'v' }, 'qk', '8k', { desc = 'Move cursor 8 lines up' })
+utils.mapkey({ 'n', 'v' }, '1j', '8j', { desc = 'Move cursor 8 lines down' })
+utils.mapkey({ 'n', 'v' }, '1k', '8k', { desc = 'Move cursor 8 lines up' })
 utils.mapkey({ 'n', 'v', 'o' }, '¡', '$', { noremap = true, force = true, desc = 'Jump to the end of line' })
 utils.mapkey({ 'n', 'v', 'o' }, '¿', '0', { noremap = true, force = true, desc = 'Jump to the end of line' })
 
@@ -289,12 +289,14 @@ utils.mapkey('n', '<leader>pd', function()
         })
     end
 end)
-utils.mapkey('n', '<leader>ppf', function()
-    local trm = get_a_terminal()
-    trm:send('/Users/ismael/tracy/profiler/build/tracy-profiler')
-end)
-
+utils.mapkey(
+    'n',
+    '<leader>ppf',
+    ':!/Users/ismael/tracy/profiler/build/tracy-profiler > /dev/null 2>&1 &<CR>',
+    { silent = true, desc = 'Execute tracy proxiler' }
+)
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
+utils.mapkey('n', '<C-i>', '<C-a>', { noremap = true, desc = 'Increase number' })
 
 local function toggle_header_source()
     local path = vim.api.nvim_buf_get_name(0)
