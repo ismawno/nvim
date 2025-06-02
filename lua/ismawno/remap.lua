@@ -237,6 +237,7 @@ local function load_executable(index)
         return last_exec
     end
     index = index or 0
+    index = tostring(index)
 
     local execs = load_exec_table()
     if not execs then
@@ -255,6 +256,7 @@ local function save_executable(index)
         return nil
     end
     index = index or 0
+    index = tostring(index)
 
     local execs = load_exec_table() or {}
     local ntable = execs[root] or {}
