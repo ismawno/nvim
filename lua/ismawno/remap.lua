@@ -61,10 +61,45 @@ local openers = { '(', '{', '[', '<', "'", '"' }
 local custom_motions = {}
 -- local user_operators = {}
 
+local function operate_argument(op)
+    local function feed(str)
+        local term = vim.api.nvim_replace_termcodes(str, true, false, true)
+        vim.api.nvim_feedkeys(term, 'n', false)
+    end
+
+    local row, _ = unpack(vim.api.nvim_win_get_cursor(0)) -- col0 is 0-based
+    local line = vim.api.nvim_get_current_line()
+
+    local prev_pos = vim.fn.searchpos('[,(]', 'bnW')
+    local prev_row, prev_col = prev_pos[1], prev_pos[2]
+
+    if prev_row ~= row then
+        return
+    end
+    local matched_char = line:sub(prev_col, prev_col) -- either '(' or ','
+
+    if op == 'd' then
+        if matched_char == ',' then
+            feed('?[,(]<CR>l' .. op .. '/[,)]<CR>hx')
+        else
+            feed('?[,(]<CR>l' .. op .. '/[,)]<CR>xx')
+        end
+    else
+        if matched_char == ',' then
+            feed('?[,(]<CR>ll' .. op .. '/[,)]<CR>')
+        else
+            feed('?[,(]<CR>l' .. op .. '/[,)]<CR>')
+        end
+    end
+end
+
 for _, op in ipairs(operators) do
     local lhs = termcodes(op .. 'p')
-    local rhs = termcodes('?[,(]<CR>ll' .. op .. '/[,)]<CR>')
-    utils.mapkey('n', lhs, rhs, {
+    -- local rhs = op ~= 'd' and termcodes('?[,(]<CR>l' .. op .. '/[,)]<CR>')
+    --     or termcodes('?[,(]<CR>l' .. op .. '/[,)]<CR>hx')
+    utils.mapkey('n', lhs, function()
+        operate_argument(op)
+    end, {
         noremap = true,
         silent = true,
         desc = 'Apply ' .. op .. ' to current parameter',
@@ -72,7 +107,7 @@ for _, op in ipairs(operators) do
     for _, loc in ipairs(locations) do
         for _, opn in ipairs(openers) do
             lhs = termcodes(op .. 'm' .. loc .. opn)
-            rhs = termcodes('/' .. opn .. '<CR>' .. op .. loc .. opn)
+            local rhs = termcodes('/' .. opn .. '<CR>' .. op .. loc .. opn)
             utils.mapkey('n', lhs, rhs, {
                 noremap = true,
                 silent = true,
@@ -148,8 +183,8 @@ utils.mapkey(
 )
 utils.mapkey('n', '<leader>w', [[/<C-r><C-w>]], { desc = 'Create a find template for the current word' })
 
-utils.mapkey('n', '<leader>ip', 'i<C-r>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
-utils.mapkey('i', '<C-i>', '<C-r>"', { noremap = true, desc = 'Copy into the line, even if its a whole line' })
+utils.mapkey('n', '<leader>up', 'i<C-r>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
+utils.mapkey('i', '<C-u>', '<C-r>"', { noremap = true, desc = 'Copy into the line, even if its a whole line' })
 
 local last_terminal = nil
 local function open_horizontal_terminal()
