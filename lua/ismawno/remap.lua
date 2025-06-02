@@ -70,7 +70,7 @@ local function operate_argument(op)
     local row, _ = unpack(vim.api.nvim_win_get_cursor(0)) -- col0 is 0-based
     local line = vim.api.nvim_get_current_line()
 
-    local prev_pos = vim.fn.searchpos('[,(]', 'bnW')
+    local prev_pos = vim.fn.searchpos('[,([{]', 'bnW')
     local prev_row, prev_col = prev_pos[1], prev_pos[2]
 
     if prev_row ~= row then
@@ -80,15 +80,15 @@ local function operate_argument(op)
 
     if op == 'd' then
         if matched_char == ',' then
-            feed('?[,(]<CR>l' .. op .. '/[,)]<CR>hx')
+            feed('?[,([{]<CR>l' .. op .. '/[,)\\]}]<CR>hx')
         else
-            feed('?[,(]<CR>l' .. op .. '/[,)]<CR>xx')
+            feed('?[,([{]<CR>l' .. op .. '/[,)\\]}]<CR>xx')
         end
     else
         if matched_char == ',' then
-            feed('?[,(]<CR>ll' .. op .. '/[,)]<CR>')
+            feed('?[,([{]<CR>ll' .. op .. '/[,)\\]}]<CR>')
         else
-            feed('?[,(]<CR>l' .. op .. '/[,)]<CR>')
+            feed('?[,([{]<CR>l' .. op .. '/[,)\\]}]<CR>')
         end
     end
 end
