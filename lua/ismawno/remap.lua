@@ -62,10 +62,17 @@ local custom_motions = {}
 -- local user_operators = {}
 
 for _, op in ipairs(operators) do
+    local lhs = termcodes(op .. 'p')
+    local rhs = termcodes('?[,(]<CR>ll' .. op .. '/[,)]<CR>')
+    utils.mapkey('n', lhs, rhs, {
+        noremap = true,
+        silent = true,
+        desc = 'Apply ' .. op .. ' to current parameter',
+    })
     for _, loc in ipairs(locations) do
         for _, opn in ipairs(openers) do
-            local lhs = termcodes(op .. 'm' .. loc .. opn)
-            local rhs = termcodes('/' .. opn .. '<CR>' .. op .. loc .. opn)
+            lhs = termcodes(op .. 'm' .. loc .. opn)
+            rhs = termcodes('/' .. opn .. '<CR>' .. op .. loc .. opn)
             utils.mapkey('n', lhs, rhs, {
                 noremap = true,
                 silent = true,
