@@ -55,41 +55,100 @@ local function termcodes(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
-local operators = { 'c', 'd', 'y' }
+local operators = { 'c', 'd', 'y', 'v' }
 local locations = { 'i', 'a' }
 local openers = { '(', '{', '[', '<', "'", '"' }
 local custom_motions = {}
 -- local user_operators = {}
 
 local function operate_argument(op)
-    local function feed(str)
-        local term = vim.api.nvim_replace_termcodes(str, true, false, true)
-        vim.api.nvim_feedkeys(term, 'n', false)
-    end
-
-    local row, _ = unpack(vim.api.nvim_win_get_cursor(0)) -- col0 is 0-based
     local line = vim.api.nvim_get_current_line()
+    local _, cursor = unpack(vim.api.nvim_win_get_cursor(0))
+    cursor = cursor + 1 -- Make it 1-based for Lua indexing
+    local chars = vim.fn.split(line, '\\zs')
 
-    local prev_pos = vim.fn.searchpos('[,([{]', 'bnW')
-    local prev_row, prev_col = prev_pos[1], prev_pos[2]
+    local opn = { ['{'] = true, ['('] = true, ['['] = true }
+    local cls = { ['}'] = true, [')'] = true, [']'] = true }
 
-    if prev_row ~= row then
+    local nests = 0
+    local fwd_matched = nil
+    local fwd_index = nil
+    for i = cursor, #chars do
+        local c = chars[i]
+        if (c == ',' or cls[c]) and nests == 0 then
+            fwd_matched = c
+            fwd_index = i - 1
+            break
+        end
+        if opn[c] then
+            nests = nests + 1
+        elseif cls[c] then
+            nests = nests - 1
+        end
+    end
+    if not fwd_matched or not fwd_index then
         return
     end
-    local matched_char = line:sub(prev_col, prev_col) -- either '(' or ','
+
+    nests = 0
+    local bkd_matched = nil
+    local bkd_index = nil
+    for i = cursor, 1, -1 do
+        local c = chars[i]
+        if (c == ',' or opn[c]) and nests == 0 then
+            bkd_matched = c
+            bkd_index = i + 1
+            break
+        end
+        if cls[c] then
+            nests = nests + 1
+        elseif opn[c] then
+            nests = nests - 1
+        end
+    end
+    if not bkd_matched or not bkd_index then
+        return
+    end
+    local function get_partitions()
+        local before = line:sub(1, bkd_index - 1)
+        local selected = line:sub(bkd_index, fwd_index)
+        local after = line:sub(fwd_index + 1)
+        return before, selected, after
+    end
+
+    if op ~= 'd' and chars[bkd_index] == ' ' then
+        bkd_index = bkd_index + 1
+    end
 
     if op == 'd' then
-        if matched_char == ',' then
-            feed('?[,([{]<CR>l' .. op .. '/[,)\\]}]<CR>hx')
-        else
-            feed('?[,([{]<CR>l' .. op .. '/[,)\\]}]<CR>xx')
+        if bkd_matched == ',' then
+            bkd_index = bkd_index - 1
         end
+        if opn[bkd_matched] and not cls[fwd_matched] then
+            fwd_index = fwd_index + 1
+            if chars[fwd_index + 1] == ' ' then
+                fwd_index = fwd_index + 1
+            end
+        end
+
+        local before, _, after = get_partitions()
+        vim.api.nvim_set_current_line(before .. after)
+        vim.api.nvim_win_set_cursor(0, { vim.api.nvim_win_get_cursor(0)[1], bkd_index - 1 })
+    elseif op == 'c' then
+        local before, _, after = get_partitions()
+        vim.api.nvim_set_current_line(before .. after)
+        vim.api.nvim_win_set_cursor(0, { vim.api.nvim_win_get_cursor(0)[1], bkd_index - 1 })
+        vim.cmd('startinsert')
     else
-        if matched_char == ',' then
-            feed('?[,([{]<CR>ll' .. op .. '/[,)\\]}]<CR>')
-        else
-            feed('?[,([{]<CR>l' .. op .. '/[,)\\]}]<CR>')
+        vim.api.nvim_win_set_cursor(0, { vim.api.nvim_win_get_cursor(0)[1], bkd_index - 1 })
+
+        local move_right = fwd_index - bkd_index
+        local keys = 'v' .. string.rep('l', move_right)
+        if op == 'y' then
+            keys = keys .. 'y'
         end
+
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'n', true)
     end
 end
 
