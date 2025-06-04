@@ -2,6 +2,11 @@ return {
     {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
+    },
+
+    {
+        'nvim-treesitter/nvim-treesitter-textobjects',
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
         config = function()
             require('nvim-treesitter.configs').setup({
                 -- A list of parser names, or "all"
@@ -18,6 +23,8 @@ return {
                     'markdown',
                     'markdown_inline',
                 },
+                modules = {}, -- no extra modules to initialize
+                ignore_install = {},
                 -- Install parsers synchronously (only applied to `ensure_installed`)
                 sync_install = false,
 
@@ -56,13 +63,86 @@ return {
                     -- Instead of true it can also be a list of languages
                     additional_vim_regex_highlighting = { 'markdown' },
                 },
+                textobjects = {
+                    select = {
+                        enable = true,
+                        lookahead = true,
+                        keymaps = {
+                            ['af'] = '@function.outer',
+                            ['if'] = '@function.inner',
+                            ['ac'] = '@class.outer',
+                            ['ic'] = '@class.inner',
+                            ['as'] = '@scope.outer',
+                            ['is'] = '@scope.inner',
+                            ['ab'] = '@block.outer',
+                            ['ib'] = '@block.inner',
+                            ['aa'] = '@parameter.outer',
+                            ['ia'] = '@parameter.inner',
+                            ['ad'] = '@conditional.outer',
+                            ['id'] = '@conditional.inner',
+                            ['al'] = '@loop.outer',
+                            ['il'] = '@loop.inner',
+                        },
+                        -- selection_modes = 'v',
+                        include_surrounding_whitespace = true,
+                    },
+                    swap = {
+                        enable = true,
+                        swap_next = {
+                            ['<leader>L'] = '@parameter.inner',
+                        },
+                        swap_previous = {
+                            ['<leader>H'] = '@parameter.inner',
+                        },
+                    },
+                    move = {
+                        enable = true,
+                        set_jumps = true,
+                        goto_next_start = {
+                            ['<leader>nf'] = '@function.outer',
+                            ['<leader>nc'] = '@class.outer',
+                            ['<leader>ns'] = '@scope.outer',
+                            ['<leader>nb'] = '@block.outer',
+                            ['<leader>na'] = '@parameter.outer',
+                            ['<leader>nd'] = '@conditional.outer',
+                            ['<leader>nl'] = '@loop.outer',
+                        },
+                        goto_next_end = {
+                            ['<leader>nF'] = '@function.outer',
+                            ['<leader>nC'] = '@class.outer',
+                            ['<leader>nS'] = '@scope.outer',
+                            ['<leader>nB'] = '@block.outer',
+                            ['<leader>nA'] = '@parameter.outer',
+                            ['<leader>nD'] = '@conditional.outer',
+                            ['<leader>nL'] = '@loop.outer',
+                        },
+                        goto_previous_start = {
+                            ['<leader>Nf'] = '@function.outer',
+                            ['<leader>Nc'] = '@class.outer',
+                            ['<leader>Ns'] = '@scope.outer',
+                            ['<leader>Nb'] = '@block.outer',
+                            ['<leader>Na'] = '@parameter.outer',
+                            ['<leader>Nd'] = '@conditional.outer',
+                            ['<leader>Nl'] = '@loop.outer',
+                        },
+                        goto_previous_end = {
+                            ['<leader>NF'] = '@function.outer',
+                            ['<leader>NC'] = '@class.outer',
+                            ['<leader>NS'] = '@scope.outer',
+                            ['<leader>NB'] = '@block.outer',
+                            ['<leader>NA'] = '@parameter.outer',
+                            ['<leader>ND'] = '@conditional.outer',
+                            ['<leader>NL'] = '@loop.outer',
+                        },
+                    },
+                },
             })
         end,
     },
 
     {
         'nvim-treesitter/nvim-treesitter-context',
-        after = 'nvim-treesitter',
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
         config = function()
             require 'treesitter-context'.setup {
                 enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
