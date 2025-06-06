@@ -55,6 +55,7 @@ utils.mapkey(
     { desc = 'Create a replace template for the current word' }
 )
 utils.mapkey('n', '<leader>w', [[/<C-r><C-w>]], { desc = 'Create a find template for the current word' })
+utils.mapkey('n', '<leader>W', [[?<C-r><C-w>]], { desc = 'Create a find template for the current word' })
 -- utils.mapkey('n', '<leader>up', 'i<C-r>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
 utils.mapkey('i', '<C-u>', '<C-r>"', { noremap = true, desc = 'Copy into the line, even if its a whole line' })
 

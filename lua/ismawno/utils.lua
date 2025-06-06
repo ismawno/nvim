@@ -401,7 +401,6 @@ function M.insert_parameter(mode, direction, filter)
             end
         end
     end
-    print(pos[1], pos[2])
 
     if chars[pos[2] + 1] == closer then
         feed('ci' .. opener)
@@ -417,6 +416,7 @@ function M.insert_parameter(mode, direction, filter)
         local nests = 0
         local match = nil
         pos = nil
+        chars = vim.fn.split(lines[crow], '\\zs')
         if chars[ccol] == ',' then
             ccol = ccol - 1
         end
@@ -458,6 +458,7 @@ function M.insert_parameter(mode, direction, filter)
     elseif mode == 'a' then
         local nests = 0
         pos = nil
+        chars = vim.fn.split(lines[crow], '\\zs')
         if chars[ccol] == ',' then
             ccol = ccol - 1
         end
