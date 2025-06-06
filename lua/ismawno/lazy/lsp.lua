@@ -131,16 +131,24 @@ return {
             }),
         })
 
-        vim.diagnostic.config({
-            -- update_in_insert = true,
-            float = {
-                focusable = false,
-                style = 'minimal',
-                border = 'rounded',
-                source = 'always',
-                header = '',
-                prefix = '',
-            },
-        })
+        local vt = true
+        local function set_diag_cfg()
+            vim.diagnostic.config({
+                -- update_in_insert = true,
+                virtual_lines = not vt,
+                virtual_text = vt,
+                float = {
+                    focusable = false,
+                    style = 'minimal',
+                    border = 'rounded',
+                    source = 'always',
+                    header = '',
+                    prefix = '',
+                },
+            })
+            vt = not vt
+        end
+        set_diag_cfg()
+        require('ismawno.utils').mapkey('n', '<leader>td', set_diag_cfg)
     end,
 }
