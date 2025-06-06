@@ -336,6 +336,18 @@ local function get_delimiter(direction, filter)
     return delimiter, minpos
 end
 
+function M.navigate_delimiter(mode)
+    mode = mode or 'n'
+    local c = vim.fn.getline('.'):sub(vim.fn.col('.'), vim.fn.col('.'))
+    if c == '<' then
+        vim.api.nvim_feedkeys('f>', mode, true)
+    elseif c == '>' then
+        vim.api.nvim_feedkeys('F<', mode, true)
+    else
+        vim.api.nvim_feedkeys('%', mode, true)
+    end
+end
+
 function M.insert_parameter(mode, direction, filter)
     local opener, pos = get_delimiter(direction, filter)
     local crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
@@ -376,18 +388,20 @@ function M.insert_parameter(mode, direction, filter)
     if outside or mode == 'I' or mode == 'A' then
         set_cursor(pos)
         if direction == 'backwards' then
-            feed('%', 'x')
+            M.navigate_delimiter('x')
             crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
             ccol = ccol + 1
             pos[1] = crow
             pos[2] = ccol
             if mode == 'i' or mode == 'a' then
-                feed('%h', 'x')
+                M.navigate_delimiter('x')
+                feed('h', 'x')
                 crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
                 ccol = ccol + 1
             end
         end
     end
+    print(pos[1], pos[2])
 
     if chars[pos[2] + 1] == closer then
         feed('ci' .. opener)
@@ -397,10 +411,10 @@ function M.insert_parameter(mode, direction, filter)
     if mode == 'I' then
         feed('a, <Esc>hi')
     elseif mode == 'A' then
-        feed('%i, ')
+        M.navigate_delimiter()
+        feed('i, ')
     elseif mode == 'i' then
         local nests = 0
-        local closers = { ['}'] = '{', [')'] = '(', [']'] = '[', ['>'] = '<' }
         local match = nil
         pos = nil
         if chars[ccol] == ',' then
@@ -417,9 +431,9 @@ function M.insert_parameter(mode, direction, filter)
                     pos = { i, j }
                     break
                 end
-                if closers[c] then
+                if c == closer then
                     nests = nests + 1
-                elseif openers[c] then
+                elseif c == opener then
                     if nests == 0 then
                         match = c
                         pos = { i, j }
@@ -443,7 +457,6 @@ function M.insert_parameter(mode, direction, filter)
         end
     elseif mode == 'a' then
         local nests = 0
-        local closers = { ['}'] = '{', [')'] = '(', [']'] = '[', ['>'] = '<' }
         pos = nil
         if chars[ccol] == ',' then
             ccol = ccol - 1
@@ -458,9 +471,9 @@ function M.insert_parameter(mode, direction, filter)
                     pos = { i, j }
                     break
                 end
-                if openers[c] then
+                if c == opener then
                     nests = nests + 1
-                elseif closers[c] then
+                elseif c == closer then
                     if nests == 0 then
                         pos = { i, j }
                         break
