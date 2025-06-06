@@ -84,7 +84,12 @@ return {
                             ['il'] = '@loop.inner',
                         },
                         -- selection_modes = 'v',
-                        include_surrounding_whitespace = true,
+                        include_surrounding_whitespace = function(queries)
+                            if queries['query_string'] == '@parameter.inner' then
+                                return false
+                            end
+                            return true
+                        end,
                     },
                     swap = {
                         enable = true,

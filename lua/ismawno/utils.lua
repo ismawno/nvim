@@ -107,8 +107,12 @@ end
 function M.foreach_operator(func)
     foreach({ 'c', 'd', 'y', 'v' }, func)
 end
-function M.foreach_location(func)
-    foreach({ 'i', 'a' }, func)
+function M.foreach_location(func, also_upper)
+    if also_upper then
+        foreach({ 'i', 'a', 'I', 'A' }, func)
+    else
+        foreach({ 'i', 'a' }, func)
+    end
 end
 function M.foreach_opener(func)
     foreach({ '(', '{', '[', '<', "'", '"' }, func)
@@ -279,111 +283,210 @@ function M.toggle_header_source()
     end
 end
 
-local function match_delimiters(chars, opn, cls)
-    local _, cursor = unpack(vim.api.nvim_win_get_cursor(0))
-    cursor = cursor + 1 -- Make it 1-based for Lua indexing
-
-    local nests = 0
-    local fwd_matched = nil
-    local fwd_index = nil
-    for i = cursor, #chars do
-        local c = chars[i]
-        if (c == ',' or cls[c]) and nests == 0 then
-            fwd_matched = c
-            fwd_index = i - 1
-            break
-        end
-        if opn[c] then
-            nests = nests + 1
-        elseif cls[c] then
-            nests = nests - 1
-        end
-    end
-    if not fwd_matched or not fwd_index then
-        return nil, nil, nil, nil
+local function get_delimiter(direction, filter)
+    local delimiters = { ['{'] = '}', ['('] = ')', ['['] = ']', ['<'] = '>' }
+    if filter then
+        delimiters = { [filter] = delimiters[filter] }
     end
 
-    nests = 0
-    local bkd_matched = nil
-    local bkd_index = nil
-    for i = cursor, 1, -1 do
-        local c = chars[i]
-        if (c == ',' or opn[c]) and nests == 0 then
-            bkd_matched = c
-            bkd_index = i + 1
-            break
-        end
-        if cls[c] then
-            nests = nests + 1
-        elseif opn[c] then
-            nests = nests - 1
+    local delimiter = nil
+    local minpos = nil
+    for opn, cls in pairs(delimiters) do
+        if direction == 'backwards' then
+            local pos = vim.fn.searchpairpos(cls, '', opn, 'bncW')
+            if
+                (pos[1] > 0 or pos[2] > 0)
+                and (not minpos or (pos[1] > minpos[1] or (pos[1] == minpos[1] and pos[2] > minpos[2])))
+            then
+                minpos = pos
+                delimiter = opn
+            end
+        elseif direction == 'forwards' then
+            local pos = vim.fn.searchpairpos(cls, '', opn, 'ncW')
+            if
+                (pos[1] > 0 or pos[2] > 0)
+                and (not minpos or (pos[1] < minpos[1] or (pos[1] == minpos[1] and pos[2] < minpos[2])))
+            then
+                minpos = pos
+                delimiter = opn
+            end
+        else
+            local opnn = opn
+            local clss = cls
+            if opn == '[' then
+                opnn = '\\['
+                clss = '\\]'
+            end
+            local pos = vim.fn.searchpairpos(opnn, '', clss, 'bncW')
+            if
+                (pos[1] > 0 or pos[2] > 0)
+                and (not minpos or (pos[1] > minpos[1] or (pos[1] == minpos[1] and pos[2] > minpos[2])))
+            then
+                minpos = pos
+                delimiter = opn
+            end
         end
     end
-    if not bkd_matched or not bkd_index then
-        return nil, nil, nil, nil
+    if not minpos then
+        if direction == 'center' then
+            return get_delimiter('forwards')
+        end
+        return nil, nil
     end
-    return fwd_matched, fwd_index, bkd_matched, bkd_index
+    return delimiter, minpos
 end
 
-local function get_line_partitions(line, idx1, idx2)
-    local before = line:sub(1, idx1 - 1)
-    local selected = line:sub(idx1, idx2)
-    local after = line:sub(idx2 + 1)
-    return before, selected, after
-end
+function M.insert_parameter(mode, direction, filter)
+    local opener, pos = get_delimiter(direction, filter)
+    local crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
+    ccol = ccol + 1
 
-local function set_cursor_to_col(col)
-    vim.api.nvim_win_set_cursor(0, { vim.api.nvim_win_get_cursor(0)[1], col })
-end
-
-function M.insert_argument(op) end
-
-function M.operate_argument(op)
-    local opn = { ['{'] = true, ['('] = true, ['['] = true }
-    local cls = { ['}'] = true, [')'] = true, [']'] = true }
-
-    local line = vim.api.nvim_get_current_line()
-    local chars = vim.fn.split(line, '\\zs')
-
-    local fwd_matched, fwd_index, bkd_matched, bkd_index = match_delimiters(chars, opn, cls)
-    if not fwd_matched or not fwd_index or not bkd_matched or not bkd_index then
+    if not opener or not pos then
         return
     end
 
-    if op ~= 'd' and chars[bkd_index] == ' ' then
-        bkd_index = bkd_index + 1
+    local outside = false
+    if direction == 'backwards' then
+        if pos[1] < crow or (pos[1] == crow and pos[2] < ccol) then
+            outside = true
+        end
+    else
+        if pos[1] > crow or (pos[1] == crow and pos[2] > ccol) then
+            outside = true
+        end
     end
 
-    if op == 'd' then
-        if bkd_matched == ',' then
-            bkd_index = bkd_index - 1
-        end
-        if opn[bkd_matched] and not cls[fwd_matched] then
-            fwd_index = fwd_index + 1
-            if chars[fwd_index + 1] == ' ' then
-                fwd_index = fwd_index + 1
+    local function feed(s, m)
+        m = m or 'n'
+        vim.api.nvim_feedkeys(M.termcodes(s), m, true)
+    end
+
+    local openers = { ['{'] = '}', ['('] = ')', ['['] = ']', ['<'] = '>' }
+    local closer = openers[opener]
+
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local chars = vim.fn.split(lines[pos[1]], '\\zs')
+
+    local function set_cursor(p)
+        vim.api.nvim_win_set_cursor(0, { p[1], p[2] - 1 })
+        crow = p[1]
+        ccol = p[2]
+    end
+
+    if outside or mode == 'I' or mode == 'A' then
+        set_cursor(pos)
+        if direction == 'backwards' then
+            feed('%', 'x')
+            crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
+            ccol = ccol + 1
+            pos[1] = crow
+            pos[2] = ccol
+            if mode == 'i' or mode == 'a' then
+                feed('%h', 'x')
+                crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
+                ccol = ccol + 1
             end
         end
+    end
 
-        local before, _, after = get_line_partitions(line, bkd_index, fwd_index)
-        vim.api.nvim_set_current_line(before .. after)
-        set_cursor_to_col(bkd_index - 1)
-    elseif op == 'c' then
-        local before, _, after = get_line_partitions(line, bkd_index, fwd_index)
-        vim.api.nvim_set_current_line(before .. after)
-        set_cursor_to_col(bkd_index - 1)
-        vim.cmd('startinsert')
-    else
-        set_cursor_to_col(bkd_index - 1)
+    if chars[pos[2] + 1] == closer then
+        feed('ci' .. opener)
+        return
+    end
 
-        local move_right = fwd_index - bkd_index
-        local keys = 'v' .. string.rep('l', move_right)
-        if op == 'y' then
-            keys = keys .. 'y'
+    if mode == 'I' then
+        feed('a, <Esc>hi')
+    elseif mode == 'A' then
+        feed('%i, ')
+    elseif mode == 'i' then
+        local nests = 0
+        local closers = { ['}'] = '{', [')'] = '(', [']'] = '[', ['>'] = '<' }
+        local match = nil
+        pos = nil
+        if chars[ccol] == ',' then
+            ccol = ccol - 1
         end
 
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'n', true)
+        for i = crow, 1, -1 do
+            chars = vim.fn.split(lines[i], '\\zs')
+            local start = i == crow and ccol or #chars
+            for j = start, 1, -1 do
+                local c = chars[j]
+                if c == ',' and nests == 0 then
+                    match = ','
+                    pos = { i, j }
+                    break
+                end
+                if closers[c] then
+                    nests = nests + 1
+                elseif openers[c] then
+                    if nests == 0 then
+                        match = c
+                        pos = { i, j }
+                        break
+                    end
+                    nests = nests - 1
+                end
+            end
+            if match and pos then
+                break
+            end
+        end
+        if not match or not pos then
+            return
+        end
+        set_cursor(pos)
+        if match == ',' then
+            feed('i, ')
+        else
+            feed('a, <Esc>hi')
+        end
+    elseif mode == 'a' then
+        local nests = 0
+        local closers = { ['}'] = '{', [')'] = '(', [']'] = '[', ['>'] = '<' }
+        pos = nil
+        if chars[ccol] == ',' then
+            ccol = ccol - 1
+        end
+
+        for i = crow, #lines do
+            chars = vim.fn.split(lines[i], '\\zs')
+            local start = i == crow and ccol + 1 or 0
+            for j = start, #chars do
+                local c = chars[j]
+                if c == ',' and nests == 0 then
+                    pos = { i, j }
+                    break
+                end
+                if openers[c] then
+                    nests = nests + 1
+                elseif closers[c] then
+                    if nests == 0 then
+                        pos = { i, j }
+                        break
+                    end
+                    nests = nests - 1
+                end
+            end
+            if pos then
+                break
+            end
+        end
+        if not pos then
+            return
+        end
+        set_cursor(pos)
+        feed('i, ')
     end
+end
+
+function M.operate_any_delimiter(op, loc, direction)
+    local delimiter, pos = get_delimiter(direction)
+    if not delimiter or not pos then
+        return
+    end
+    vim.api.nvim_win_set_cursor(0, { pos[1], pos[2] - 1 })
+    vim.api.nvim_feedkeys(M.termcodes(op .. loc .. delimiter), 'n', true)
 end
 
 return M

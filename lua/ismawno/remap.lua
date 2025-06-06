@@ -52,7 +52,7 @@ utils.mapkey(
     { desc = 'Create a replace template for the current word' }
 )
 utils.mapkey('n', '<leader>w', [[/<C-r><C-w>]], { desc = 'Create a find template for the current word' })
-utils.mapkey('n', '<leader>up', 'i<C-r>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
+-- utils.mapkey('n', '<leader>up', 'i<C-r>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
 utils.mapkey('i', '<C-u>', '<C-r>"', { noremap = true, desc = 'Copy into the line, even if its a whole line' })
 
 utils.mapkey('n', '<leader>ot', utils.open_horizontal_terminal, { desc = 'Open a terminal (bottom horizontal)' })
@@ -66,29 +66,70 @@ utils.mapkey('n', '<leader>fp', function()
     utils.navigate_file('prev')
 end, { desc = 'Go to prev file in explorer' })
 
--- utils.foreach_operator(function(op)
---     local lhs = utils.termcodes(op .. 'p')
---     utils.mapkey('n', lhs, function()
---         utils.operate_argument(op)
---     end, {
---         noremap = true,
---         silent = true,
---         desc = 'Apply ' .. op .. ' to current parameter',
---     })
---
---     utils.foreach_location(function(loc)
---         utils.foreach_opener(function(opn)
---             lhs = utils.termcodes(op .. 'm' .. loc .. opn)
---             local rhs = utils.termcodes('/' .. opn .. '<CR>' .. op .. loc .. opn)
---             utils.mapkey('n', lhs, rhs, {
---                 noremap = true,
---                 silent = true,
---                 desc = 'Apply vim command ' .. op .. loc .. opn .. ' to the next occurrence of ' .. opn,
---             })
---         end)
---     end)
--- end)
---
+utils.foreach_operator(function(op)
+    utils.foreach_location(function(loc)
+        local lhs = utils.termcodes(op .. loc .. 'x')
+        utils.mapkey('n', lhs, function()
+            utils.operate_any_delimiter(op, loc, 'center')
+        end, { silent = true, desc = 'Apply ' .. op .. ' with location ' .. loc .. ' to any delimiter' })
+
+        lhs = utils.termcodes(op .. 'm' .. loc .. 'x')
+        utils.mapkey('n', lhs, function()
+            utils.operate_any_delimiter(op, loc, 'forwards')
+        end, {
+            silent = true,
+            desc = 'Apply ' .. op .. ' with location ' .. loc .. ' to the next (any) delimiter',
+        })
+
+        lhs = utils.termcodes(op .. 'M' .. loc .. 'x')
+        utils.mapkey('n', lhs, function()
+            utils.operate_any_delimiter(op, loc, 'backwards')
+        end, {
+            silent = true,
+            desc = 'Apply ' .. op .. ' with location ' .. loc .. ' to the previous (any) delimiter',
+        })
+
+        utils.foreach_opener(function(opn)
+            lhs = utils.termcodes(op .. 'm' .. loc .. opn)
+            local rhs = utils.termcodes('/' .. opn .. '<CR>' .. op .. loc .. opn)
+            utils.mapkey('n', lhs, rhs, {
+                noremap = true,
+                silent = true,
+                desc = 'Apply vim command ' .. op .. loc .. opn .. ' to the next occurrence of ' .. opn,
+            })
+        end)
+    end)
+end)
+
+utils.foreach_location(function(loc)
+    local lhs = '<leader>p' .. loc
+    utils.mapkey('n', lhs, function()
+        utils.insert_parameter(loc, 'center')
+    end)
+    lhs = '<leader>pm' .. loc
+    utils.mapkey('n', lhs, function()
+        utils.insert_parameter(loc, 'forwards')
+    end)
+    lhs = '<leader>pM' .. loc
+    utils.mapkey('n', lhs, function()
+        utils.insert_parameter(loc, 'backwards')
+    end)
+    utils.foreach_opener(function(opn)
+        lhs = '<leader>p' .. opn .. loc
+        utils.mapkey('n', lhs, function()
+            utils.insert_parameter(loc, 'center', opn)
+        end)
+        lhs = '<leader>pm' .. opn .. loc
+        utils.mapkey('n', lhs, function()
+            utils.insert_parameter(loc, 'forwards', opn)
+        end)
+        lhs = '<leader>pM' .. opn .. loc
+        utils.mapkey('n', lhs, function()
+            utils.insert_parameter(loc, 'backwards', opn)
+        end)
+    end)
+end, true)
+
 utils.mapkey('n', '<leader>pbde', function()
     utils.setup_cmake('Debug')
 end)
