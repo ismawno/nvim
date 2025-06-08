@@ -184,7 +184,12 @@ local function load_executable(index)
     end
 
     local root = M.find_root()
-    last_exec = execs[root][index]
+    local root_execs = execs[root]
+    if not root_execs then
+        return nil
+    end
+
+    last_exec = root_execs[index]
     return last_exec
 end
 
