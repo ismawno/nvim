@@ -93,13 +93,20 @@ utils.foreach_operator(function(op)
             desc = 'Apply ' .. op .. ' with location ' .. loc .. ' to the previous (any) delimiter',
         })
 
-        utils.foreach_opener(function(opn)
-            lhs = utils.termcodes(op .. 'm' .. loc .. opn)
-            local rhs = utils.termcodes('/' .. opn .. '<CR>' .. op .. loc .. opn)
+        utils.foreach_delimiter(function(del)
+            lhs = utils.termcodes(op .. 'm' .. loc .. del)
+            local rhs = utils.termcodes('/' .. del .. '<CR>' .. op .. loc .. del)
             utils.mapkey('n', lhs, rhs, {
                 noremap = true,
                 silent = true,
-                desc = 'Apply vim command ' .. op .. loc .. opn .. ' to the next occurrence of ' .. opn,
+                desc = 'Apply vim command ' .. op .. loc .. del .. ' to the next occurrence of ' .. del,
+            })
+            lhs = utils.termcodes(op .. 'M' .. loc .. del)
+            rhs = utils.termcodes('?' .. del .. '<CR>' .. op .. loc .. del)
+            utils.mapkey('n', lhs, rhs, {
+                noremap = true,
+                silent = true,
+                desc = 'Apply vim command ' .. op .. loc .. del .. ' to the previous occurrence of ' .. del,
             })
         end)
     end)

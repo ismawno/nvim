@@ -117,6 +117,13 @@ end
 function M.foreach_opener(func)
     foreach({ '(', '{', '[', '<', "'", '"' }, func)
 end
+function M.foreach_closer(func)
+    foreach({ ')', '}', ']', '>', "'", '"' }, func)
+end
+function M.foreach_delimiter(func)
+    M.foreach_opener(func)
+    M.foreach_closer(func)
+end
 
 local last_terminal = nil
 function M.open_horizontal_terminal()
