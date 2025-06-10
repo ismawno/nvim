@@ -153,16 +153,16 @@ function M.get_a_terminal()
     return last_terminal
 end
 
-function M.setup_cmake(btype, fetch)
+function M.setup_cmake(args)
     local trm = M.get_a_terminal()
 
     local path = trm.dir .. '/setup/build.py'
     if vim.fn.filereadable(path) == 1 then
-        if fetch then
-            trm:send('python ' .. path .. ' -v --build-type ' .. btype .. ' --fetch-dependencies ' .. fetch)
-        else
-            trm:send('python ' .. path .. ' -v --build-type ' .. btype)
+        local cmd = 'python ' .. path
+        if args then
+            cmd = cmd .. ' ' .. args
         end
+        trm:send(cmd)
     else
         vim.notify(string.format('Build script not found at: %s', path), vim.log.levels.WARN)
     end
@@ -203,7 +203,12 @@ end
 local function save_executable(index)
     local root = M.find_root()
     local path = vim.fn.input('Path to executable: ', root, 'file')
-    if not path or vim.fn.filereadable(path) == 0 then
+    if not path then
+        return nil
+    end
+
+    local noargs = string.match(path, '%S+')
+    if vim.fn.filereadable(noargs) == 0 then
         return nil
     end
     index = index or 0
@@ -250,12 +255,21 @@ function M.register_debug_exec(index)
     M.mapkey('n', lhs, function()
         local exec = load_executable(index) or save_executable(index)
         if exec then
+            local path = string.match(exec, '%S+')
+            local args = {}
+            for arg in string.gmatch(exec, '%S+') do
+                if arg ~= path then
+                    table.insert(args, arg)
+                end
+            end
+
             local root = M.find_root()
             require('dap').run({
                 type = 'lldb',
                 request = 'launch',
                 name = 'Custom launch',
-                program = exec,
+                program = path,
+                args = args,
                 justMyCode = false,
                 cwd = root,
             })
