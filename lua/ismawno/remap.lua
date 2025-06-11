@@ -8,20 +8,14 @@ utils.mapkey('n', '<leader>pv', function()
 end, { desc = 'Open explorer' })
 
 utils.mapkey('n', '<C-b>', ":put=''<CR>", { silent = true, desc = 'Insert a blank line below the cursor' })
-utils.mapkey('n', '<C-h>', '<C-w>h', { silent = true, desc = 'Move to left window' })
-utils.mapkey('n', '<C-j>', '<C-w>j', { silent = true, desc = 'Move to bottom window' })
-utils.mapkey('n', '<C-k>', '<C-w>k', { silent = true, desc = 'Move to top window' })
-utils.mapkey('n', '<C-l>', '<C-w>l', { silent = true, desc = 'Move to right window' })
-
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
 utils.mapkey('n', '<C-s>', '<C-a>', { noremap = true, desc = 'Increase number' })
 
 utils.mapkey('v', '<C-j>', ":m '>+1<CR>gv=gv", { silent = true, desc = 'Move current line down' })
 utils.mapkey('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move current line up' })
 
-utils.mapkey('n', '<leader>sw', '<C-w><C-s>', { noremap = true, desc = 'Split current buffer' })
-utils.mapkey('n', 'H', '<cmd>cprev<CR>zz', { desc = 'Go to previous quickfix element' })
-utils.mapkey('n', 'L', '<cmd>cnext<CR>zz', { desc = 'Go to next quickfix element' })
+utils.mapkey('n', '<C-h>', '<cmd>cprev<CR>zz', { desc = 'Go to previous quickfix element' })
+utils.mapkey('n', '<C-l>', '<cmd>cnext<CR>zz', { desc = 'Go to next quickfix element' })
 utils.mapkey(
     'n',
     '<leader>R',
@@ -36,7 +30,7 @@ utils.mapkey({ 'n', 'v', 'o' }, '¿', '0', { noremap = true, force = true, desc 
 
 utils.mapkey({ 'n', 'v', 'o' }, '0', '^', { noremap = true, desc = 'Go to the first character of the line' })
 
-utils.mapkey({ 'n', 'v', 'o' }, 'M', utils.navigate_delimiter, { noremap = true })
+utils.mapkey({ 'n', 'v', 'o' }, 'M', '%', { noremap = true })
 
 -- utils.mapkey({ 'n', 'v', 'o' }, 'M', '%', { noremap = true, desc = 'Go to matching opener/closer' })
 
@@ -62,11 +56,11 @@ utils.mapkey('i', '<C-u>', '<C-r>"', { noremap = true, desc = 'Copy into the lin
 utils.mapkey('n', '<leader>ot', utils.open_horizontal_terminal, { desc = 'Open a terminal (bottom horizontal)' })
 utils.mapkey('n', '<leader>oT', utils.open_float_terminal, { desc = 'Open a terminal (float)' })
 
-utils.mapkey('n', '<leader>fn', function()
+utils.mapkey('n', '<C-j>', function()
     utils.navigate_file('next')
 end, { desc = 'Go to next file in explorer' })
 
-utils.mapkey('n', '<leader>fp', function()
+utils.mapkey('n', '<C-k>', function()
     utils.navigate_file('prev')
 end, { desc = 'Go to prev file in explorer' })
 

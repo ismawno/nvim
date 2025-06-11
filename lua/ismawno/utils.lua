@@ -310,7 +310,7 @@ function M.toggle_header_source()
 end
 
 local function get_delimiter(direction, filter)
-    local delimiters = { ['{'] = '}', ['('] = ')', ['['] = ']', ['<'] = '>' }
+    local delimiters = { ['{'] = '}', ['('] = ')', ['['] = ']' }
     if filter then
         delimiters = { [filter] = delimiters[filter] }
     end
@@ -362,18 +362,6 @@ local function get_delimiter(direction, filter)
     return delimiter, minpos
 end
 
-function M.navigate_delimiter(mode)
-    mode = mode or 'n'
-    local c = vim.fn.getline('.'):sub(vim.fn.col('.'), vim.fn.col('.'))
-    if c == '<' then
-        vim.api.nvim_feedkeys('f>', mode, true)
-    elseif c == '>' then
-        vim.api.nvim_feedkeys('F<', mode, true)
-    else
-        vim.api.nvim_feedkeys('%', mode, true)
-    end
-end
-
 function M.insert_parameter(mode, direction, filter)
     local opener, pos = get_delimiter(direction, filter)
     local crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
@@ -414,14 +402,13 @@ function M.insert_parameter(mode, direction, filter)
     if outside or mode == 'I' or mode == 'A' then
         set_cursor(pos)
         if direction == 'backwards' then
-            M.navigate_delimiter('x')
+            feed('%', 'x')
             crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
             ccol = ccol + 1
             pos[1] = crow
             pos[2] = ccol
             if mode == 'i' or mode == 'a' then
-                M.navigate_delimiter('x')
-                feed('h', 'x')
+                feed('%h', 'x')
                 crow, ccol = unpack(vim.api.nvim_win_get_cursor(0))
                 ccol = ccol + 1
             end
@@ -436,8 +423,7 @@ function M.insert_parameter(mode, direction, filter)
     if mode == 'I' then
         feed('a, <Esc>hi')
     elseif mode == 'A' then
-        M.navigate_delimiter()
-        feed('i, ')
+        feed('%i, ')
     elseif mode == 'i' then
         local nests = 0
         local match = nil
