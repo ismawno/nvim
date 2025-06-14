@@ -18,22 +18,17 @@ local function remove_backgrounds()
     for _, grp in ipairs(tgroups) do
         vim.api.nvim_set_hl(0, grp, { bg = 'none', ctermbg = 'none' })
     end
-
-    -- local llinegroups = { 'Normal', 'Insert', 'Visual', 'Replace', 'Command', 'Inactive' }
-    --     -- for _, grp in ipairs(llinegroups) do
-    --         --     vim.api.nvim_set_hl(0, 'LualineC' .. grp, { bg = 'none', ctermbg = 'none' })
-    --             -- end
 end
 
 function ApplyColor(color)
     color = color or 'rose-pine-moon'
     vim.cmd.colorscheme(color)
-    local utils = require('ismawno.utils')
     remove_backgrounds()
 end
 
 return {
     'rose-pine/neovim',
+    lazy = false,
     priority = 1000,
     opts = {},
     config = function()
