@@ -188,7 +188,7 @@ end
 utils.mapkey(
     'n',
     '<leader>ppf',
-    ':!/Users/ismael/tracy/profiler/build/tracy-profiler > /dev/null 2>&1 &<CR>',
+    ':!~/tracy/profiler/build/tracy-profiler > /dev/null 2>&1 &<CR>',
     { silent = true, desc = 'Execute tracy proxiler' }
 )
 

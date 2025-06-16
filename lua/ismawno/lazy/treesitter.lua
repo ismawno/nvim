@@ -22,6 +22,7 @@ return {
                     'query',
                     'markdown',
                     'markdown_inline',
+                    'regex',
                 },
                 modules = {}, -- no extra modules to initialize
                 ignore_install = {},
