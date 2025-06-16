@@ -30,8 +30,8 @@ return {
     'rose-pine/neovim',
     lazy = false,
     priority = 1000,
-    opts = {},
     config = function()
+        require('rose-pine').setup({ enable = { terminal = false } })
         ApplyColor()
     end,
 }
