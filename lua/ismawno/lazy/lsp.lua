@@ -4,11 +4,24 @@ return {
         'stevearc/conform.nvim',
         'williamboman/mason.nvim',
         'williamboman/mason-lspconfig.nvim',
-        'hrsh7th/cmp-nvim-lsp',
-        'hrsh7th/cmp-buffer',
-        'hrsh7th/cmp-path',
-        'hrsh7th/cmp-cmdline',
-        'hrsh7th/nvim-cmp',
+        {
+            'saghen/blink.cmp',
+            version = '1.*',
+            opts = {
+                keymap = { preset = 'super-tab' },
+                appearance = {
+                    nerd_font_variant = 'mono',
+                },
+
+                completion = { documentation = { auto_show = false } },
+
+                sources = {
+                    default = { 'lsp', 'path', 'snippets', 'buffer' },
+                },
+                fuzzy = { implementation = 'prefer_rust_with_warning' },
+                opts_extend = { 'sources.default' },
+            },
+        },
         'j-hui/fidget.nvim',
     },
     config = function()
@@ -23,14 +36,8 @@ return {
             },
             formatters = { black = { prepend_args = { '--line-length', '119' } } },
         })
-        local cmp = require('cmp')
-        local cmp_lsp = require('cmp_nvim_lsp')
-        local capabilities = vim.tbl_deep_extend(
-            'force',
-            {},
-            vim.lsp.protocol.make_client_capabilities(),
-            cmp_lsp.default_capabilities()
-        )
+        local cmp = require('blink.cmp')
+        local capabilities = cmp.get_lsp_capabilities()
         capabilities.textDocument.completion.completionItem.snippetSupport = false
 
         require('fidget').setup({})
@@ -106,22 +113,6 @@ return {
                     })
                 end,
             },
-        })
-
-        local cmp_select = { behavior = cmp.SelectBehavior.Select }
-        cmp.setup({
-            mapping = cmp.mapping.preset.insert({
-                ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-                ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-                ['<Tab>'] = cmp.mapping.confirm({ select = true }),
-                ['<C-Space>'] = cmp.mapping.complete(),
-            }),
-            sources = cmp.config.sources({
-                { name = 'copilot', group_index = 2 },
-                { name = 'nvim_lsp' },
-            }, {
-                { name = 'buffer' },
-            }),
         })
 
         local vt = true
