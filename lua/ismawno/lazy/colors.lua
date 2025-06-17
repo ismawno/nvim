@@ -1,11 +1,11 @@
 local function remove_backgrounds()
-    vim.api.nvim_set_hl(0, 'Normal', { bg = 'none', ctermbg = 'none' })
-    vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none', ctermbg = 'none' })
-    vim.api.nvim_set_hl(0, 'NormalNC', { bg = 'none', ctermbg = 'none' })
-    vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'none', ctermbg = 'none' })
-    vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none', ctermbg = 'none' })
-    vim.api.nvim_set_hl(0, 'StatusLineNC', { bg = 'none', ctermbg = 'none' })
-    local tgroups = {
+    local groups = {
+        'Normal',
+        'NormalFloat',
+        'NormalNC',
+        'FloatBorder',
+        'StatusLine',
+        'StatusLineNC',
         'TelescopeNormal',
         'TelescopeBorder',
         'TelescopePromptBorder',
@@ -15,23 +15,24 @@ local function remove_backgrounds()
         'TelescopeResultsNormal',
         'TelescopePreviewNormal',
     }
-    for _, grp in ipairs(tgroups) do
+    for _, grp in ipairs(groups) do
         vim.api.nvim_set_hl(0, grp, { bg = 'none', ctermbg = 'none' })
     end
 end
 
 function ApplyColor(color)
-    color = color or 'rose-pine-moon'
+    color = color or 'catppuccin'
     vim.cmd.colorscheme(color)
     remove_backgrounds()
 end
 
 return {
-    'rose-pine/neovim',
+    'catppuccin/nvim',
+    name = 'catppuccin',
     lazy = false,
     priority = 1000,
     config = function()
-        require('rose-pine').setup({ enable = { terminal = false } })
+        require('catppuccin').setup({ flavour = 'mocha', transparent_background = true })
         ApplyColor()
     end,
 }

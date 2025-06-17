@@ -19,10 +19,8 @@ return {
                     default = { 'lsp', 'path', 'snippets', 'buffer' },
                 },
                 fuzzy = { implementation = 'prefer_rust_with_warning' },
-                opts_extend = { 'sources.default' },
             },
         },
-        'j-hui/fidget.nvim',
     },
     config = function()
         require('conform').setup({
@@ -40,7 +38,6 @@ return {
         local capabilities = cmp.get_lsp_capabilities()
         capabilities.textDocument.completion.completionItem.snippetSupport = false
 
-        require('fidget').setup({})
         require('mason').setup()
         require('mason-lspconfig').setup({
             automatic_installation = true,
