@@ -42,7 +42,7 @@ return {
                     enable = true,
                     disable = function(lang, buf)
                         if lang == 'html' then
-                            print('Treesitter disabled')
+                            vim.notify('Treesitter disabled')
                             return true
                         end
 

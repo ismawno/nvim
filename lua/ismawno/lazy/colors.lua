@@ -32,7 +32,10 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
-        require('catppuccin').setup({ flavour = 'mocha', transparent_background = true })
+        require('catppuccin').setup({
+            flavour = 'mocha',
+            transparent_background = true,
+        })
         ApplyColor()
     end,
 }
