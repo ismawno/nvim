@@ -6,9 +6,8 @@ return {
         'williamboman/mason-lspconfig.nvim',
         {
             'saghen/blink.cmp',
-            version = '1.*',
+            version = '1.4.1',
             opts = {
-                keymap = { preset = 'super-tab' },
                 appearance = {
                     nerd_font_variant = 'mono',
                 },
