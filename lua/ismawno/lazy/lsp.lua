@@ -72,11 +72,11 @@ return {
                     lspconfig.clangd.setup({
                         capabilities = capabilities,
                         root_dir = root,
-                        -- cmd = {
-                        --     'clangd',
-                        --     '--function-arg-placeholders=0',
-                        --     '--compile-commands-dir=' .. ccmd,
-                        -- },
+                        cmd = {
+                            'clangd',
+                            '--header-insertion=never',
+                            --     '--compile-commands-dir=' .. ccmd,
+                        },
                     })
                 end,
                 ['lua_ls'] = function()
