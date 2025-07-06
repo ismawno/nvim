@@ -201,8 +201,10 @@ local function load_executable(index)
 end
 
 local function save_executable(index)
+    index = index or 0
+    index = tostring(index)
     local root = M.find_root()
-    local path = vim.fn.input('Path to executable: ', root, 'file')
+    local path = vim.fn.input('Path to executable slot ' .. index .. ': ', root, 'file')
     if not path then
         return nil
     end
@@ -211,8 +213,6 @@ local function save_executable(index)
     if vim.fn.filereadable(noargs) == 0 then
         return nil
     end
-    index = index or 0
-    index = tostring(index)
 
     local execs = load_exec_table() or {}
     local ntable = execs[root] or {}
