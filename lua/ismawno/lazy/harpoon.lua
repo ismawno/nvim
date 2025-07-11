@@ -1,27 +1,40 @@
 return {
-    'ThePrimeagen/harpoon',
+    'ismawno/harpoon',
     branch = 'harpoon2',
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
     config = function()
         local harpoon = require('harpoon')
+        local hcfg = require('harpoon.config').get_default_config()
         local utils = require('ismawno.utils')
         local root = utils.find_root()
         local pname = utils.find_project_name()
 
         local files = nil
         harpoon:setup({
+            default = {
+                get_root_dir = function()
+                    return root
+                end,
+                create_list_item = function(cfg, name)
+                    local result = hcfg.default.create_list_item(cfg, name)
+                    if not name then
+                        vim.notify('File added: ' .. result.value)
+                    end
+                    return result
+                end,
+            },
             exec = {
-                create_list_item = function()
-                    local path = vim.fn.input('Path to executable: ', root, 'file')
-                    if not path then
+                create_list_item = function(_, exec)
+                    exec = exec or vim.fn.input('Path to executable: ', root, 'file')
+                    if not exec then
                         return nil
                     end
 
-                    local noargs = string.match(path, '%S+')
+                    local noargs = string.match(exec, '%S+')
                     if vim.fn.filereadable(noargs) == 0 then
                         return nil
                     end
-                    return { value = path }
+                    return { value = exec }
                 end,
 
                 select = function(item, _, dbg)
@@ -51,19 +64,78 @@ return {
                 end,
             },
             metalist = {
-                create_list_item = function()
-                    local mlist = harpoon:list('metalist')
-                    local length = #mlist.items + 1
-                    local name = pname .. '-file-list-' .. length
+                create_list_item = function(_, name)
+                    local function wrap(fname)
+                        if not files then
+                            files = fname
+                        end
+                        return { value = fname }
+                    end
 
-                    vim.notify('Added new meta-list: ' .. name)
+                    if name then
+                        return wrap(name)
+                    end
+
+                    local mlist = harpoon:list('metalist')
+                    if #mlist.items == 0 then
+                        vim.notify('Default meta-list created: ' .. pname)
+                        return wrap(pname)
+                    end
+
+                    name = vim.fn.input('Meta-list name: ')
+                    if not name then
+                        return nil
+                    end
 
                     return { value = name }
                 end,
+
                 select = function(item)
-                    files = harpoon:list(item.value)
+                    files = item.value
+                end,
+
+                display = function(item)
+                    if item.value ~= files then
+                        return item.value
+                    else
+                        return item.value .. ' <--'
+                    end
                 end,
             },
+        })
+        harpoon:extend({
+            LIST_CHANGE = function(event_data)
+                local mlist = event_data.list
+                if mlist.name ~= 'metalist' then
+                    return
+                end
+                local items = event_data.old_items
+                for i, item1 in ipairs(items) do
+                    local name = item1.value
+                    local found = false
+
+                    for _, item2 in ipairs(mlist.items) do
+                        if item1 == item2 then
+                            found = true
+                            break
+                        end
+                    end
+
+                    if not found then
+                        harpoon:list(name):clear()
+                        if name == files then
+                            files = nil
+                            for j = i, 1, -1 do
+                                files = mlist.items[j]
+                                if files then
+                                    files = files.value
+                                    break
+                                end
+                            end
+                        end
+                    end
+                end
+            end,
         })
 
         local mlist = harpoon:list('metalist')
@@ -106,8 +178,7 @@ return {
 
         utils.mapkey('n', '<leader>af', function()
             if files then
-                files:add()
-                vim.notify('File added to current file list')
+                harpoon:list(files):add()
             end
         end, { desc = 'Add current file to harpoon for the current file list' })
 
@@ -120,7 +191,9 @@ return {
         end, { desc = 'Open harpoon quick menu for the current file list' })
 
         utils.mapkey('n', '<leader>mf', function()
-            harpoon.ui:toggle_quick_menu(files, { title = 'Files' })
+            if files then
+                harpoon.ui:toggle_quick_menu(harpoon:list(files), { title = 'Files' })
+            end
         end, { desc = 'Open harpoon quick menu for the current file list' })
 
         utils.mapkey('n', '<leader>H', function()
@@ -141,25 +214,25 @@ return {
 
         utils.mapkey('n', '<leader>h', function()
             if files then
-                files:select(1)
+                harpoon:list(files):select(1)
             end
         end, { desc = 'Go to first harpoon file for the current file list' })
 
         utils.mapkey('n', '<leader>j', function()
             if files then
-                files:select(2)
+                harpoon:list(files):select(2)
             end
         end, { desc = 'Go to second harpoon file for the current file list' })
 
         utils.mapkey('n', '<leader>k', function()
             if files then
-                files:select(3)
+                harpoon:list(files):select(3)
             end
         end, { desc = 'Go to third harpoon file for the current file list' })
 
         utils.mapkey('n', '<leader>l', function()
             if files then
-                files:select(4)
+                harpoon:list(files):select(4)
             end
         end, { desc = 'Go to fourth harpoon file for the current file list' })
 
@@ -184,7 +257,7 @@ return {
 
         utils.mapkey('n', '<leader>tf', function()
             if files then
-                toggle_telescope(files)
+                toggle_telescope(harpoon:files(files))
             end
         end, { desc = 'Open current harpoon file list with telescope' })
     end,
