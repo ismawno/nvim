@@ -34,7 +34,9 @@ utils.mapkey('x', '<leader>p', [["_dP]], { desc = 'Paste selection without copyi
 utils.mapkey({ 'n', 'v' }, '<leader>y', [["+y]], { desc = 'Copy to system clipboard' })
 utils.mapkey('n', '<leader>Y', [["+Y]], { desc = 'Copy line to system clipboard' })
 utils.mapkey('n', '<leader>w', [[/<C-r><C-w>]], { desc = 'Create a find template for the current word' })
-utils.mapkey('n', '<leader>W', [[?<C-r><C-w>]], { desc = 'Create a find template for the current word' })
+utils.mapkey('n', '<leader>W', [[/<C-r><C-a>]], { desc = 'Create a find template for the current word' })
+utils.mapkey('n', '<leader>b', [[?<C-r><C-w>]], { desc = 'Create a find template for the current word' })
+utils.mapkey('n', '<leader>B', [[?<C-r><C-a>]], { desc = 'Create a find template for the current word' })
 -- utils.mapkey('n', '<leader>up', 'i<C-r>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
 utils.mapkey('i', '<C-u>', '<C-r>"', { noremap = true, desc = 'Copy into the line, even if its a whole line' })
 
