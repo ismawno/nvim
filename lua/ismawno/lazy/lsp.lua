@@ -37,77 +37,59 @@ return {
         local capabilities = cmp.get_lsp_capabilities()
         capabilities.textDocument.completion.completionItem.snippetSupport = false
 
+        local utils = require('ismawno.utils')
+        local root = utils.find_root()
+        vim.lsp.config('pyright', {
+            capabilities = capabilities,
+            settings = {
+                python = { analysis = { autoSearchPaths = true, extraPaths = { root, root .. '/src' } } },
+            },
+        })
+        vim.lsp.config('clangd', {
+            capabilities = capabilities,
+            root_dir = root,
+            cmd = {
+                'clangd',
+                '--header-insertion=never',
+                --     '--compile-commands-dir=' .. ccmd,
+            },
+        })
+        vim.lsp.config('lua_ls', {
+            capabilities = capabilities,
+            settings = {
+                Lua = {
+                    runtime = {
+                        -- Tell the server which Lua version you're using (LuaJIT in Neovim)
+                        version = 'LuaJIT',
+                        -- If you’re using any custom path edits, add them here:
+                        -- path = vim.split(package.path, ";"),
+                    },
+                    diagnostics = {
+                        -- Recognize the `vim` global
+                        globals = { 'vim' },
+                    },
+                    workspace = {
+                        -- Make the server aware of Neovim runtime files
+                        library = vim.api.nvim_get_runtime_file('', true),
+                        -- Disable prompts to install additional third-party libs
+                        checkThirdParty = false,
+                    },
+                    telemetry = {
+                        enable = false, -- turn off telemetry
+                    },
+                },
+            },
+        })
+
         require('mason').setup()
-        require('mason-lspconfig').setup({
-            automatic_installation = true,
+        local mcfg = require('mason-lspconfig')
+        mcfg.setup({
             ensure_installed = {
                 'lua_ls',
                 'pyright',
                 'clangd',
                 'bashls',
                 'neocmake',
-            },
-            handlers = {
-                function(server_name) -- default handler (optional)
-                    require('lspconfig')[server_name].setup({
-                        capabilities = capabilities,
-                    })
-                end,
-                ['pyright'] = function()
-                    local lspconfig = require('lspconfig')
-                    local util = require('ismawno.utils')
-                    local root = util.find_root()
-                    lspconfig.pyright.setup({
-                        capabilities = capabilities,
-                        settings = {
-                            python = { analysis = { autoSearchPaths = true, extraPaths = { root, root .. '/src' } } },
-                        },
-                    })
-                end,
-                ['clangd'] = function()
-                    local lspconfig = require('lspconfig')
-                    local util = require('ismawno.utils')
-                    local root = util.find_root()
-                    -- local ccmd = root .. '/build'
-                    lspconfig.clangd.setup({
-                        capabilities = capabilities,
-                        root_dir = root,
-                        cmd = {
-                            'clangd',
-                            '--header-insertion=never',
-                            --     '--compile-commands-dir=' .. ccmd,
-                        },
-                    })
-                end,
-                ['lua_ls'] = function()
-                    local lspconfig = require('lspconfig')
-                    lspconfig.lua_ls.setup({
-                        capabilities = capabilities,
-                        settings = {
-                            Lua = {
-                                runtime = {
-                                    -- Tell the server which Lua version you're using (LuaJIT in Neovim)
-                                    version = 'LuaJIT',
-                                    -- If you’re using any custom path edits, add them here:
-                                    -- path = vim.split(package.path, ";"),
-                                },
-                                diagnostics = {
-                                    -- Recognize the `vim` global
-                                    globals = { 'vim' },
-                                },
-                                workspace = {
-                                    -- Make the server aware of Neovim runtime files
-                                    library = vim.api.nvim_get_runtime_file('', true),
-                                    -- Disable prompts to install additional third-party libs
-                                    checkThirdParty = false,
-                                },
-                                telemetry = {
-                                    enable = false, -- turn off telemetry
-                                },
-                            },
-                        },
-                    })
-                end,
             },
         })
 
@@ -120,8 +102,8 @@ return {
                 float = {
                     focusable = false,
                     style = 'minimal',
-                    border = 'rounded',
                     source = 'always',
+                    border = 'rounded',
                     header = '',
                     prefix = '',
                 },
