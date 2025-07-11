@@ -26,36 +26,36 @@ return {
                 utils.mapkey(mode, lhs, rhs, opts)
             end
 
-            map('n', '<leader>ms', gs.stage_hunk)
-            map('n', '<leader>mr', gs.reset_hunk)
+            map('n', '<leader>Gs', gs.stage_hunk)
+            map('n', '<leader>Gr', gs.reset_hunk)
 
-            map('v', '<leader>ms', function()
+            map('v', '<leader>Gs', function()
                 gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
             end)
 
-            map('v', '<leader>mr', function()
+            map('v', '<leader>Gr', function()
                 gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
             end)
 
-            map('n', '<leader>mS', gs.stage_buffer)
-            map('n', '<leader>mR', gs.reset_buffer)
-            map('n', '<leader>mp', gs.preview_hunk)
-            map('n', '<leader>mi', gs.preview_hunk_inline)
+            map('n', '<leader>GS', gs.stage_buffer)
+            map('n', '<leader>GR', gs.reset_buffer)
+            map('n', '<leader>Gp', gs.preview_hunk)
+            map('n', '<leader>Gi', gs.preview_hunk_inline)
 
-            map('n', '<leader>mb', function()
+            map('n', '<leader>Gb', function()
                 gs.blame_line({ full = true })
             end)
 
-            map('n', '<leader>md', gs.diffthis)
+            map('n', '<leader>Gd', gs.diffthis)
 
-            map('n', '<leader>mD', function()
+            map('n', '<leader>GD', function()
                 gs.diffthis('~')
             end)
 
-            map('n', '<leader>mQ', function()
+            map('n', '<leader>GQ', function()
                 gs.setqflist('all')
             end)
-            map('n', '<leader>mq', gs.setqflist)
+            map('n', '<leader>Gq', gs.setqflist)
 
             -- Toggles
             map('n', '<leader>tb', gs.toggle_current_line_blame)

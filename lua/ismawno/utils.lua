@@ -36,6 +36,11 @@ function M.find_root(fname)
     return vim.fn.fnamemodify(root, ':p')
 end
 
+function M.find_project_name(fname)
+    local root = M.find_root(fname)
+    return root:match('([^/]+)/?$')
+end
+
 local function open_terminal(opts)
     local terminal = require('toggleterm.terminal').Terminal
     local possible_venvs = { '.venv', 'venv' }
@@ -234,14 +239,14 @@ local function save_executable(index)
     return path
 end
 
-function M.register_save_exec(index)
-    local lhs = index and M.termcodes('<leader>p' .. index .. 'X') or M.termcodes('<leader>pX')
+function M.register_save_exec(binding_suffix, index)
+    local lhs = index and M.termcodes(binding_suffix .. index .. 'X') or M.termcodes(binding_suffix .. 'X')
     M.mapkey('n', lhs, function()
         save_executable(index)
     end, { desc = 'Save an executable shortcut for this workspace in slot ' .. (index or 0) })
 end
-function M.register_run_exec(index)
-    local lhs = index and M.termcodes('<leader>p' .. index .. 'x') or M.termcodes('<leader>px')
+function M.register_run_exec(binding_suffix, index)
+    local lhs = index and M.termcodes(binding_suffix .. index .. 'x') or M.termcodes(binding_suffix .. 'x')
     M.mapkey('n', lhs, function()
         local exec = load_executable(index) or save_executable(index)
         if exec then
@@ -250,8 +255,8 @@ function M.register_run_exec(index)
         end
     end, { desc = 'Run an executable from shortcut slot ' .. (index or 0) })
 end
-function M.register_debug_exec(index)
-    local lhs = index and M.termcodes('<leader>p' .. index .. 'd') or M.termcodes('<leader>pd')
+function M.register_debug_exec(binding_suffix, index)
+    local lhs = index and M.termcodes(binding_suffix .. index .. 'd') or M.termcodes(binding_suffix .. 'd')
     M.mapkey('n', lhs, function()
         local exec = load_executable(index) or save_executable(index)
         if exec then

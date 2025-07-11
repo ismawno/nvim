@@ -16,12 +16,6 @@ utils.mapkey('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move cur
 
 utils.mapkey('n', '<C-h>', '<cmd>cprev<CR>zz', { desc = 'Go to previous quickfix element' })
 utils.mapkey('n', '<C-l>', '<cmd>cnext<CR>zz', { desc = 'Go to next quickfix element' })
-utils.mapkey(
-    'n',
-    '<leader>R',
-    [[:cdo %s///ge | update<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>]],
-    { desc = 'Insert a global search and replace pattern' }
-)
 
 utils.mapkey({ 'n', 'v' }, 'J', '8j', { desc = 'Move cursor 8 lines down' })
 utils.mapkey({ 'n', 'v' }, 'K', '8k', { desc = 'Move cursor 8 lines up' })
@@ -39,12 +33,6 @@ end, { desc = 'Navigate to root' })
 utils.mapkey('x', '<leader>p', [["_dP]], { desc = 'Paste selection without copying it' })
 utils.mapkey({ 'n', 'v' }, '<leader>y', [["+y]], { desc = 'Copy to system clipboard' })
 utils.mapkey('n', '<leader>Y', [["+Y]], { desc = 'Copy line to system clipboard' })
-utils.mapkey(
-    'n',
-    '<leader>r',
-    [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]],
-    { desc = 'Create a replace template for the current word' }
-)
 utils.mapkey('n', '<leader>w', [[/<C-r><C-w>]], { desc = 'Create a find template for the current word' })
 utils.mapkey('n', '<leader>W', [[?<C-r><C-w>]], { desc = 'Create a find template for the current word' })
 -- utils.mapkey('n', '<leader>up', 'i<C-r>"<Esc>', { desc = 'Copy into the line, even if its a whole line' })
@@ -104,28 +92,28 @@ utils.foreach_operator(function(op)
 end)
 
 utils.foreach_location(function(loc)
-    local lhs = '<leader>p' .. loc
+    local lhs = '<leader>a' .. loc
     utils.mapkey('n', lhs, function()
         utils.insert_parameter(loc, 'center')
     end)
-    lhs = '<leader>pm' .. loc
+    lhs = '<leader>am' .. loc
     utils.mapkey('n', lhs, function()
         utils.insert_parameter(loc, 'forwards')
     end)
-    lhs = '<leader>pM' .. loc
+    lhs = '<leader>aM' .. loc
     utils.mapkey('n', lhs, function()
         utils.insert_parameter(loc, 'backwards')
     end)
     utils.foreach_opener(function(opn)
-        lhs = '<leader>p' .. opn .. loc
+        lhs = '<leader>a' .. opn .. loc
         utils.mapkey('n', lhs, function()
             utils.insert_parameter(loc, 'center', opn)
         end)
-        lhs = '<leader>pm' .. opn .. loc
+        lhs = '<leader>am' .. opn .. loc
         utils.mapkey('n', lhs, function()
             utils.insert_parameter(loc, 'forwards', opn)
         end)
-        lhs = '<leader>pM' .. opn .. loc
+        lhs = '<leader>aM' .. opn .. loc
         utils.mapkey('n', lhs, function()
             utils.insert_parameter(loc, 'backwards', opn)
         end)
@@ -173,27 +161,27 @@ utils.mapkey('n', '<leader>pc', function()
 end)
 utils.mapkey('n', '<leader>pC', ':make -C build/ -j 4<CR>')
 
-utils.register_save_exec()
-utils.register_run_exec()
-utils.register_debug_exec()
-for i = 0, 9 do
-    utils.register_save_exec(i)
-    utils.register_run_exec(i)
-    utils.register_debug_exec(i)
-end
+-- utils.register_save_exec('<leader>')
+-- utils.register_run_exec('<leader>')
+-- utils.register_debug_exec('<leader>')
+-- for i = 0, 9 do
+--     utils.register_save_exec('<leader>', i)
+--     utils.register_run_exec('<leader>', i)
+--     utils.register_debug_exec('<leader>', i)
+-- end
 
 utils.mapkey(
     'n',
-    '<leader>ppf',
+    '<leader>tx',
     ':!~/tracy/profiler/build/tracy-profiler > /dev/null 2>&1 &<CR>',
-    { silent = true, desc = 'Execute tracy proxiler' }
+    { silent = true, desc = 'Execute tracy profiler' }
 )
 
 utils.mapkey('n', '<leader>sf', utils.toggle_header_source, { desc = 'Switch between C/C++ header and source files' })
 
 local custom_motions = {}
-custom_motions['¡'] = '$'
-custom_motions['¿'] = '0'
-custom_motions['0'] = '^'
+-- custom_motions['¡'] = '$'
+-- custom_motions['¿'] = '0'
+-- custom_motions['0'] = '^'
 custom_motions['M'] = '%'
 vim.g.VM_custom_motions = custom_motions
