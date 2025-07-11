@@ -56,7 +56,7 @@ return {
                     local length = #mlist.items + 1
                     local name = pname .. '-file-list-' .. length
 
-                    vim.notify('Added new meta-list: ' .. pname)
+                    vim.notify('Added new meta-list: ' .. name)
 
                     return { value = name }
                 end,
