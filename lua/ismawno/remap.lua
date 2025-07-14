@@ -11,6 +11,23 @@ utils.mapkey('n', '<C-b>', ":put=''<CR>", { silent = true, desc = 'Insert a blan
 utils.mapkey('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit from terminal mode' })
 utils.mapkey('n', '<C-s>', '<C-a>', { noremap = true, desc = 'Increase number' })
 
+utils.mapkey('n', '<leader>Dm', function()
+    vim.cmd(':delm! | delm a-zA-Z<CR>')
+    vim.notify('Deleted all marks')
+end, { desc = 'Remove all marks' })
+
+for _, mark in ipairs(vim.fn.split('abcdefghijklmnopqrstuvwxyz', '\\zs')) do
+    utils.mapkey('n', 'm' .. mark, function()
+        vim.api.nvim_feedkeys('m' .. mark, 'n', false)
+        vim.notify('Added mark: ' .. mark)
+    end, { desc = 'Add mark ' .. mark })
+    local lhs = utils.termcodes('<leader>dm' .. mark)
+    utils.mapkey('n', lhs, function()
+        vim.cmd('delmarks ' .. mark)
+        vim.notify('Deleted mark: ' .. mark)
+    end, { desc = 'Delete mark ' .. mark })
+end
+
 utils.mapkey('v', '<C-j>', ":m '>+1<CR>gv=gv", { silent = true, desc = 'Move current line down' })
 utils.mapkey('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move current line up' })
 

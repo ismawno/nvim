@@ -196,45 +196,14 @@ return {
             end
         end, { desc = 'Open harpoon quick menu for the current file list' })
 
-        utils.mapkey('n', '<leader>H', function()
-            mlist:select(1)
-        end, { desc = 'Go to first harpoon list for the current meta list' })
-
-        utils.mapkey('n', '<leader>J', function()
-            mlist:select(2)
-        end, { desc = 'Go to second harpoon list for the current meta list' })
-
-        utils.mapkey('n', '<leader>K', function()
-            mlist:select(3)
-        end, { desc = 'Go to third harpoon list for the current meta list' })
-
-        utils.mapkey('n', '<leader>L', function()
-            mlist:select(4)
-        end, { desc = 'Go to fourth harpoon list for the current meta list' })
-
-        utils.mapkey('n', '<leader>h', function()
-            if files then
-                harpoon:list(files):select(1)
-            end
-        end, { desc = 'Go to first harpoon file for the current file list' })
-
-        utils.mapkey('n', '<leader>j', function()
-            if files then
-                harpoon:list(files):select(2)
-            end
-        end, { desc = 'Go to second harpoon file for the current file list' })
-
-        utils.mapkey('n', '<leader>k', function()
-            if files then
-                harpoon:list(files):select(3)
-            end
-        end, { desc = 'Go to third harpoon file for the current file list' })
-
-        utils.mapkey('n', '<leader>l', function()
-            if files then
-                harpoon:list(files):select(4)
-            end
-        end, { desc = 'Go to fourth harpoon file for the current file list' })
+        for i, key in ipairs(vim.fn.split('hjklHJKL', '\\zs')) do
+            local lhs = utils.termcodes('<leader>' .. key)
+            utils.mapkey('n', lhs, function()
+                if files then
+                    harpoon:list(files):select(i)
+                end
+            end, { desc = 'Go to the ' .. i .. 'th harpoon file for the current file list' })
+        end
 
         local conf = require('telescope.config').values
         local function toggle_telescope(harpoon_files)
