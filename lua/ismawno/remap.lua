@@ -149,22 +149,46 @@ utils.mapkey('n', '<leader>pbdi', function()
     utils.setup_cmake('-v --build-type Dist')
 end)
 utils.mapkey('n', '<leader>pbrde', function()
-    utils.setup_cmake('-v --build-type Debug --fetch-dependencies ' .. vim.fn.input('Dependencies to re-fetch: '))
+    local deps = vim.fn.input('Dependencies to re-fetch: ')
+    if not deps or deps == '' then
+        return
+    end
+    utils.setup_cmake('-v --build-type Debug --fetch-dependencies ' .. deps)
 end)
 utils.mapkey('n', '<leader>pbrre', function()
-    utils.setup_cmake('-v --build-type Release --fetch-dependencies ' .. vim.fn.input('Dependencies to re-fetch: '))
+    local deps = vim.fn.input('Dependencies to re-fetch: ')
+    if not deps or deps == '' then
+        return
+    end
+    utils.setup_cmake('-v --build-type Release --fetch-dependencies ' .. deps)
 end)
 utils.mapkey('n', '<leader>pbrdi', function()
-    utils.setup_cmake('-v --build-type Dist --fetch-dependencies ' .. vim.fn.input('Dependencies to re-fetch: '))
+    local deps = vim.fn.input('Dependencies to re-fetch: ')
+    if not deps or deps == '' then
+        return
+    end
+    utils.setup_cmake('-v --build-type Dist --fetch-dependencies ' .. deps)
 end)
 utils.mapkey('n', '<leader>pbade', function()
-    utils.setup_cmake('-v --build-type Debug ' .. vim.fn.input('Build arguments: '))
+    local args = vim.fn.input('Build arguments: ')
+    if not args or args == '' then
+        return
+    end
+    utils.setup_cmake('-v --build-type Debug ' .. args)
 end)
 utils.mapkey('n', '<leader>pbare', function()
-    utils.setup_cmake('-v --build-type Release ' .. vim.fn.input('Build arguments: '))
+    local args = vim.fn.input('Build arguments: ')
+    if not args or args == '' then
+        return
+    end
+    utils.setup_cmake('-v --build-type Release ' .. args)
 end)
 utils.mapkey('n', '<leader>pbadi', function()
-    utils.setup_cmake('-v --build-type Dist ' .. vim.fn.input('Build arguments: '))
+    local args = vim.fn.input('Build arguments: ')
+    if not args or args == '' then
+        return
+    end
+    utils.setup_cmake('-v --build-type Dist ' .. args)
 end)
 
 utils.mapkey('n', '<leader>pc', function()
