@@ -26,12 +26,12 @@ return {
             exec = {
                 create_list_item = function(_, exec)
                     exec = exec or vim.fn.input('Path to executable: ', root, 'file')
-                    if not exec then
+                    if not exec or exec == '' then
                         return nil
                     end
 
                     local noargs = string.match(exec, '%S+')
-                    if vim.fn.filereadable(noargs) == 0 then
+                    if vim.fn.executable(noargs) == 0 and vim.fn.filereadable(noargs) == 0 then
                         return nil
                     end
                     return { value = exec }
@@ -147,26 +147,13 @@ return {
         local exec = harpoon:list('exec')
         local exec_index = 1
 
-        utils.mapkey('n', '<leader>x', function()
+        utils.mapkey('n', '<leader>X', function()
             exec:select(exec_index)
         end, { desc = 'Run last executable' })
 
-        utils.mapkey('n', '<leader>dx', function()
+        utils.mapkey('n', '<leader>dX', function()
             exec:select(exec_index, true)
         end, { desc = 'Run last executable with a debugger' })
-
-        for i = 1, 9 do
-            local lhs = utils.termcodes('<leader>' .. i .. 'l')
-            utils.mapkey('n', lhs, function()
-                mlist:select(i)
-            end, { desc = 'Select file list ' .. i })
-
-            lhs = utils.termcodes('<leader>' .. i .. 'x')
-            utils.mapkey('n', lhs, function()
-                exec:select(i)
-                exec_index = i
-            end, { desc = 'Run executable ' .. i })
-        end
 
         utils.mapkey('n', '<leader>al', function()
             mlist:add()
@@ -203,6 +190,12 @@ return {
                     harpoon:list(files):select(i)
                 end
             end, { desc = 'Go to the ' .. i .. 'th harpoon file for the current file list' })
+
+            lhs = utils.termcodes('<leader>x' .. key)
+            utils.mapkey('n', lhs, function()
+                exec:select(i)
+                exec_index = i
+            end, { desc = 'Run executable ' .. i })
         end
 
         local conf = require('telescope.config').values
