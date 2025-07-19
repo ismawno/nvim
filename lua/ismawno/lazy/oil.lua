@@ -58,32 +58,6 @@ return {
         config = function()
             require('oil-git-status').setup({
                 show_ignored = false,
-                symbols = {
-                    index = {
-                        ['!'] = 'I',
-                        ['?'] = 'U',
-                        ['A'] = 'A',
-                        ['C'] = 'C',
-                        ['D'] = 'D',
-                        ['M'] = 'M',
-                        ['R'] = 'R',
-                        ['T'] = 'T',
-                        ['U'] = '!',
-                        [' '] = ' ',
-                    },
-                    working_tree = {
-                        ['!'] = 'I',
-                        ['?'] = 'U',
-                        ['A'] = 'A',
-                        ['C'] = 'C',
-                        ['D'] = 'D',
-                        ['M'] = 'M',
-                        ['R'] = 'R',
-                        ['T'] = 'T',
-                        ['U'] = '!',
-                        [' '] = ' ',
-                    },
-                },
             })
         end,
     },
