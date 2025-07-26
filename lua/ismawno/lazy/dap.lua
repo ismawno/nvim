@@ -167,7 +167,7 @@ return {
             utils.mapkey('n', '<leader>dw', function()
                 toggle_debug_ui('watches')
             end, { desc = 'Debug: toggle watches ui' })
-            utils.mapkey('n', '<leader>db', function()
+            utils.mapkey('n', '<leader>ddb', function()
                 toggle_debug_ui('breakpoints')
             end, { desc = 'Debug: toggle breakpoints ui' })
             utils.mapkey('n', '<leader>dS', function()
@@ -232,8 +232,8 @@ return {
         lazy = false,
         config = function()
             -- mason’s debugpy venv:
-            local python_path = vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python'
-            require('dap-python').setup(python_path)
+            local venv = utils.venv_executable()
+            require('dap-python').setup(venv)
             require('dap').configurations = {}
             -- require('dap').configurations.python = {
             --     {

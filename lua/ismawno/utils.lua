@@ -36,6 +36,11 @@ function M.find_root(fname)
     return vim.fn.fnamemodify(root, ':p')
 end
 
+function M.venv_executable(vname, fname)
+    vname = vname or '.venv'
+    return M.find_root(fname) .. vname .. '/bin/python'
+end
+
 function M.find_project_name(fname)
     local root = M.find_root(fname)
     return root:match('([^/]+)/?$')

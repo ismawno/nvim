@@ -42,7 +42,10 @@ return {
         vim.lsp.config('pyright', {
             capabilities = capabilities,
             settings = {
-                python = { analysis = { autoSearchPaths = true, extraPaths = { root, root .. '/src' } } },
+                python = {
+                    pythonPath = utils.venv_executable(),
+                    analysis = { autoSearchPaths = true, extraPaths = { root, root .. 'src' } },
+                },
             },
         })
         vim.lsp.config('clangd', {

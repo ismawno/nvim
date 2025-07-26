@@ -39,7 +39,6 @@ return {
                 end,
 
                 select = function(item, list, dbg)
-                    local trm = utils.get_a_terminal()
                     local exec = item.value
                     for i, val in ipairs(list.items) do
                         if exec == val.value then
@@ -49,6 +48,19 @@ return {
                     end
 
                     if dbg then
+                        local function remove_prefix(str, prefix)
+                            if str:sub(1, #prefix) == prefix then
+                                return str:sub(#prefix + 1)
+                            else
+                                return str
+                            end
+                        end
+                        exec = remove_prefix(exec, 'python ')
+
+                        local function ends_with(str, ending)
+                            return ending == '' or str:sub(-#ending) == ending
+                        end
+
                         local path = string.match(exec, '%S+')
                         local args = {}
                         for arg in string.gmatch(exec, '%S+') do
@@ -56,16 +68,32 @@ return {
                                 table.insert(args, arg)
                             end
                         end
-                        require('dap').run({
-                            type = 'lldb',
-                            request = 'launch',
-                            name = 'Custom launch',
-                            program = path,
-                            args = args,
-                            justMyCode = false,
-                            cwd = root,
-                        })
+                        local dap = require('dap')
+                        if ends_with(path, '.py') then
+                            dap.run({
+                                name = 'Python debugger',
+                                type = 'python',
+                                request = 'launch',
+                                program = path,
+                                console = 'integratedTerminal',
+                                args = args,
+                                env = { PYTHONPATH = root },
+                                cwd = root,
+                                pythonPath = utils.venv_executable(),
+                            })
+                        else
+                            dap.run({
+                                type = 'lldb',
+                                request = 'launch',
+                                name = 'Custom launch',
+                                program = path,
+                                args = args,
+                                justMyCode = false,
+                                cwd = root,
+                            })
+                        end
                     else
+                        local trm = utils.get_a_terminal()
                         trm:send(exec)
                     end
                 end,
