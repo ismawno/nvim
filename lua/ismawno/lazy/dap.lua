@@ -232,17 +232,50 @@ return {
         lazy = false,
         config = function()
             -- mason’s debugpy venv:
+            local root = utils.find_root()
             require('dap-python').setup(vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python')
-            require('dap').configurations = {}
-            require('dap').configurations.python = {
-                {
+            local dap = require('dap')
+            dap.configurations = {}
+
+            utils.mapkey('n', '<leader>dpy', function()
+                local path = vim.api.nvim_buf_get_name(0)
+                dap.run({
+                    name = 'Launch current file',
                     type = 'python',
                     request = 'launch',
-                    name = 'Launch current file',
-                    program = '${file}',
+                    program = path,
                     console = 'integratedTerminal',
-                },
-            }
+                    env = { PYTHONPATH = root },
+                    cwd = root,
+                    pythonPath = utils.venv_executable(),
+                })
+            end)
+
+            utils.mapkey('n', '<leader>Dpy', function()
+                local path = vim.api.nvim_buf_get_name(0)
+                local inp = vim.fn.input('Arguments: ')
+
+                if not inp or inp == '' then
+                    return
+                end
+
+                local args = {}
+                for arg in string.gmatch(inp, '%S+') do
+                    table.insert(args, arg)
+                end
+
+                dap.run({
+                    name = 'Launch current file',
+                    type = 'python',
+                    request = 'launch',
+                    program = path,
+                    console = 'integratedTerminal',
+                    args = args,
+                    env = { PYTHONPATH = root },
+                    cwd = root,
+                    pythonPath = utils.venv_executable(),
+                })
+            end)
         end,
     },
 }

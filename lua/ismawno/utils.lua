@@ -214,7 +214,7 @@ local function save_executable(index)
     index = index or 0
     index = tostring(index)
     local root = M.find_root()
-    local path = vim.fn.input('Path to executable slot ' .. index .. ': ', root, 'file')
+    local path = vim.fn.input('Path to executable slot ' .. index, root, 'file')
     if not path then
         return nil
     end
