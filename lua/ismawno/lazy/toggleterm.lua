@@ -8,7 +8,6 @@ return {
         -- persist size/dir between opens
         persist_size = true,
         persist_mode = true,
-        -- always start in insert mode
-        start_in_insert = true,
+        start_in_insert = false,
     },
 }

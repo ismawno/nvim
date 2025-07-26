@@ -9,6 +9,7 @@ return {
         local root = utils.find_root()
         local pname = utils.find_project_name()
 
+        local exec_index = 1
         local files = nil
         harpoon:setup({
             default = {
@@ -37,9 +38,15 @@ return {
                     return { value = exec }
                 end,
 
-                select = function(item, _, dbg)
+                select = function(item, list, dbg)
                     local trm = utils.get_a_terminal()
                     local exec = item.value
+                    for i, val in ipairs(list.items) do
+                        if exec == val.value then
+                            exec_index = i
+                            break
+                        end
+                    end
 
                     if dbg then
                         local path = string.match(exec, '%S+')
@@ -145,7 +152,6 @@ return {
         mlist:select(1)
 
         local exec = harpoon:list('exec')
-        local exec_index = 1
 
         utils.mapkey('n', '<leader>X', function()
             exec:select(exec_index)
@@ -194,8 +200,12 @@ return {
             lhs = utils.termcodes('<leader>x' .. key)
             utils.mapkey('n', lhs, function()
                 exec:select(i)
-                exec_index = i
             end, { desc = 'Run executable ' .. i })
+
+            lhs = utils.termcodes('<leader>dx' .. key)
+            utils.mapkey('n', lhs, function()
+                exec:select(i, true)
+            end, { desc = 'Run executable ' .. i .. ' with a debugger' })
         end
 
         local conf = require('telescope.config').values

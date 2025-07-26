@@ -191,7 +191,7 @@ utils.mapkey('n', '<leader>pbadi', function()
     utils.setup_cmake('-v --build-type Dist ' .. args)
 end)
 
-utils.mapkey('n', '<leader>pc', function()
+utils.mapkey('n', '<leader>c', function()
     local trm = utils.get_a_terminal()
     local path = trm.dir .. '/build'
     if vim.fn.isdirectory(path) == 1 then
@@ -219,6 +219,12 @@ utils.mapkey(
     ':!~/tracy/profiler/build/tracy-profiler > /dev/null 2>&1 &<CR>',
     { silent = true, desc = 'Execute tracy profiler' }
 )
+utils.mapkey('n', '<leader>tX', function()
+    local root = utils.find_root()
+    local path = vim.fn.input('Path to trace: ', root, 'file')
+    local trm = utils.get_a_terminal()
+    trm:send('~/tracy/profiler/build/tracy-profiler ' .. path)
+end, { silent = true, desc = 'Execute tracy profiler' })
 
 utils.mapkey('n', '<leader>sf', utils.toggle_header_source, { desc = 'Switch between C/C++ header and source files' })
 
