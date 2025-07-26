@@ -232,18 +232,17 @@ return {
         lazy = false,
         config = function()
             -- mason’s debugpy venv:
-            local venv = utils.venv_executable()
-            require('dap-python').setup(venv)
+            require('dap-python').setup(vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python')
             require('dap').configurations = {}
-            -- require('dap').configurations.python = {
-            --     {
-            --         type = 'python',
-            --         request = 'launch',
-            --         name = 'Launch current file',
-            --         program = '${file}',
-            --         console = 'integratedTerminal',
-            --     },
-            -- }
+            require('dap').configurations.python = {
+                {
+                    type = 'python',
+                    request = 'launch',
+                    name = 'Launch current file',
+                    program = '${file}',
+                    console = 'integratedTerminal',
+                },
+            }
         end,
     },
 }
