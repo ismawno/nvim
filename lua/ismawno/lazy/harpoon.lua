@@ -117,7 +117,7 @@ return {
                         return wrap(pname)
                     end
 
-                    name = vim.fn.input('Meta-list name: ')
+                    name = vim.fn.input('Meta-list name: ', pname)
                     if not name then
                         return nil
                     end
