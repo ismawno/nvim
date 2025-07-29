@@ -174,10 +174,9 @@ return {
         })
 
         local mlist = harpoon:list('metalist')
-        if #mlist.items == 0 then
-            mlist:add()
+        if #mlist.items >= 0 then
+            mlist:select(1)
         end
-        mlist:select(1)
 
         local exec = harpoon:list('exec')
 

@@ -202,7 +202,7 @@ utils.mapkey('n', '<leader>c', function()
         vim.notify(string.format('Build folder not found at: %s', path), vim.log.levels.WARN)
     end
 end)
-utils.mapkey('n', '<leader>pC', ':make -C build/ -j 4<CR>')
+utils.mapkey('n', '<leader>C', ':make -C build/ -j 4<CR>')
 
 -- utils.register_save_exec('<leader>')
 -- utils.register_run_exec('<leader>')
