@@ -216,7 +216,7 @@ utils.mapkey('n', '<leader>C', ':make -C build/ -j 4<CR>')
 utils.mapkey(
     'n',
     '<leader>tx',
-    ':!~/tracy/profiler/build/tracy-profiler > /dev/null 2>&1 &<CR>',
+    ':!~/vendor/tracy/profiler/build/tracy-profiler > /dev/null 2>&1 &<CR>',
     { silent = true, desc = 'Execute tracy profiler' }
 )
 
