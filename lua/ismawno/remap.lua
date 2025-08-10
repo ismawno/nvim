@@ -31,11 +31,16 @@ end
 utils.mapkey('v', '<C-j>', ":m '>+1<CR>gv=gv", { silent = true, desc = 'Move current line down' })
 utils.mapkey('v', '<C-k>', ":m '<-2<CR>gv=gv", { silent = true, desc = 'Move current line up' })
 
-utils.mapkey('n', '<C-h>', '<cmd>cprev<CR>zz', { desc = 'Go to previous quickfix element' })
-utils.mapkey('n', '<C-l>', '<cmd>cnext<CR>zz', { desc = 'Go to next quickfix element' })
+utils.mapkey('n', '<C-j>', '<C-w>j', { desc = 'Go to the next bottom window' })
+utils.mapkey('n', '<C-k>', '<C-w>k', { desc = 'Go to the next top window' })
+utils.mapkey('n', '<C-h>', '<C-w>h', { desc = 'Go to the next left window' })
+utils.mapkey('n', '<C-l>', '<C-w>l', { desc = 'Go to the next right window' })
 
-utils.mapkey({ 'n', 'v' }, 'J', '8j', { desc = 'Move cursor 8 lines down' })
-utils.mapkey({ 'n', 'v' }, 'K', '8k', { desc = 'Move cursor 8 lines up' })
+utils.mapkey('n', '<C-q>', '<cmd>cprev<CR>zz', { desc = 'Go to previous quickfix element' })
+utils.mapkey('n', '<C-e>', '<cmd>cnext<CR>zz', { desc = 'Go to next quickfix element' })
+
+utils.mapkey({ 'n', 'v' }, 'J', '<C-d>', { noremap = true, desc = 'Move cursor down 10%' })
+utils.mapkey({ 'n', 'v' }, 'K', '<C-u>', { noremap = true, desc = 'Move cursor up 10%' })
 -- utils.mapkey({ 'n', 'v', 'o' }, '¡', '$', { noremap = true, force = true, desc = 'Jump to the end of line' })
 -- utils.mapkey({ 'n', 'v', 'o' }, '¿', '0', { noremap = true, force = true, desc = 'Jump to the start of line' })
 
@@ -60,11 +65,11 @@ utils.mapkey('i', '<C-u>', '<C-r>"', { noremap = true, desc = 'Copy into the lin
 utils.mapkey('n', '<leader>ot', utils.open_horizontal_terminal, { desc = 'Open a terminal (bottom horizontal)' })
 utils.mapkey('n', '<leader>oT', utils.open_float_terminal, { desc = 'Open a terminal (float)' })
 
-utils.mapkey('n', '<C-j>', function()
+utils.mapkey('n', '<C-d>', function()
     utils.navigate_file('next')
 end, { desc = 'Go to next file in explorer' })
 
-utils.mapkey('n', '<C-k>', function()
+utils.mapkey('n', '<C-u>', function()
     utils.navigate_file('prev')
 end, { desc = 'Go to prev file in explorer' })
 
