@@ -69,6 +69,7 @@ return {
             -- -- reuse the same setup for plain C files
             -- dap.configurations.c = dap.configurations.cpp
 
+            utils.mapkey('n', '<leader>dP', dap.pause, { desc = 'Debug: Pause' })
             utils.mapkey('n', '<leader>dc', dap.continue, { desc = 'Debug: Continue' })
             utils.mapkey('n', '<leader>dn', dap.step_over, { desc = 'Debug: Step Over' })
             utils.mapkey('n', '<leader>di', dap.step_into, { desc = 'Debug: Step Into' })
