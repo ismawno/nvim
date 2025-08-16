@@ -201,7 +201,7 @@ utils.mapkey('n', '<leader>c', function()
     local path = trm.dir .. '/build'
     if vim.fn.isdirectory(path) == 1 then
         trm:send('cd ' .. path)
-        trm:send('make -j 4')
+        trm:send('make -j 8')
         trm:send('cd ..')
     else
         vim.notify(string.format('Build folder not found at: %s', path), vim.log.levels.WARN)
