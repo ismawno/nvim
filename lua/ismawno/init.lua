@@ -48,7 +48,19 @@ autocmd('BufWritePre', {
 })
 
 autocmd('BufWritePre', {
-    pattern = { '*.py', '*.c', '*.cpp', '*.h', '*.hpp', '*.sh', '*.lua', 'CMakeLists.txt' },
+    pattern = {
+        '*.py',
+        '*.c',
+        '*.cpp',
+        '*.h',
+        '*.hpp',
+        '*.sh',
+        '*.lua',
+        '*.glsl',
+        '*.frag',
+        '*.vert',
+        'CMakeLists.txt',
+    },
     callback = function()
         require('conform').format({ async = false })
     end,
