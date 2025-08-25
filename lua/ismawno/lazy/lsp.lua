@@ -39,6 +39,9 @@ return {
 
         local utils = require('ismawno.utils')
         local root = utils.find_root()
+        vim.lsp.config('glsl_analyzer', { capabilities = capabilities })
+        vim.lsp.config('neocmakelsp', { capabilities = capabilities })
+        vim.lsp.config('cmakelang', { capabilities = capabilities })
         vim.lsp.config('pyright', {
             capabilities = capabilities,
             settings = {
