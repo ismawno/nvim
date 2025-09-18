@@ -30,9 +30,6 @@ return {
                 cpp = { 'clang_format' },
                 bash = { 'shfmt' },
                 cmake = { 'cmake_format' },
-                glsl = { 'glsl_analyzer' },
-                vert = { 'glsl_analyzer' },
-                frag = { 'glsl_analyzer' },
             },
             formatters = { black = { prepend_args = { '--line-length', '119' } } },
         })

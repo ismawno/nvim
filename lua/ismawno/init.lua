@@ -56,13 +56,27 @@ autocmd('BufWritePre', {
         '*.hpp',
         '*.sh',
         '*.lua',
-        '*.glsl',
-        '*.frag',
-        '*.vert',
         'CMakeLists.txt',
     },
     callback = function()
         require('conform').format({ async = false })
+    end,
+})
+
+autocmd('BufWritePre', {
+    pattern = {
+        '*.glsl',
+        '*.frag',
+        '*.vert',
+    },
+    callback = function(args)
+        vim.lsp.buf.format({
+            bufnr = args.buf,
+            async = false,
+            filter = function(client)
+                return client.name == 'glsl_analyzer'
+            end,
+        })
     end,
 })
 
