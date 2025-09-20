@@ -204,7 +204,7 @@ utils.mapkey('n', '<leader>c', function()
         trm:send('make -j 8')
         trm:send('cd ..')
     else
-        vim.notify(string.format('Build folder not found at: %s', path), vim.log.levels.WARN)
+        vim.notify(string.format('Build directory not found at: %s', path), vim.log.levels.WARN)
     end
 end)
 utils.mapkey('n', '<leader>C', ':make -C build/ -j 4<CR>')
