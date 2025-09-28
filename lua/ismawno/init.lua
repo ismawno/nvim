@@ -56,6 +56,10 @@ autocmd('BufWritePre', {
         '*.hpp',
         '*.sh',
         '*.lua',
+        '*.md',
+        '*.json',
+        '*.yaml',
+        '*.yml',
         'CMakeLists.txt',
     },
     callback = function()

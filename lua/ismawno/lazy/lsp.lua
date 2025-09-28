@@ -30,6 +30,10 @@ return {
                 cpp = { 'clang_format' },
                 bash = { 'shfmt' },
                 cmake = { 'cmake_format' },
+                json = { 'prettier' },
+                md = { 'prettier' },
+                yaml = { 'prettier' },
+                yml = { 'prettier' },
             },
             formatters = { black = { prepend_args = { '--line-length', '119' } } },
         })
@@ -39,6 +43,7 @@ return {
 
         local utils = require('ismawno.utils')
         local root = utils.find_root()
+        vim.lsp.config('json-lsp', { capabilities = capabilities })
         vim.lsp.config('glsl_analyzer', { capabilities = capabilities })
         vim.lsp.config('neocmakelsp', { capabilities = capabilities })
         vim.lsp.config('cmakelang', { capabilities = capabilities })
