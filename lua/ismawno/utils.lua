@@ -163,7 +163,30 @@ function M.get_a_terminal()
     return last_terminal
 end
 
-function M.setup_cmake(args)
+function M.configure_cmake(preset)
+    local trm = M.get_a_terminal()
+    trm:send('cmake --preset ' .. preset)
+    trm:send('cp build/' .. preset .. '/compile_commands.json build/compile_commands.json')
+end
+
+function M.build_cmake(preset)
+    local trm = M.get_a_terminal()
+    trm:send('cmake --build --preset ' .. preset)
+end
+
+function M.build_cmake_convoy()
+    local trm = M.get_a_terminal()
+    local path = trm.dir .. '/build'
+    if vim.fn.isdirectory(path) == 1 then
+        trm:send('cd ' .. path)
+        trm:send('make -j 8')
+        trm:send('cd ..')
+    else
+        vim.notify(string.format('Build directory not found at: %s', path), vim.log.levels.WARN)
+    end
+end
+
+function M.setup_cmake_convoy(args, log)
     local trm = M.get_a_terminal()
 
     local path = trm.dir .. '/setup/build.py'
@@ -173,8 +196,21 @@ function M.setup_cmake(args)
             cmd = cmd .. ' ' .. args
         end
         trm:send(cmd)
-    else
+        return true
+    end
+    if log then
         vim.notify(string.format('Build script not found at: %s', path), vim.log.levels.WARN)
+    end
+    return false
+end
+
+function M.remove_cmake_deps(deps)
+    local trm = M.get_a_terminal()
+    local root = M.find_root()
+    for dep in string.gmatch(deps, '%S+') do
+        trm:send('rm -rf ' .. root .. 'build/debug/_deps/' .. dep .. '-build')
+        trm:send('rm -rf ' .. root .. 'build/debug/_deps/' .. dep .. '-src')
+        trm:send('rm -rf ' .. root .. 'build/debug/_deps/' .. dep .. '-subbuild')
     end
 end
 

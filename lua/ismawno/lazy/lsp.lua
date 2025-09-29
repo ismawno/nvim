@@ -62,7 +62,7 @@ return {
             cmd = {
                 'clangd',
                 '--header-insertion=never',
-                --     '--compile-commands-dir=' .. ccmd,
+                -- '--compile-commands-dir=' .. root .. 'build/',
             },
         })
         vim.lsp.config('lua_ls', {

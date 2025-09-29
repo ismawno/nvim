@@ -144,70 +144,57 @@ utils.foreach_location(function(loc)
     end)
 end, true)
 
-utils.mapkey('n', '<leader>pbde', function()
-    utils.setup_cmake('-v --build-type Debug')
-end)
-utils.mapkey('n', '<leader>pbre', function()
-    utils.setup_cmake('-v --build-type Release')
-end)
-utils.mapkey('n', '<leader>pbdi', function()
-    utils.setup_cmake('-v --build-type Dist')
-end)
-utils.mapkey('n', '<leader>pbrde', function()
-    local deps = vim.fn.input('Dependencies to re-fetch: ')
-    if not deps or deps == '' then
-        return
+utils.mapkey('n', '<leader>pcd', function()
+    if not utils.setup_cmake_convoy('-v --build-type Debug') then
+        utils.configure_cmake('debug')
     end
-    utils.setup_cmake('-v --build-type Debug --fetch-dependencies ' .. deps)
 end)
-utils.mapkey('n', '<leader>pbrre', function()
-    local deps = vim.fn.input('Dependencies to re-fetch: ')
-    if not deps or deps == '' then
-        return
+utils.mapkey('n', '<leader>pcr', function()
+    if not utils.setup_cmake_convoy('-v --build-type Release') then
+        utils.configure_cmake('release')
     end
-    utils.setup_cmake('-v --build-type Release --fetch-dependencies ' .. deps)
-end)
-utils.mapkey('n', '<leader>pbrdi', function()
-    local deps = vim.fn.input('Dependencies to re-fetch: ')
-    if not deps or deps == '' then
-        return
-    end
-    utils.setup_cmake('-v --build-type Dist --fetch-dependencies ' .. deps)
-end)
-utils.mapkey('n', '<leader>pbade', function()
-    local args = vim.fn.input('Build arguments: ')
-    if not args or args == '' then
-        return
-    end
-    utils.setup_cmake('-v --build-type Debug ' .. args)
-end)
-utils.mapkey('n', '<leader>pbare', function()
-    local args = vim.fn.input('Build arguments: ')
-    if not args or args == '' then
-        return
-    end
-    utils.setup_cmake('-v --build-type Release ' .. args)
-end)
-utils.mapkey('n', '<leader>pbadi', function()
-    local args = vim.fn.input('Build arguments: ')
-    if not args or args == '' then
-        return
-    end
-    utils.setup_cmake('-v --build-type Dist ' .. args)
 end)
 
-utils.mapkey('n', '<leader>c', function()
-    local trm = utils.get_a_terminal()
-    local path = trm.dir .. '/build'
-    if vim.fn.isdirectory(path) == 1 then
-        trm:send('cd ' .. path)
-        trm:send('make -j 8')
-        trm:send('cd ..')
-    else
-        vim.notify(string.format('Build directory not found at: %s', path), vim.log.levels.WARN)
+utils.mapkey('n', '<leader>pcD', function()
+    utils.setup_cmake_convoy('-v --build-type Dist', true)
+end)
+
+utils.mapkey('n', '<leader>pRcd', function()
+    local deps = vim.fn.input('Dependencies to re-fetch: ')
+    if not deps or deps == '' then
+        return
+    end
+    if not utils.setup_cmake_convoy('-v --build-type Debug --fetch-dependencies ' .. deps) then
+        utils.remove_cmake_deps(deps)
+        utils.configure_cmake('debug')
     end
 end)
-utils.mapkey('n', '<leader>C', ':make -C build/ -j 4<CR>')
+utils.mapkey('n', '<leader>pRcr', function()
+    local deps = vim.fn.input('Dependencies to re-fetch: ')
+    if not deps or deps == '' then
+        return
+    end
+    if not utils.setup_cmake_convoy('-v --build-type Release --fetch-dependencies ' .. deps) then
+        utils.remove_cmake_deps(deps)
+        utils.configure_cmake('release')
+    end
+end)
+utils.mapkey('n', '<leader>pRcD', function()
+    local deps = vim.fn.input('Dependencies to re-fetch: ')
+    if not deps or deps == '' then
+        return
+    end
+    utils.setup_cmake_convoy('-v --build-type Dist --fetch-dependencies ' .. deps, true)
+end)
+
+utils.mapkey('n', '<leader>pB', utils.build_cmake_convoy)
+
+utils.mapkey('n', '<leader>pbd', function()
+    utils.build_cmake('debug')
+end)
+utils.mapkey('n', '<leader>pbr', function()
+    utils.build_cmake('release')
+end)
 
 -- utils.register_save_exec('<leader>')
 -- utils.register_run_exec('<leader>')
