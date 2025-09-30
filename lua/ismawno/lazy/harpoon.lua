@@ -137,6 +137,21 @@ return {
                     end
                 end,
             },
+            branches = {
+                create_list_item = function(_, branch)
+                    branch = branch or vim.fn.input('Branch name: ')
+                    if not branch or branch == '' then
+                        return nil
+                    end
+
+                    return { value = branch }
+                end,
+
+                select = function(item)
+                    local branch = item.value
+                    vim.cmd('G checkout ' .. branch)
+                end,
+            },
         })
         harpoon:extend({
             LIST_CHANGE = function(event_data)
@@ -179,6 +194,7 @@ return {
         end
 
         local exec = harpoon:list('exec')
+        local branches = harpoon:list('branches')
 
         utils.mapkey('n', '<leader>X', function()
             exec:select(exec_index)
@@ -196,6 +212,10 @@ return {
             exec:add()
         end, { desc = 'Add a project executable' })
 
+        utils.mapkey('n', '<leader>ab', function()
+            branches:add()
+        end, { desc = 'Add a project branch' })
+
         utils.mapkey('n', '<leader>af', function()
             if files then
                 harpoon:list(files):add()
@@ -208,7 +228,11 @@ return {
 
         utils.mapkey('n', '<leader>mx', function()
             harpoon.ui:toggle_quick_menu(exec, { title = 'Executables' })
-        end, { desc = 'Open harpoon quick menu for the current file list' })
+        end, { desc = 'Open harpoon quick menu for the current executable list' })
+
+        utils.mapkey('n', '<leader>mb', function()
+            harpoon.ui:toggle_quick_menu(branches, { title = 'Branches' })
+        end, { desc = 'Open harpoon quick menu for the current branch list' })
 
         utils.mapkey('n', '<leader>mf', function()
             if files then
@@ -233,6 +257,11 @@ return {
             utils.mapkey('n', lhs, function()
                 exec:select(i, true)
             end, { desc = 'Run executable ' .. i .. ' with a debugger' })
+
+            lhs = utils.termcodes('<leader>b' .. key)
+            utils.mapkey('n', lhs, function()
+                branches:select(i)
+            end)
         end
     end,
 }
