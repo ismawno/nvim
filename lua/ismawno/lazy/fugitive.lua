@@ -12,12 +12,16 @@ return {
         utils.mapkey('n', '<leader>gP', ':G pull<CR>', { desc = 'Execute git pull', force = true })
         utils.mapkey('n', '<leader>gt', ':G stash<CR>', { desc = 'Execute git stash', force = true })
         utils.mapkey('n', '<leader>gT', ':G stash pop<CR>', { desc = 'Execute git stash pop', force = true })
+        utils.mapkey('n', '<leader>gS', function()
+            local trm = utils.get_a_terminal()
+            trm:send('git status')
+        end, { desc = 'Execute git status', force = true })
         utils.mapkey('n', '<leader>gC', function()
             local branch = vim.fn.input('Branch to checkout: ')
             if not branch or branch == '' then
                 return
             end
             vim.cmd('G checkout ' .. branch)
-        end, { desc = 'Execute git stash pop', force = true })
+        end, { desc = 'Execute git checkout', force = true })
     end,
 }
