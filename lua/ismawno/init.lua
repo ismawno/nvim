@@ -14,6 +14,22 @@ end
 
 -- vim.o.winborder = 'rounded'
 
+-- Notify when macro recording starts/stops
+autocmd('RecordingEnter', {
+    callback = function()
+        local reg = vim.fn.reg_recording()
+        if reg ~= '' then
+            vim.notify('Recording macro @' .. reg, vim.log.levels.INFO, { title = 'Macro' })
+        end
+    end,
+})
+
+autocmd('RecordingLeave', {
+    callback = function()
+        vim.notify('Stopped recording macro', vim.log.levels.INFO, { title = 'Macro' })
+    end,
+})
+
 vim.g.load_doxygen_syntax = 1
 autocmd('FileType', {
     group = ismawno_group,
