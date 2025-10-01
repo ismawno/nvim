@@ -258,10 +258,10 @@ return {
                 exec:select(i, true)
             end, { desc = 'Run executable ' .. i .. ' with a debugger' })
 
-            lhs = utils.termcodes('<leader>b' .. key)
-            utils.mapkey('n', lhs, function()
-                branches:select(i)
-            end)
+            -- lhs = utils.termcodes('<leader>b' .. key)
+            -- utils.mapkey('n', lhs, function()
+            --     branches:select(i)
+            -- end)
         end
     end,
 }
