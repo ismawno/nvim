@@ -60,14 +60,19 @@ return {
                         local function ends_with(str, ending)
                             return ending == '' or str:sub(-#ending) == ending
                         end
+                        local mangled = exec:gsub('%b""', function(str)
+                            return str:gsub(' ', '\1')
+                        end)
 
                         local path = string.match(exec, '%S+')
                         local args = {}
-                        for arg in string.gmatch(exec, '%S+') do
+                        for arg in string.gmatch(mangled, '%S+') do
+                            arg = arg:gsub('\1', ' ')
                             if arg ~= path then
                                 table.insert(args, arg)
                             end
                         end
+
                         local dap = require('dap')
                         if ends_with(path, '.py') then
                             dap.run({
