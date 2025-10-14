@@ -140,32 +140,26 @@ return {
         end, { desc = 'Add a project branch' })
 
         utils.mapkey('n', '<leader>af', function()
-            if files then
-                harpoon:list(files):add()
-            end
-        end, { desc = 'Add current file to harpoon for the current file list' })
+            harpoon:list(files):add()
+        end, { desc = 'Add current file to the file list' })
 
         utils.mapkey('n', '<leader>mx', function()
             harpoon.ui:toggle_quick_menu(exec, { title = 'Executables' })
-        end, { desc = 'Open harpoon quick menu for the current executable list' })
+        end, { desc = 'Open harpoon quick menu for the executable list' })
 
         utils.mapkey('n', '<leader>mb', function()
             harpoon.ui:toggle_quick_menu(branches, { title = 'Branches' })
-        end, { desc = 'Open harpoon quick menu for the current branch list' })
+        end, { desc = 'Open harpoon quick menu for the branch list' })
 
         utils.mapkey('n', '<leader>mf', function()
-            if files then
-                harpoon.ui:toggle_quick_menu(harpoon:list(files), { title = 'Files' })
-            end
-        end, { desc = 'Open harpoon quick menu for the current file list' })
+            harpoon.ui:toggle_quick_menu(harpoon:list(files), { title = 'Files' })
+        end, { desc = 'Open harpoon quick menu for the file list' })
 
         for i, key in ipairs(vim.fn.split('hjklHJKL', '\\zs')) do
             local lhs = utils.termcodes('<leader>' .. key)
             utils.mapkey('n', lhs, function()
-                if files then
-                    harpoon:list(files):select(i)
-                end
-            end, { desc = 'Go to the ' .. i .. 'th harpoon file for the current file list' })
+                harpoon:list(files):select(i)
+            end, { desc = 'Go to the ' .. i .. 'th harpoon file for the file list' })
 
             lhs = utils.termcodes('<leader>x' .. key)
             utils.mapkey('n', lhs, function()
