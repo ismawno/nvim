@@ -10,7 +10,6 @@ return {
         local pname = utils.find_project_name()
 
         local exec_index = 1
-        local files = nil
         harpoon:setup({
             default = {
                 get_root_dir = function()
@@ -103,45 +102,6 @@ return {
                     end
                 end,
             },
-            metalist = {
-                create_list_item = function(_, name)
-                    local function wrap(fname)
-                        if not files then
-                            files = fname
-                        end
-                        return { value = fname }
-                    end
-
-                    if name then
-                        return wrap(name)
-                    end
-
-                    local mlist = harpoon:list('metalist')
-                    if #mlist.items == 0 then
-                        vim.notify('Default meta-list created: ' .. pname)
-                        return wrap(pname)
-                    end
-
-                    name = vim.fn.input('Meta-list name: ', pname)
-                    if not name then
-                        return nil
-                    end
-
-                    return { value = name }
-                end,
-
-                select = function(item)
-                    files = item.value
-                end,
-
-                display = function(item)
-                    if item.value ~= files then
-                        return item.value
-                    else
-                        return item.value .. ' <--'
-                    end
-                end,
-            },
             branches = {
                 create_list_item = function(_, branch)
                     branch = branch or vim.fn.input('Branch name: ')
@@ -158,46 +118,8 @@ return {
                 end,
             },
         })
-        harpoon:extend({
-            LIST_CHANGE = function(event_data)
-                local mlist = event_data.list
-                if mlist.name ~= 'metalist' then
-                    return
-                end
-                local items = event_data.old_items
-                for i, item1 in ipairs(items) do
-                    local name = item1.value
-                    local found = false
 
-                    for _, item2 in ipairs(mlist.items) do
-                        if item1 == item2 then
-                            found = true
-                            break
-                        end
-                    end
-
-                    if not found then
-                        harpoon:list(name):clear()
-                        if name == files then
-                            files = nil
-                            for j = i, 1, -1 do
-                                files = mlist.items[j]
-                                if files then
-                                    files = files.value
-                                    break
-                                end
-                            end
-                        end
-                    end
-                end
-            end,
-        })
-
-        local mlist = harpoon:list('metalist')
-        if #mlist.items >= 0 then
-            mlist:select(1)
-        end
-
+        local files = harpoon:list(pname)
         local exec = harpoon:list('exec')
         local branches = harpoon:list('branches')
 
@@ -208,10 +130,6 @@ return {
         utils.mapkey('n', '<leader>dX', function()
             exec:select(exec_index, true)
         end, { desc = 'Run last executable with a debugger' })
-
-        utils.mapkey('n', '<leader>al', function()
-            mlist:add()
-        end, { desc = 'Add a file list' })
 
         utils.mapkey('n', '<leader>ax', function()
             exec:add()
@@ -226,10 +144,6 @@ return {
                 harpoon:list(files):add()
             end
         end, { desc = 'Add current file to harpoon for the current file list' })
-
-        utils.mapkey('n', '<leader>ml', function()
-            harpoon.ui:toggle_quick_menu(mlist, { title = 'Meta-list' })
-        end, { desc = 'Open harpoon quick menu for the current file list' })
 
         utils.mapkey('n', '<leader>mx', function()
             harpoon.ui:toggle_quick_menu(exec, { title = 'Executables' })
