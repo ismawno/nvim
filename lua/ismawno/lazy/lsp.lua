@@ -34,6 +34,7 @@ return {
                 md = { 'prettier' },
                 yaml = { 'prettier' },
                 yml = { 'prettier' },
+                nix = { 'nixfmt' },
             },
             formatters = { black = { prepend_args = { '--line-length', '119' } } },
         })

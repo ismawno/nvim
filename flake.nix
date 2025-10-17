@@ -1,4 +1,4 @@
 {
-    description = "My neovim configuration";
-    outputs = {self}: { nvimConfig = self; };
+  description = "My neovim configuration";
+  outputs = { self }: { nvimConfig = self; };
 }

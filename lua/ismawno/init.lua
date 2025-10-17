@@ -76,6 +76,7 @@ autocmd('BufWritePre', {
         '*.json',
         '*.yaml',
         '*.yml',
+        '*.nix',
         'CMakeLists.txt',
     },
     callback = function()
