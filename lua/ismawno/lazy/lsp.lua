@@ -1,6 +1,7 @@
 local is_nixos = vim.fn.filereadable('/etc/NIXOS') == 1
 
-local ensure_installed = { 'neocmake','nixfmt', 'cmakelang', 'json-lsp', 'prettier', 'black', 'pyright', 'shfmt', 'bashls'}
+local ensure_installed =
+    { 'neocmake', 'nixfmt', 'cmakelang', 'json-lsp', 'prettier', 'black', 'pyright', 'shfmt', 'bashls' }
 if not is_nixos then
     table.insert(ensure_installed, {
         'clang-format',
@@ -62,6 +63,8 @@ return {
 
         local utils = require('ismawno.utils')
         local root = utils.find_root()
+        local damn_nixos = is_nixos and vim.lsp.enable or vim.lsp.config
+
         vim.lsp.config('json-lsp', { capabilities = capabilities })
         vim.lsp.config('glsl_analyzer', { capabilities = capabilities })
         vim.lsp.config('neocmakelsp', { capabilities = capabilities })
@@ -75,7 +78,7 @@ return {
                 },
             },
         })
-        vim.lsp.config('clangd', {
+        damn_nixos('clangd', {
             capabilities = capabilities,
             root_dir = root,
             cmd = {
@@ -84,7 +87,7 @@ return {
                 -- '--compile-commands-dir=' .. root .. 'build/',
             },
         })
-        vim.lsp.config('lua_ls', {
+        damn_nixos('lua_ls', {
             capabilities = capabilities,
             settings = {
                 Lua = {
