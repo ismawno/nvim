@@ -212,11 +212,13 @@ return {
             'neovim/nvim-lspconfig',
         },
         config = function()
+            local ensure_installed = { 'debugpy' }
+            if not utils.is_nixos() then
+                table.insert(ensure_installed, 'codelldb')
+            end
+
             require('mason-nvim-dap').setup({
-                ensure_installed = {
-                    'codelldb',
-                    'debugpy',
-                },
+                ensure_installed = ensure_installed,
                 automatic_installation = true,
                 handlers = {
                     function(config)
@@ -240,6 +242,11 @@ return {
 
             utils.mapkey('n', '<leader>dpy', function()
                 local path = vim.api.nvim_buf_get_name(0)
+                local venv = utils.venv_executable()
+                if not venv then
+                    vim.notify('A virtual environment must be created to debug python')
+                    return
+                end
                 dap.run({
                     name = 'Launch current file',
                     type = 'python',
@@ -248,7 +255,7 @@ return {
                     console = 'integratedTerminal',
                     env = { PYTHONPATH = root },
                     cwd = root,
-                    pythonPath = utils.venv_executable(),
+                    pythonPath = venv,
                 })
             end)
 
@@ -265,6 +272,11 @@ return {
                     table.insert(args, arg)
                 end
 
+                local venv = utils.venv_executable()
+                if not venv then
+                    vim.notify('A virtual environment must be created to debug python')
+                    return
+                end
                 dap.run({
                     name = 'Launch current file',
                     type = 'python',
@@ -274,7 +286,7 @@ return {
                     args = args,
                     env = { PYTHONPATH = root },
                     cwd = root,
-                    pythonPath = utils.venv_executable(),
+                    pythonPath = venv,
                 })
             end)
         end,

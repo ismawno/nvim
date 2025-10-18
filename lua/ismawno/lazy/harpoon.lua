@@ -74,6 +74,11 @@ return {
 
                         local dap = require('dap')
                         if ends_with(path, '.py') then
+                            local venv = utils.venv_executable()
+                            if not venv then
+                                vim.notify('A virtual environment must be created to debug python')
+                                return
+                            end
                             dap.run({
                                 name = 'Python debugger',
                                 type = 'python',
@@ -83,7 +88,7 @@ return {
                                 args = args,
                                 env = { PYTHONPATH = root },
                                 cwd = root,
-                                pythonPath = utils.venv_executable(),
+                                pythonPath = venv,
                             })
                         else
                             dap.run({

@@ -29,6 +29,10 @@ function M.mapkey(mode, lhs, rhs, opts)
     vim.keymap.set(mode, lhs, rhs, opts)
 end
 
+function M.is_nixos()
+    return vim.fn.filereadable('/etc/NIXOS') == 1
+end
+
 function M.find_root(fname)
     local util = require('lspconfig.util')
     fname = fname or vim.api.nvim_buf_get_name(0)
@@ -38,7 +42,11 @@ end
 
 function M.venv_executable(vname, fname)
     vname = vname or '.venv'
-    return M.find_root(fname) .. vname .. '/bin/python'
+    local exec = M.find_root(fname) .. vname .. '/bin/python'
+    if vim.fn.filereadable(exec) == 0 then
+        return nil
+    end
+    return exec
 end
 
 function M.find_project_name(fname)

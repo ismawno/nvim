@@ -1,8 +1,8 @@
-local is_nixos = vim.fn.filereadable('/etc/NIXOS') == 1
+local utils = require('ismawno.utils')
 
 local ensure_installed =
     { 'neocmake', 'nixfmt', 'cmakelang', 'json-lsp', 'prettier', 'black', 'pyright', 'shfmt', 'bashls' }
-if not is_nixos then
+if not utils.is_nixos() then
     table.insert(ensure_installed, {
         'clang-format',
         'stylua',
@@ -61,7 +61,6 @@ return {
         local capabilities = cmp.get_lsp_capabilities()
         capabilities.textDocument.completion.completionItem.snippetSupport = false
 
-        local utils = require('ismawno.utils')
         local root = utils.find_root()
         vim.lsp.config('json-lsp', { capabilities = capabilities })
         vim.lsp.config('glsl_analyzer', { capabilities = capabilities })
@@ -112,7 +111,7 @@ return {
             },
         })
 
-        if is_nixos then
+        if utils.is_nixos() then
             vim.lsp.enable('lua_ls')
             vim.lsp.enable('clangd')
         end
