@@ -63,8 +63,6 @@ return {
 
         local utils = require('ismawno.utils')
         local root = utils.find_root()
-        local damn_nixos = is_nixos and vim.lsp.enable or vim.lsp.config
-
         vim.lsp.config('json-lsp', { capabilities = capabilities })
         vim.lsp.config('glsl_analyzer', { capabilities = capabilities })
         vim.lsp.config('neocmakelsp', { capabilities = capabilities })
@@ -78,7 +76,7 @@ return {
                 },
             },
         })
-        damn_nixos('clangd', {
+        vim.lsp.config('clangd', {
             capabilities = capabilities,
             root_dir = root,
             cmd = {
@@ -87,7 +85,7 @@ return {
                 -- '--compile-commands-dir=' .. root .. 'build/',
             },
         })
-        damn_nixos('lua_ls', {
+        vim.lsp.config('lua_ls', {
             capabilities = capabilities,
             settings = {
                 Lua = {
@@ -113,6 +111,11 @@ return {
                 },
             },
         })
+
+        if is_nixos then
+            vim.lsp.enable('lua_ls')
+            vim.lsp.enable('clangd')
+        end
 
         require('mason').setup()
         local mcfg = require('mason-lspconfig')
