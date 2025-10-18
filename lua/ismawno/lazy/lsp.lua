@@ -1,3 +1,22 @@
+local is_nixos = vim.fn.filereadable('/etc/NIXOS') == 1
+
+local ensure_installed = { 'neocmake' }
+if not is_nixos then
+    table.insert(ensure_installed, {
+        'black',
+        'clang-format',
+        'json-lsp',
+        'nixfmt',
+        'prettier',
+        'shfmt',
+        'stylua',
+        'lua_ls',
+        'pyright',
+        'clangd',
+        'bashls',
+    })
+end
+
 return {
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -7,20 +26,7 @@ return {
         {
             'WhoIsSethDaniel/mason-tool-installer.nvim',
             opts = {
-                ensure_installed = {
-                    'black',
-                    'clang-format',
-                    'json-lsp',
-                    'nixfmt',
-                    'prettier',
-                    'shfmt',
-                    'stylua',
-                    'lua_ls',
-                    'pyright',
-                    'clangd',
-                    'bashls',
-                    'neocmake',
-                },
+                ensure_installed = ensure_installed,
             },
         },
         {
