@@ -42,32 +42,17 @@ return {
             local dap = require('dap')
             dap.set_log_level('DEBUG')
 
+            local cmd = utils.is_nixos() and 'lldb' or 'codelldb'
             dap.adapters.codelldb = {
                 type = 'server',
                 port = '${port}',
                 executable = {
-                    command = 'codelldb',
+                    command = cmd,
                     args = { '--port', '${port}' },
                 },
             }
             dap.adapters.lldb = dap.adapters.codelldb
             dap.configurations = {}
-
-            -- dap.configurations.cpp = {
-            --     {
-            --         name = 'CodeLLDB Launch executable',
-            --         type = 'codelldb',
-            --         request = 'launch',
-            --         program = function()
-            --             return vim.fn.input('Path to executable: ', root, 'file')
-            --         end,
-            --         cwd = root,
-            --         stopOnEntry = true,
-            --         args = {},
-            --     },
-            -- }
-            -- -- reuse the same setup for plain C files
-            -- dap.configurations.c = dap.configurations.cpp
 
             utils.mapkey('n', '<leader>dP', dap.pause, { desc = 'Debug: Pause' })
             utils.mapkey('n', '<leader>dc', dap.continue, { desc = 'Debug: Continue' })
