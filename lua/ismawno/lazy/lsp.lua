@@ -5,6 +5,25 @@ return {
         'williamboman/mason.nvim',
         'williamboman/mason-lspconfig.nvim',
         {
+            'WhoIsSethDaniel/mason-tool-installer.nvim',
+            opts = {
+                ensure_installed = {
+                    'black',
+                    'clang-format',
+                    'json-lsp',
+                    'nixfmt',
+                    'prettier',
+                    'shfmt',
+                    'stylua',
+                    'lua_ls',
+                    'pyright',
+                    'clangd',
+                    'bashls',
+                    'neocmake',
+                },
+            },
+        },
+        {
             'saghen/blink.cmp',
             version = '1.4.1',
             opts = {
@@ -95,15 +114,7 @@ return {
 
         require('mason').setup()
         local mcfg = require('mason-lspconfig')
-        mcfg.setup({
-            ensure_installed = {
-                'lua_ls',
-                'pyright',
-                'clangd',
-                'bashls',
-                'neocmake',
-            },
-        })
+        mcfg.setup()
 
         local vt = true
         local function set_diag_cfg()
