@@ -42,12 +42,11 @@ return {
             local dap = require('dap')
             dap.set_log_level('DEBUG')
 
-            local cmd = utils.is_nixos() and 'lldb' or 'codelldb'
             dap.adapters.codelldb = {
                 type = 'server',
                 port = '${port}',
                 executable = {
-                    command = cmd,
+                    command = 'codelldb',
                     args = { '--port', '${port}' },
                 },
             }
@@ -204,7 +203,7 @@ return {
 
             require('mason-nvim-dap').setup({
                 ensure_installed = ensure_installed,
-                automatic_installation = true,
+                automatic_installation = false,
                 handlers = {
                     function(config)
                         require('mason-nvim-dap').default_setup(config)
