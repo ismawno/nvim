@@ -1,19 +1,12 @@
 local is_nixos = vim.fn.filereadable('/etc/NIXOS') == 1
 
-local ensure_installed = { 'neocmake' }
+local ensure_installed = { 'neocmake','nixfmt', 'cmakelang', 'json-lsp', 'prettier', 'black', 'pyright', 'shfmt', 'bashls'}
 if not is_nixos then
     table.insert(ensure_installed, {
-        'black',
         'clang-format',
-        'json-lsp',
-        'nixfmt',
-        'prettier',
-        'shfmt',
         'stylua',
         'lua_ls',
-        'pyright',
         'clangd',
-        'bashls',
     })
 end
 
