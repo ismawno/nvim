@@ -1,45 +1,53 @@
 local utils = require('ismawno.utils')
 
-local ensure_installed =
-    { 'neocmake', 'nixfmt', 'cmakelang', 'json-lsp', 'prettier', 'black', 'pyright', 'shfmt', 'bashls' }
-if not utils.is_nixos() then
-    table.insert(ensure_installed, {
-        'clang-format',
-        'stylua',
-        'lua_ls',
-        'clangd',
+local dependencies = {
+    'stevearc/conform.nvim',
+    {
+        'saghen/blink.cmp',
+        version = '1.4.1',
+        opts = {
+            appearance = {
+                nerd_font_variant = 'mono',
+            },
+
+            completion = { documentation = { auto_show = false } },
+
+            sources = {
+                default = { 'lsp', 'path', 'snippets', 'buffer' },
+            },
+            fuzzy = { implementation = 'prefer_rust_with_warning' },
+        },
+    },
+}
+
+if utils.is_nixos() then
+    table.insert(dependencies, 'williamboman/mason.nvim')
+    table.insert(dependencies, 'williamboman/mason-lspconfig.nvim')
+    table.insert(dependencies, {
+        'WhoIsSethDaniel/mason-tool-installer.nvim',
+        opts = {
+            ensure_installed = {
+                'clang-format',
+                'stylua',
+                'lua_ls',
+                'clangd',
+                'neocmake',
+                'nixfmt',
+                'cmakelang',
+                'json-lsp',
+                'prettier',
+                'black',
+                'pyright',
+                'shfmt',
+                'bashls',
+            },
+        },
     })
 end
 
 return {
     'neovim/nvim-lspconfig',
-    dependencies = {
-        'stevearc/conform.nvim',
-        'williamboman/mason.nvim',
-        'williamboman/mason-lspconfig.nvim',
-        {
-            'WhoIsSethDaniel/mason-tool-installer.nvim',
-            opts = {
-                ensure_installed = ensure_installed,
-            },
-        },
-        {
-            'saghen/blink.cmp',
-            version = '1.4.1',
-            opts = {
-                appearance = {
-                    nerd_font_variant = 'mono',
-                },
-
-                completion = { documentation = { auto_show = false } },
-
-                sources = {
-                    default = { 'lsp', 'path', 'snippets', 'buffer' },
-                },
-                fuzzy = { implementation = 'prefer_rust_with_warning' },
-            },
-        },
-    },
+    dependencies = dependencies,
     config = function()
         require('conform').setup({
             formatters_by_ft = {
@@ -112,13 +120,18 @@ return {
         })
 
         if utils.is_nixos() then
+            vim.lsp.enable('json-lsp')
+            vim.lsp.enable('glsl_analyzer')
+            vim.lsp.enable('neocmakelsp')
+            vim.lsp.enable('cmakelang')
+            vim.lsp.enable('pyright')
             vim.lsp.enable('lua_ls')
             vim.lsp.enable('clangd')
+        else
+            require('mason').setup()
+            local mcfg = require('mason-lspconfig')
+            mcfg.setup()
         end
-
-        require('mason').setup()
-        local mcfg = require('mason-lspconfig')
-        mcfg.setup()
 
         local vt = true
         local function set_diag_cfg()

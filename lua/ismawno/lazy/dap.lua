@@ -33,7 +33,7 @@ local function create_nav_options(name)
     }
 end
 
-return {
+local packages = {
     {
         'mfussenegger/nvim-dap',
         dependencies = { 'neovim/nvim-lspconfig' },
@@ -187,38 +187,12 @@ return {
             end
         end,
     },
-
     {
-        'jay-babu/mason-nvim-dap.nvim',
-        dependencies = {
-            'williamboman/mason.nvim',
-            'mfussenegger/nvim-dap',
-            'neovim/nvim-lspconfig',
-        },
-        config = function()
-            local ensure_installed = { 'debugpy' }
-            if not utils.is_nixos() then
-                table.insert(ensure_installed, 'codelldb')
-            end
 
-            require('mason-nvim-dap').setup({
-                ensure_installed = ensure_installed,
-                automatic_installation = false,
-                handlers = {
-                    function(config)
-                        require('mason-nvim-dap').default_setup(config)
-                        require('dap').configurations = {}
-                    end,
-                },
-            })
-        end,
-    },
-    {
         'mfussenegger/nvim-dap-python',
         dependencies = { 'mfussenegger/nvim-dap' },
         lazy = false,
         config = function()
-            -- mason’s debugpy venv:
             local root = utils.find_root()
             require('dap-python').setup(vim.fn.stdpath('data') .. '/mason/packages/debugpy/venv/bin/python')
             local dap = require('dap')
@@ -276,3 +250,27 @@ return {
         end,
     },
 }
+if utils.is_nixos() then
+    table.insert(packages, {
+        'jay-babu/mason-nvim-dap.nvim',
+        dependencies = {
+            'williamboman/mason.nvim',
+            'mfussenegger/nvim-dap',
+            'neovim/nvim-lspconfig',
+        },
+        config = function()
+            require('mason-nvim-dap').setup({
+                ensure_installed = { 'debugpy', 'codelldb' },
+                automatic_installation = false,
+                handlers = {
+                    function(config)
+                        require('mason-nvim-dap').default_setup(config)
+                        require('dap').configurations = {}
+                    end,
+                },
+            })
+        end,
+    })
+end
+
+return packages
