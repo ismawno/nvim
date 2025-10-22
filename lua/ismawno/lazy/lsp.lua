@@ -40,6 +40,7 @@ if not utils.is_nixos() then
                 'pyright',
                 'shfmt',
                 'bashls',
+                'glsl_analyzer',
             },
         },
     })
