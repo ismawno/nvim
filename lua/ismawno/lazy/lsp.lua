@@ -71,19 +71,16 @@ return {
         capabilities.textDocument.completion.completionItem.snippetSupport = false
 
         local root = utils.find_root()
-        vim.lsp.config(
-            utils.is_nixos() and 'vscode-json-language-server' or 'json-lsp',
-            { capabilities = capabilities }
-        )
+        vim.lsp.config('jsonls', { capabilities = capabilities })
 
         vim.lsp.config('glsl_analyzer', { capabilities = capabilities })
         if not utils.is_nixos() then
             vim.lsp.config('neocmakelsp', { capabilities = capabilities })
             vim.lsp.config('cmakelang', { capabilities = capabilities })
         else
-            vim.lsp.config('cmake-language-server', { capabilities = capabilities })
+            vim.lsp.config('cmake', { capabilities = capabilities })
         end
-        vim.lsp.config(utils.is_nixos() and 'bash-language-server' or 'bashls', { capabilities = capabilities })
+        vim.lsp.config('bashls', { capabilities = capabilities })
         vim.lsp.config('pyright', {
             capabilities = capabilities,
             settings = {
@@ -102,7 +99,7 @@ return {
                 -- '--compile-commands-dir=' .. root .. 'build/',
             },
         })
-        vim.lsp.config(utils.is_nixos() and 'lua-language-server' or 'lua_ls', {
+        vim.lsp.config('lua_ls', {
             capabilities = capabilities,
             settings = {
                 Lua = {
@@ -130,12 +127,12 @@ return {
         })
 
         if utils.is_nixos() then
-            vim.lsp.enable('vscode-json-language-server')
+            vim.lsp.enable('jsonls')
             vim.lsp.enable('glsl_analyzer')
-            vim.lsp.enable('cmake-language-server')
+            vim.lsp.enable('cmake')
             vim.lsp.enable('pyright')
-            vim.lsp.enable('lua-language-server')
-            vim.lsp.enable('bash-language-server')
+            vim.lsp.enable('lua_ls')
+            vim.lsp.enable('bashls')
             vim.lsp.enable('clangd')
         else
             require('mason').setup()
