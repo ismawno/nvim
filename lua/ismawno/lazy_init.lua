@@ -5,13 +5,14 @@ if not vim.loop.fs_stat(lazypath) then
         'clone',
         '--filter=blob:none',
         'https://github.com/folke/lazy.nvim.git',
-        '--branch=stable', -- latest stable release
+        '--branch=stable',
         lazypath,
     })
 end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup({
+    lockfile = os.getenv('WNO_NVIM_PATH'),
     spec = 'ismawno.lazy',
     change_detection = { notify = false },
     ui = {
