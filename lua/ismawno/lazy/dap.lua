@@ -250,7 +250,7 @@ local packages = {
         end,
     },
 }
-if utils.is_nixos() then
+if not utils.is_nixos() then
     table.insert(packages, {
         'jay-babu/mason-nvim-dap.nvim',
         dependencies = {

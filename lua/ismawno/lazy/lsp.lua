@@ -20,7 +20,7 @@ local dependencies = {
     },
 }
 
-if utils.is_nixos() then
+if not utils.is_nixos() then
     table.insert(dependencies, 'williamboman/mason.nvim')
     table.insert(dependencies, 'williamboman/mason-lspconfig.nvim')
     table.insert(dependencies, {
