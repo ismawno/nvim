@@ -76,7 +76,6 @@ return {
         vim.lsp.config('glsl_analyzer', { capabilities = capabilities })
         if not utils.is_nixos() then
             vim.lsp.config('neocmakelsp', { capabilities = capabilities })
-            vim.lsp.config('cmakelang', { capabilities = capabilities })
         else
             vim.lsp.config('cmake', { capabilities = capabilities })
         end
