@@ -147,9 +147,15 @@ local last_terminal = nil
 local function bake_terminal(trm)
     trm:toggle()
     last_terminal = trm
-    -- if not M.is_nixos() then
-    --     return trm
-    -- end
+    local shell = os.getenv('SHELL')
+    if not M.is_nixos() or not shell then
+        return trm
+    end
+
+    local in_nix = os.getenv('IN_NIX_SHELL')
+    if in_nix then
+        trm:send(shell .. '-il')
+    end
     -- local root = M.find_root()
     -- if vim.fn.filereadable(root .. 'flake.nix') == 1 then
     --     trm:send('nix develop --command $SHELL -il')
