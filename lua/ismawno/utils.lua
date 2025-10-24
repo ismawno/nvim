@@ -153,7 +153,11 @@ local function bake_terminal(trm)
     local root = M.find_root()
     if vim.fn.filereadable(root .. 'flake.nix') == 1 then
         trm:send('nix develop --command $SHELL -il')
+    elseif os.getenv('ENV_PATH') and vim.fn.filereadable(os.getenv('ENV_PATH') .. '/develop/flake.nix') then
+        local path = os.getenv('ENV_PATH') .. '/develop/flake.nix'
+        trm:send('nix develop ' .. path .. ' --command $SHELL -il')
     end
+
     return trm
 end
 
