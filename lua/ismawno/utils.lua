@@ -144,11 +144,22 @@ function M.foreach_delimiter(func)
 end
 
 local last_terminal = nil
-function M.open_horizontal_terminal()
-    local trm = open_terminal({ direction = 'horizontal' })
+local function bake_terminal(trm)
     trm:toggle()
     last_terminal = trm
-    return trm -- just to avoid a nil warning
+    if not M.is_nixos() then
+        return trm
+    end
+    local root = M.find_root()
+    if vim.fn.filereadable(root .. 'flake.nix') then
+        trm:send('nix develop --command $SHELL -il')
+    end
+    return trm
+end
+
+function M.open_horizontal_terminal()
+    local trm = open_terminal({ direction = 'horizontal' })
+    return bake_terminal(trm)
 end
 function M.open_float_terminal()
     local trm = open_terminal({
@@ -159,9 +170,7 @@ function M.open_float_terminal()
             border = 'rounded',
         },
     })
-    trm:toggle()
-    last_terminal = trm
-    return trm -- just to avoid a nil warning
+    bake_terminal(trm)
 end
 
 function M.get_a_terminal()
