@@ -71,7 +71,7 @@ return {
         capabilities.textDocument.completion.completionItem.snippetSupport = false
 
         local root = utils.find_root()
-        vim.lsp.config('jsonls', { capabilities = capabilities })
+        vim.lsp.config(utils.is_nixos() and 'jsonls' or 'json-lsp', { capabilities = capabilities })
 
         vim.lsp.config('glsl_analyzer', { capabilities = capabilities })
         if not utils.is_nixos() then
