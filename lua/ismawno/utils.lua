@@ -151,7 +151,7 @@ local function bake_terminal(trm)
         return trm
     end
     local root = M.find_root()
-    if vim.fn.filereadable(root .. 'flake.nix') then
+    if vim.fn.filereadable(root .. 'flake.nix') == 1 then
         trm:send('nix develop --command $SHELL -il')
     end
     return trm
