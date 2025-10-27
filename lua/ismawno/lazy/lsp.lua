@@ -59,6 +59,7 @@ return {
                 bash = { 'shfmt' },
                 cmake = { 'cmake_format' },
                 json = { 'prettier' },
+                jsonc = { 'prettier' },
                 md = { 'prettier' },
                 yaml = { 'prettier' },
                 yml = { 'prettier' },

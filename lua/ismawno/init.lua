@@ -74,6 +74,7 @@ autocmd('BufWritePre', {
         '*.lua',
         '*.md',
         '*.json',
+        '*.jsonc',
         '*.yaml',
         '*.yml',
         '*.nix',
