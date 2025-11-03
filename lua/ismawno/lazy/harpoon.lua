@@ -144,7 +144,7 @@ return {
         end, { desc = 'Add a project branch' })
 
         utils.mapkey('n', '<leader>af', function()
-            harpoon:list(files):add()
+            files:add()
         end, { desc = 'Add current file to the file list' })
 
         utils.mapkey('n', '<leader>mx', function()
@@ -156,13 +156,13 @@ return {
         end, { desc = 'Open harpoon quick menu for the branch list' })
 
         utils.mapkey('n', '<leader>mf', function()
-            harpoon.ui:toggle_quick_menu(harpoon:list(files), { title = 'Files' })
+            harpoon.ui:toggle_quick_menu(files, { title = 'Files' })
         end, { desc = 'Open harpoon quick menu for the file list' })
 
         for i, key in ipairs(vim.fn.split('hjklHJKL', '\\zs')) do
             local lhs = utils.termcodes('<leader>' .. key)
             utils.mapkey('n', lhs, function()
-                harpoon:list(files):select(i)
+                files:select(i)
             end, { desc = 'Go to the ' .. i .. 'th harpoon file for the file list' })
 
             lhs = utils.termcodes('<leader>x' .. key)
