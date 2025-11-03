@@ -7,7 +7,6 @@ return {
         local hcfg = require('harpoon.config').get_default_config()
         local utils = require('ismawno.utils')
         local root = utils.find_root()
-        local pname = utils.find_project_name()
 
         local exec_index = 1
         harpoon:setup({
@@ -124,7 +123,7 @@ return {
             },
         })
 
-        local files = harpoon:list(pname)
+        local files = harpoon:list('files')
         local exec = harpoon:list('exec')
         local branches = harpoon:list('branches')
 
