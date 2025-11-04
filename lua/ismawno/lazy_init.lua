@@ -11,8 +11,13 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local nvim_path = os.getenv('WNO_NVIM_PATH')
+local lockfile = nil
+if nvim_path then
+    lockfile = nvim_path .. '/lazy-lock.json'
+end
 require('lazy').setup({
-    lockfile = os.getenv('WNO_NVIM_PATH'),
+    lockfile = lockfile,
     spec = 'ismawno.lazy',
     change_detection = { notify = false },
     ui = {
