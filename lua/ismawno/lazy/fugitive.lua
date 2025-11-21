@@ -16,7 +16,7 @@ return {
             vim.cmd('G ' .. cmd)
         end, { desc = 'Execute a git command', force = true })
         utils.mapkey('n', '<leader>gp', ':G push<CR>', { desc = 'Execute git push', force = true })
-        utils.mapkey('n', '<leader>gP', ':G pull<CR>', { desc = 'Execute git pull', force = true })
+        utils.mapkey('n', '<leader>gP', ':G pull --rebase<CR>', { desc = 'Execute git pull', force = true })
         utils.mapkey('n', '<leader>gt', ':G stash<CR>', { desc = 'Execute git stash', force = true })
         utils.mapkey('n', '<leader>gT', ':G stash pop<CR>', { desc = 'Execute git stash pop', force = true })
         utils.mapkey('n', '<leader>gS', function()
