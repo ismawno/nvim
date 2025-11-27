@@ -56,6 +56,7 @@ return {
                 python = { 'black' },
                 c = { 'clang_format' },
                 cpp = { 'clang_format' },
+                sh = { 'shfmt' },
                 bash = { 'shfmt' },
                 cmake = { 'cmake_format' },
                 json = { 'prettier' },
