@@ -205,12 +205,13 @@ end)
 --     utils.register_debug_exec('<leader>', i)
 -- end
 
-utils.mapkey(
-    'n',
-    '<leader>tx',
-    ':!~/vendor/tracy/profiler/build/tracy-profiler > /dev/null 2>&1 &<CR>',
-    { silent = true, desc = 'Execute tracy profiler' }
-)
+utils.mapkey('n', '<leader>tx', function()
+    if vim.fn.executable('tracy') == 1 then
+        vim.cmd('silent !tracy > /dev/null 2>&1 &')
+    else
+        vim.cmd('silent !~/vendor/tracy/profiler/build/tracy-profiler > /dev/null 2>&1 &')
+    end
+end, { silent = true, desc = 'Execute tracy profiler' })
 
 utils.mapkey('n', '<leader>sf', utils.toggle_header_source, { desc = 'Switch between C/C++ header and source files' })
 
