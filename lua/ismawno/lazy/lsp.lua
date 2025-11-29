@@ -32,7 +32,6 @@ if not utils.is_nixos() then
                 'lua_ls',
                 'clangd',
                 'neocmake',
-                'nixfmt',
                 'cmakelang',
                 'json-lsp',
                 'prettier',
