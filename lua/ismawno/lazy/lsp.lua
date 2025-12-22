@@ -78,7 +78,7 @@ return {
         if not utils.is_nixos() then
             vim.lsp.config('neocmakelsp', { capabilities = capabilities })
         else
-            vim.lsp.config('cmake', { cmd = 'cmake-language-server', capabilities = capabilities })
+            vim.lsp.config('cmake', { cmd = { 'cmake-language-server' }, capabilities = capabilities })
         end
         vim.lsp.config('bashls', { capabilities = capabilities })
         vim.lsp.config('pyright', {
