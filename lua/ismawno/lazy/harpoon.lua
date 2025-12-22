@@ -118,7 +118,7 @@ return {
 
                 select = function(item)
                     local branch = item.value
-                    vim.cmd('G checkout ' .. branch)
+                    vim.cmd('G switch ' .. branch)
                 end,
             },
         })
