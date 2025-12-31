@@ -3,6 +3,8 @@ vim.g.maplocalleader = ' '
 
 local utils = require('ismawno.utils')
 
+vim.cmd([[cnoreabbrev W w]])
+
 utils.mapkey('n', '<leader>pv', function()
     vim.cmd('Oil')
 end, { desc = 'Open explorer' })
