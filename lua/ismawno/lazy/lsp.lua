@@ -80,6 +80,7 @@ return {
         else
             vim.lsp.config('cmake', { cmd = { 'cmake-language-server' }, capabilities = capabilities })
         end
+        vim.lsp.config('slangd', { capabilities = capabilities })
         vim.lsp.config('bashls', { capabilities = capabilities })
         vim.lsp.config('pyright', {
             capabilities = capabilities,
@@ -134,6 +135,7 @@ return {
             vim.lsp.enable('lua_ls')
             vim.lsp.enable('bashls')
             vim.lsp.enable('clangd')
+            vim.lsp.enable('slangd')
         else
             require('mason').setup()
             local mcfg = require('mason-lspconfig')
