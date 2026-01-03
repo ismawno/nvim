@@ -7,7 +7,19 @@ return {
     },
 
     config = function()
-        require('telescope').setup({})
+        local actions = require('telescope.actions')
+        require('telescope').setup({
+            defaults = {
+                mappings = {
+                    i = {
+                        ['<leader>q'] = actions.send_selected_to_qflist,
+                    },
+                    n = {
+                        ['<leader>q'] = actions.send_selected_to_qflist,
+                    },
+                },
+            },
+        })
         local builtin = require('telescope.builtin')
         local utils = require('ismawno.utils')
 
