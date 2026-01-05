@@ -11,9 +11,6 @@ return {
         require('telescope').setup({
             defaults = {
                 mappings = {
-                    i = {
-                        ['<leader>q'] = actions.send_selected_to_qflist,
-                    },
                     n = {
                         ['<leader>q'] = actions.send_selected_to_qflist,
                     },
