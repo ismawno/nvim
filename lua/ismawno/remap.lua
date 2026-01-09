@@ -4,6 +4,8 @@ vim.g.maplocalleader = ' '
 local utils = require('ismawno.utils')
 
 vim.cmd([[cnoreabbrev W w]])
+vim.cmd([[cnoreabbrev Q q]])
+vim.cmd([[cnoreabbrev Wq wq]])
 
 utils.mapkey('n', '<leader>pv', function()
     vim.cmd('Oil')
