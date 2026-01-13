@@ -3,32 +3,6 @@ function M.termcodes(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
 end
 
-function M.mapkey(mode, lhs, rhs, opts)
-    -- Uncomment this to check if there are repeated bindings
-    -- local dbg = require('ismawno.debug')
-    -- if type(mode) == 'table' then
-    --     for _, md in ipairs(mode) do
-    --         M.mapkey(md, lhs, rhs, opts)
-    --     end
-    --     return
-    -- end
-    opts = opts or {}
-    -- local force = opts.force
-    --
-    -- local existing = dbg.find_map(mode, lhs, opts.buffer)
-    -- if existing and not force then
-    --     rhs = existing.rhs or '<display unavailable>'
-    --     vim.notify(
-    --         string.format('Keymap for [%s] in mode [%s] already exists: %s -> %s', lhs, mode, existing.lhs, rhs),
-    --         vim.log.levels.WARN
-    --     )
-    --     return
-    -- end
-    --
-    opts.force = nil
-    vim.keymap.set(mode, lhs, rhs, opts)
-end
-
 function M.is_nixos()
     return vim.fn.filereadable('/etc/NIXOS') == 1
 end

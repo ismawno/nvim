@@ -127,56 +127,56 @@ return {
         local exec = harpoon:list('exec')
         local branches = harpoon:list('branches')
 
-        utils.mapkey('n', '<leader>X', function()
+        vim.keymap.set('n', '<leader>X', function()
             exec:select(exec_index)
         end, { desc = 'Run last executable' })
 
-        utils.mapkey('n', '<leader>dX', function()
+        vim.keymap.set('n', '<leader>dX', function()
             exec:select(exec_index, true)
         end, { desc = 'Run last executable with a debugger' })
 
-        utils.mapkey('n', '<leader>ax', function()
+        vim.keymap.set('n', '<leader>ax', function()
             exec:add()
         end, { desc = 'Add a project executable' })
 
-        utils.mapkey('n', '<leader>ab', function()
+        vim.keymap.set('n', '<leader>ab', function()
             branches:add()
         end, { desc = 'Add a project branch' })
 
-        utils.mapkey('n', '<leader>af', function()
+        vim.keymap.set('n', '<leader>af', function()
             files:add()
         end, { desc = 'Add current file to the file list' })
 
-        utils.mapkey('n', '<leader>mx', function()
+        vim.keymap.set('n', '<leader>mx', function()
             harpoon.ui:toggle_quick_menu(exec, { title = 'Executables' })
         end, { desc = 'Open harpoon quick menu for the executable list' })
 
-        utils.mapkey('n', '<leader>mb', function()
+        vim.keymap.set('n', '<leader>mb', function()
             harpoon.ui:toggle_quick_menu(branches, { title = 'Branches' })
         end, { desc = 'Open harpoon quick menu for the branch list' })
 
-        utils.mapkey('n', '<leader>mf', function()
+        vim.keymap.set('n', '<leader>mf', function()
             harpoon.ui:toggle_quick_menu(files, { title = 'Files' })
         end, { desc = 'Open harpoon quick menu for the file list' })
 
         for i, key in ipairs(vim.fn.split('hjklHJKL', '\\zs')) do
             local lhs = utils.termcodes('<leader>' .. key)
-            utils.mapkey('n', lhs, function()
+            vim.keymap.set('n', lhs, function()
                 files:select(i)
             end, { desc = 'Go to the ' .. i .. 'th harpoon file for the file list' })
 
             lhs = utils.termcodes('<leader>x' .. key)
-            utils.mapkey('n', lhs, function()
+            vim.keymap.set('n', lhs, function()
                 exec:select(i)
             end, { desc = 'Run executable ' .. i })
 
             lhs = utils.termcodes('<leader>dx' .. key)
-            utils.mapkey('n', lhs, function()
+            vim.keymap.set('n', lhs, function()
                 exec:select(i, true)
             end, { desc = 'Run executable ' .. i .. ' with a debugger' })
 
             -- lhs = utils.termcodes('<leader>b' .. key)
-            -- utils.mapkey('n', lhs, function()
+            -- vim.keymap.set('n', lhs, function()
             --     branches:select(i)
             -- end)
         end

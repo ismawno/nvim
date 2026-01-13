@@ -19,11 +19,10 @@ return {
         },
         on_attach = function(bufnr)
             local gs = require('gitsigns')
-            local utils = require('ismawno.utils')
             local function map(mode, lhs, rhs, opts)
                 opts = opts or {}
                 opts.buffer = bufnr
-                utils.mapkey(mode, lhs, rhs, opts)
+                vim.keymap.set(mode, lhs, rhs, opts)
             end
 
             map('n', '<leader>Gs', gs.stage_hunk)

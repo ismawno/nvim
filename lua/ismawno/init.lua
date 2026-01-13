@@ -128,9 +128,8 @@ autocmd('LspAttach', {
             -- { 'n', ']d', vim.diagnostic.goto_next },
         }
 
-        local utils = require('ismawno.utils')
         for _, m in ipairs(maps) do
-            utils.mapkey(m[1], m[2], m[3], opts)
+            vim.keymap.set(m[1], m[2], m[3], opts)
         end
     end,
 })

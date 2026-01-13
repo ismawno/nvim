@@ -18,7 +18,6 @@ return {
             },
         })
         local builtin = require('telescope.builtin')
-        local utils = require('ismawno.utils')
 
         local function find_files()
             builtin.find_files({
@@ -84,39 +83,39 @@ return {
                 },
             })
         end
-        utils.mapkey('n', '<leader>pf', find_files, { desc = 'Find through all project' })
-        utils.mapkey('n', '<leader>gf', git_files, { desc = 'Find through all git tracked files' })
+        vim.keymap.set('n', '<leader>pf', find_files, { desc = 'Find through all project' })
+        vim.keymap.set('n', '<leader>gf', git_files, { desc = 'Find through all git tracked files' })
 
-        utils.mapkey('n', '<leader>pw', function()
+        vim.keymap.set('n', '<leader>pw', function()
             local word = vim.fn.expand('<cword>')
             grep_files(word)
         end, { desc = 'Search the current word through all files' })
 
-        utils.mapkey('n', '<leader>gw', function()
+        vim.keymap.set('n', '<leader>gw', function()
             local word = vim.fn.expand('<cword>')
             grep_git_files(word)
         end, { desc = 'Search the current word through all git tracked files' })
 
-        utils.mapkey('n', '<leader>pW', function()
+        vim.keymap.set('n', '<leader>pW', function()
             local word = vim.fn.expand('<cWORD>')
             grep_files(word)
         end, { desc = 'Search the current expression through all files' })
 
-        utils.mapkey('n', '<leader>gW', function()
+        vim.keymap.set('n', '<leader>gW', function()
             local word = vim.fn.expand('<cWORD>')
             grep_git_files(word)
         end, { desc = 'Search the current expression through all git tracked files' })
 
-        utils.mapkey('n', '<leader>pg', function()
+        vim.keymap.set('n', '<leader>pg', function()
             grep_files(vim.fn.input('Grep > '))
         end, { desc = 'Search through all files' })
 
-        utils.mapkey('n', '<leader>gg', function()
+        vim.keymap.set('n', '<leader>gg', function()
             grep_git_files(vim.fn.input('Grep > '))
         end, { desc = 'Search through all git tracked files' })
 
-        utils.mapkey('n', '<leader>ps', live_grep)
-        utils.mapkey('n', '<leader>gs', git_live_grep)
-        -- utils.mapkey('n', '<leader>vh', builtin.help_tags, { desc = '' })
+        vim.keymap.set('n', '<leader>ps', live_grep)
+        vim.keymap.set('n', '<leader>gs', git_live_grep)
+        -- vim.keymap.set('n', '<leader>vh', builtin.help_tags, { desc = '' })
     end,
 }

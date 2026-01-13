@@ -53,16 +53,16 @@ local packages = {
             dap.adapters.lldb = dap.adapters.codelldb
             dap.configurations = {}
 
-            utils.mapkey('n', '<leader>dP', dap.pause, { desc = 'Debug: Pause' })
-            utils.mapkey('n', '<leader>dc', dap.continue, { desc = 'Debug: Continue' })
-            utils.mapkey('n', '<leader>dn', dap.step_over, { desc = 'Debug: Step Over' })
-            utils.mapkey('n', '<leader>di', dap.step_into, { desc = 'Debug: Step Into' })
-            utils.mapkey('n', '<leader>do', dap.step_out, { desc = 'Debug: Step Out' })
-            utils.mapkey('n', '<leader>db', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
-            utils.mapkey('n', '<leader>dB', function()
+            vim.keymap.set('n', '<leader>dP', dap.pause, { desc = 'Debug: Pause' })
+            vim.keymap.set('n', '<leader>dc', dap.continue, { desc = 'Debug: Continue' })
+            vim.keymap.set('n', '<leader>dn', dap.step_over, { desc = 'Debug: Step Over' })
+            vim.keymap.set('n', '<leader>di', dap.step_into, { desc = 'Debug: Step Into' })
+            vim.keymap.set('n', '<leader>do', dap.step_out, { desc = 'Debug: Step Out' })
+            vim.keymap.set('n', '<leader>db', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
+            vim.keymap.set('n', '<leader>dB', function()
                 dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
             end, { desc = 'Debug: Set Conditional Breakpoint' })
-            utils.mapkey('n', '<leader>dt', function()
+            vim.keymap.set('n', '<leader>dt', function()
                 dap.disconnect({ terminateDebuggee = true })
             end, { desc = 'Debug: Stop debugger' })
 
@@ -143,25 +143,25 @@ local packages = {
                 pcall(dapui.toggle, layout_config.index)
             end
 
-            utils.mapkey('n', '<leader>dr', function()
+            vim.keymap.set('n', '<leader>dr', function()
                 toggle_debug_ui('repl')
             end, { desc = 'Debug: toggle repl ui' })
-            utils.mapkey('n', '<leader>ds', function()
+            vim.keymap.set('n', '<leader>ds', function()
                 toggle_debug_ui('stacks')
             end, { desc = 'Debug: toggle stacks ui' })
-            utils.mapkey('n', '<leader>dw', function()
+            vim.keymap.set('n', '<leader>dw', function()
                 toggle_debug_ui('watches')
             end, { desc = 'Debug: toggle watches ui' })
-            utils.mapkey('n', '<leader>ddb', function()
+            vim.keymap.set('n', '<leader>ddb', function()
                 toggle_debug_ui('breakpoints')
             end, { desc = 'Debug: toggle breakpoints ui' })
-            utils.mapkey('n', '<leader>dS', function()
+            vim.keymap.set('n', '<leader>dS', function()
                 toggle_debug_ui('scopes')
             end, { desc = 'Debug: toggle scopes ui' })
-            utils.mapkey('n', '<leader>dC', function()
+            vim.keymap.set('n', '<leader>dC', function()
                 toggle_debug_ui('console')
             end, { desc = 'Debug: toggle console ui' })
-            utils.mapkey('n', '<leader>dx', dapui.close, { desc = 'Debug: Close all ui' })
+            vim.keymap.set('n', '<leader>dx', dapui.close, { desc = 'Debug: Close all ui' })
 
             vim.api.nvim_create_autocmd('BufEnter', {
                 group = 'DapGroup',
@@ -198,7 +198,7 @@ local packages = {
             local dap = require('dap')
             dap.configurations = {}
 
-            utils.mapkey('n', '<leader>dpy', function()
+            vim.keymap.set('n', '<leader>dpy', function()
                 local path = vim.api.nvim_buf_get_name(0)
                 local venv = utils.venv_executable()
                 if not venv then
@@ -217,7 +217,7 @@ local packages = {
                 })
             end)
 
-            utils.mapkey('n', '<leader>Dpy', function()
+            vim.keymap.set('n', '<leader>Dpy', function()
                 local path = vim.api.nvim_buf_get_name(0)
                 local inp = vim.fn.input('Arguments: ')
 
