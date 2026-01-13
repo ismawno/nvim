@@ -14,7 +14,7 @@ return {
                 return
             end
             vim.cmd('G ' .. cmd)
-        end, { desc = 'Execute a git command', force = true })
+        end, { desc = 'Execute a git command' })
         vim.keymap.set('n', '<leader>gp', ':G push<CR>', { desc = 'Execute git push' })
         vim.keymap.set('n', '<leader>gP', ':G pull --rebase<CR>', { desc = 'Execute git pull' })
         vim.keymap.set('n', '<leader>gt', ':G stash<CR>', { desc = 'Execute git stash' })
