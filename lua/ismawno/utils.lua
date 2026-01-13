@@ -278,13 +278,13 @@ end
 
 function M.register_save_exec(binding_suffix, index)
     local lhs = index and M.termcodes(binding_suffix .. index .. 'X') or M.termcodes(binding_suffix .. 'X')
-    M.mapkey('n', lhs, function()
+    vim.keymap.set('n', lhs, function()
         save_executable(index)
     end, { desc = 'Save an executable shortcut for this workspace in slot ' .. (index or 0) })
 end
 function M.register_run_exec(binding_suffix, index)
     local lhs = index and M.termcodes(binding_suffix .. index .. 'x') or M.termcodes(binding_suffix .. 'x')
-    M.mapkey('n', lhs, function()
+    vim.keymap.set('n', lhs, function()
         local exec = load_executable(index) or save_executable(index)
         if exec then
             local trm = M.get_a_terminal()
@@ -294,7 +294,7 @@ function M.register_run_exec(binding_suffix, index)
 end
 function M.register_debug_exec(binding_suffix, index)
     local lhs = index and M.termcodes(binding_suffix .. index .. 'd') or M.termcodes(binding_suffix .. 'd')
-    M.mapkey('n', lhs, function()
+    vim.keymap.set('n', lhs, function()
         local exec = load_executable(index) or save_executable(index)
         if exec then
             local path = string.match(exec, '%S+')

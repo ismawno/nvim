@@ -160,6 +160,6 @@ return {
             vt = not vt
         end
         set_diag_cfg()
-        require('ismawno.utils').mapkey('n', '<leader>td', set_diag_cfg)
+        vim.keymap.set('n', '<leader>td', set_diag_cfg)
     end,
 }
