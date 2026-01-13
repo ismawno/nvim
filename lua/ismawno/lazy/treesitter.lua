@@ -5,6 +5,7 @@ return {
         lazy = false,
         branch = 'main',
         config = function()
+            require('nvim-treesitter').setup { install_dir = vim.fn.stdpath('data') .. '/site' }
             require('nvim-treesitter').install {
                 'c',
                 'cpp',
