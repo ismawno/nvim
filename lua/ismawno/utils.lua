@@ -161,7 +161,11 @@ end
 
 function M.configure_cmake(preset)
     local trm = M.get_a_terminal()
-    trm:send('cmake --preset ' .. preset)
+    if vim.fn.executable('ninja') == 1 then
+        trm:send('cmake --preset ' .. preset .. ' -G "Ninja"')
+    else
+        trm:send('cmake --preset ' .. preset)
+    end
     trm:send('cp build/' .. preset .. '/compile_commands.json build/compile_commands.json')
 end
 
