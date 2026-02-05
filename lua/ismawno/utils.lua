@@ -336,12 +336,15 @@ function M.toggle_header_source()
     end
 
     -- extension map
-    local maps = { {
-        h = 'c',
-        c = 'h',
-        hpp = 'cpp',
-        cpp = 'hpp',
-    }, { h = 'cpp' } }
+    local maps = {
+        {
+            h = 'c',
+            c = 'h',
+            hpp = 'cpp',
+            cpp = 'hpp',
+        },
+        { h = 'cpp', c = 'hpp', hpp = 'c', cpp = 'h' },
+    }
 
     for _, map in ipairs(maps) do
         local target_ext = map[ext]
