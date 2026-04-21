@@ -12,6 +12,14 @@ function R(name)
     require('plenary.reload').reload_module(name)
 end
 
+autocmd('FileType', {
+    pattern = { 'c', 'cpp', 'slang', 'glsl', 'hlsl' },
+    callback = function()
+        vim.opt_local.cinkeys:remove('0#')
+        vim.opt_local.indentkeys:remove('0#')
+    end,
+})
+
 -- vim.o.winborder = 'rounded'
 
 -- Notify when macro recording starts/stops
