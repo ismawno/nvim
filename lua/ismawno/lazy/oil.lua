@@ -31,6 +31,7 @@ return {
                 ['<C-s>'] = false,
                 ['<C-h>'] = false,
                 ['<C-t>'] = false,
+                ['<C-l>'] = false,
             },
             use_default_keymaps = true,
             view_options = { show_hidden = true },
