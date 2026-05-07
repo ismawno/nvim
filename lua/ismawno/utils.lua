@@ -335,9 +335,9 @@ local function get_file_switch(stem, ext, different_folder)
         end
         local pname = M.find_project_name()
         if ext == 'c' or ext == 'cpp' then
-            return dir .. '/../../../source/' .. name .. '.' .. ext
+            return dir .. '/../../source/' .. name .. '.' .. ext
         else
-            return dir .. '/../../include/' .. pname .. '/' .. name .. '.' .. ext
+            return dir .. '/../include/' .. pname .. '/' .. name .. '.' .. ext
         end
     end
 end
