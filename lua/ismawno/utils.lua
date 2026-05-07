@@ -370,7 +370,6 @@ local function toggle_header_source(different_folder)
         if target_ext then
             local target = get_file_switch(stem, target_ext, different_folder)
             local resolved = vim.fn.resolve(vim.fn.fnamemodify(target, ':p'))
-            vim.notify(resolved)
             if vim.fn.filereadable(resolved) == 1 then
                 vim.cmd('edit ' .. vim.fn.fnameescape(resolved))
             end

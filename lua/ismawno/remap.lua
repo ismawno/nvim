@@ -225,7 +225,7 @@ vim.keymap.set(
 )
 vim.keymap.set(
     'n',
-    '<leader>sF',
+    '<leader>sd',
     utils.toggle_header_source_different_folder,
     { desc = 'Switch between C/C++ header and source files' }
 )
