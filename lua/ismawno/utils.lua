@@ -363,6 +363,7 @@ local function toggle_header_source(different_folder)
         local target_ext = map[ext]
         if target_ext then
             local target = get_file_switch(stem, target_ext, different_folder)
+            vim.notify(target)
             if vim.fn.filereadable(target) == 1 then
                 -- safely escape in case there’s spaces, etc.
                 vim.cmd('edit ' .. vim.fn.fnameescape(target))
