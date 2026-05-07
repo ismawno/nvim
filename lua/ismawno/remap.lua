@@ -217,7 +217,18 @@ vim.keymap.set('n', '<leader>tx', function()
     end
 end, { silent = true, desc = 'Execute tracy profiler' })
 
-vim.keymap.set('n', '<leader>sf', utils.toggle_header_source, { desc = 'Switch between C/C++ header and source files' })
+vim.keymap.set(
+    'n',
+    '<leader>sf',
+    utils.toggle_header_source_same_folder,
+    { desc = 'Switch between C/C++ header and source files' }
+)
+vim.keymap.set(
+    'n',
+    '<leader>sF',
+    utils.toggle_header_source_different_folder,
+    { desc = 'Switch between C/C++ header and source files' }
+)
 
 local custom_motions = {}
 -- custom_motions['¡'] = '$'

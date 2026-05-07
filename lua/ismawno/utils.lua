@@ -323,7 +323,20 @@ function M.register_debug_exec(binding_suffix, index)
     end)
 end
 
-function M.toggle_header_source()
+local function get_file_switch(stem, ext, different_folder)
+    if not different_folder then
+        return stem .. '.' .. ext
+    else
+        local pname = M.find_project_name()
+        if ext == 'c' or ext == 'cpp' then
+            return '../../../source/' .. stem .. '.' .. ext
+        else
+            return '../../include/' .. pname .. '/' .. stem .. '.' .. ext
+        end
+    end
+end
+
+local function toggle_header_source(different_folder)
     local path = vim.api.nvim_buf_get_name(0)
     if path == '' then
         return
@@ -349,13 +362,20 @@ function M.toggle_header_source()
     for _, map in ipairs(maps) do
         local target_ext = map[ext]
         if target_ext then
-            local target = stem .. '.' .. target_ext
+            local target = get_file_switch(stem, target_ext, different_folder)
             if vim.fn.filereadable(target) == 1 then
                 -- safely escape in case there’s spaces, etc.
                 vim.cmd('edit ' .. vim.fn.fnameescape(target))
             end
         end
     end
+end
+
+function M.toggle_header_source_same_folder()
+    toggle_header_source(false)
+end
+function M.toggle_header_source_different_folder()
+    toggle_header_source(true)
 end
 
 local function get_delimiter(direction, filter)
