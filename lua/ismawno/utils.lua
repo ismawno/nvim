@@ -327,11 +327,17 @@ local function get_file_switch(stem, ext, different_folder)
     if not different_folder then
         return stem .. '.' .. ext
     else
+        local dir, name = stem:match('(.+)/(.+)$')
+        if not dir then
+            -- no directory separator found, stem is just a filename
+            name = stem
+            dir = '.'
+        end
         local pname = M.find_project_name()
         if ext == 'c' or ext == 'cpp' then
-            return '../../../source/' .. stem .. '.' .. ext
+            return dir .. '/../../../source/' .. name .. '.' .. ext
         else
-            return '../../include/' .. pname .. '/' .. stem .. '.' .. ext
+            return dir .. '/../../include/' .. pname .. '/' .. name .. '.' .. ext
         end
     end
 end
