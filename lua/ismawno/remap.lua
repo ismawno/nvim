@@ -219,13 +219,13 @@ end, { silent = true, desc = 'Execute tracy profiler' })
 
 vim.keymap.set(
     'n',
-    '<leader>sf',
+    '<leader>jf',
     utils.toggle_header_source_same_folder,
     { desc = 'Switch between C/C++ header and source files' }
 )
 vim.keymap.set(
     'n',
-    '<leader>sd',
+    '<leader>kf',
     utils.toggle_header_source_different_folder,
     { desc = 'Switch between C/C++ header and source files' }
 )
