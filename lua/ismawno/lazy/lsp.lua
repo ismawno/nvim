@@ -97,6 +97,7 @@ return {
             cmd = {
                 'clangd',
                 '--header-insertion=never',
+                '--clang-tidy',
                 -- '--compile-commands-dir=' .. root .. 'build/',
             },
         })
