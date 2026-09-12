@@ -4,7 +4,7 @@ local dependencies = {
     'stevearc/conform.nvim',
     {
         'saghen/blink.cmp',
-        version = '1.4.1',
+        version = '1.10.2',
         opts = {
             appearance = {
                 nerd_font_variant = 'mono',
