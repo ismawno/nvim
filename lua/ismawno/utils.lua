@@ -326,10 +326,19 @@ end
 local function get_file_switch(stem, ext, different_folder, strip_underscore)
     if not different_folder then
         if strip_underscore then
-            stem = stem:match('.*_(.+)$') or stem
+            local dir, name = stem:match('(.+)/(.+)$')
+            if not dir then
+                name = stem
+            end
+            name = name:match('.*_(.+)$') or name
+            if dir then
+                return dir .. '/' .. name .. '.' .. ext
+            else
+                return name .. '.' .. ext
+            end
         end
-        local result = stem .. '.' .. ext
-        return result
+
+        return stem .. '.' .. ext
     else
         local dir, name = stem:match('(.+)/(.+)$')
         if not dir then
@@ -348,13 +357,11 @@ local function get_file_switch(stem, ext, different_folder, strip_underscore)
             pname = vim.fn.fnamemodify(include_dir[1], ':t')
         end
 
-        local result
         if ext == 'c' or ext == 'cpp' then
-            result = dir .. '/../../source/' .. name .. '.' .. ext
+            return dir .. '/../../source/' .. name .. '.' .. ext
         else
-            result = dir .. '/../include/' .. pname .. '/' .. name .. '.' .. ext
+            return dir .. '/../include/' .. pname .. '/' .. name .. '.' .. ext
         end
-        return result
     end
 end
 
