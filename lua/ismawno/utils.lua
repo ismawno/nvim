@@ -347,6 +347,10 @@ local function get_file_switch(stem, ext, different_folder, strip_underscore)
         end
 
         local pname = M.find_project_name()
+        local include_dir = vim.fn.glob(dir .. '/../include/*', false, true)
+        if #include_dir == 1 then
+            pname = vim.fn.fnamemodify(include_dir[1], ':t')
+        end
         print('[switch] pname: ' .. tostring(pname))
 
         local result
