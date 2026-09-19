@@ -323,8 +323,11 @@ function M.register_debug_exec(binding_suffix, index)
     end)
 end
 
-local function get_file_switch(stem, ext, different_folder)
+local function get_file_switch(stem, ext, different_folder, strip_underscore)
     if not different_folder then
+        if strip_underscore then
+            stem = stem:match('.*_(.+)$') or stem
+        end
         return stem .. '.' .. ext
     else
         local dir, name = stem:match('(.+)/(.+)$')
@@ -333,6 +336,11 @@ local function get_file_switch(stem, ext, different_folder)
             name = stem
             dir = '.'
         end
+
+        if strip_underscore then
+            name = name:match('.*_(.+)$') or name
+        end
+
         local pname = M.find_project_name()
         if ext == 'c' or ext == 'cpp' then
             return dir .. '/../../source/' .. name .. '.' .. ext
@@ -365,14 +373,20 @@ local function toggle_header_source(different_folder)
         { h = 'cpp', c = 'hpp', hpp = 'c', cpp = 'h' },
     }
 
+    local function try_switch(target_ext, strip_underscore)
+        local target = get_file_switch(stem, target_ext, different_folder, strip_underscore)
+        local resolved = vim.fn.resolve(vim.fn.fnamemodify(target, ':p'))
+        if vim.fn.filereadable(resolved) == 1 then
+            vim.cmd('edit ' .. vim.fn.fnameescape(resolved))
+            return true
+        end
+        return false
+    end
+
     for _, map in ipairs(maps) do
         local target_ext = map[ext]
-        if target_ext then
-            local target = get_file_switch(stem, target_ext, different_folder)
-            local resolved = vim.fn.resolve(vim.fn.fnamemodify(target, ':p'))
-            if vim.fn.filereadable(resolved) == 1 then
-                vim.cmd('edit ' .. vim.fn.fnameescape(resolved))
-            end
+        if target_ext and not try_switch(target_ext, false) then
+            try_switch(target_ext, true)
         end
     end
 end
