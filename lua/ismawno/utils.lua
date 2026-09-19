@@ -397,6 +397,20 @@ local function toggle_header_source(different_folder)
             vim.cmd('edit ' .. vim.fn.fnameescape(resolved))
             return true
         end
+        local dir = vim.fn.fnamemodify(resolved, ':h')
+        local name = vim.fn.fnamemodify(resolved, ':t:r')
+        local matches = vim.fn.glob(dir .. '/*_' .. name .. '.' .. target_ext, false, true)
+        if #matches == 1 then
+            vim.cmd('edit ' .. vim.fn.fnameescape(matches[1]))
+            return true
+        elseif #matches > 1 then
+            vim.ui.select(matches, { prompt = 'Select file:' }, function(choice)
+                if choice then
+                    vim.cmd('edit ' .. vim.fn.fnameescape(choice))
+                end
+            end)
+            return true
+        end
         return false
     end
 
