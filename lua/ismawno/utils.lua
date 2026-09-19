@@ -329,7 +329,6 @@ local function get_file_switch(stem, ext, different_folder, strip_underscore)
             stem = stem:match('.*_(.+)$') or stem
         end
         local result = stem .. '.' .. ext
-        print('[switch] same_folder | result: ' .. result)
         return result
     else
         local dir, name = stem:match('(.+)/(.+)$')
@@ -338,11 +337,8 @@ local function get_file_switch(stem, ext, different_folder, strip_underscore)
             dir = '.'
         end
 
-        print('[switch] dir: ' .. dir .. ' | name: ' .. name .. ' | strip: ' .. tostring(strip_underscore))
-
         if strip_underscore then
             local stripped = name:match('.*_(.+)$')
-            print('[switch] stripped: ' .. tostring(stripped))
             name = stripped or name
         end
 
@@ -351,7 +347,6 @@ local function get_file_switch(stem, ext, different_folder, strip_underscore)
         if #include_dir == 1 then
             pname = vim.fn.fnamemodify(include_dir[1], ':t')
         end
-        print('[switch] pname: ' .. tostring(pname))
 
         local result
         if ext == 'c' or ext == 'cpp' then
@@ -359,7 +354,6 @@ local function get_file_switch(stem, ext, different_folder, strip_underscore)
         else
             result = dir .. '/../include/' .. pname .. '/' .. name .. '.' .. ext
         end
-        print('[switch] result: ' .. result)
         return result
     end
 end
@@ -372,12 +366,8 @@ local function toggle_header_source(different_folder)
 
     local stem, ext = path:match('(.+)%.([hc]p?p?)$')
     if not stem or not ext then
-        print('[switch] no stem/ext match for: ' .. path)
         return
     end
-
-    print('[switch] path: ' .. path)
-    print('[switch] stem: ' .. stem .. ' | ext: ' .. ext)
 
     local maps = {
         {
@@ -392,7 +382,6 @@ local function toggle_header_source(different_folder)
     local function try_switch(target_ext, strip_underscore)
         local target = get_file_switch(stem, target_ext, different_folder, strip_underscore)
         local resolved = vim.fn.resolve(vim.fn.fnamemodify(target, ':p'))
-        print('[switch] trying: ' .. resolved .. ' | readable: ' .. tostring(vim.fn.filereadable(resolved)))
         if vim.fn.filereadable(resolved) == 1 then
             vim.cmd('edit ' .. vim.fn.fnameescape(resolved))
             return true
@@ -417,9 +406,7 @@ local function toggle_header_source(different_folder)
     for _, map in ipairs(maps) do
         local target_ext = map[ext]
         if target_ext then
-            print('[switch] trying ext: ' .. target_ext .. ' (strip=false)')
             if not try_switch(target_ext, false) then
-                print('[switch] trying ext: ' .. target_ext .. ' (strip=true)')
                 try_switch(target_ext, true)
             end
         end
