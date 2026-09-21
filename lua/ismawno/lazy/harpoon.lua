@@ -160,7 +160,7 @@ return {
         end, { desc = 'Open harpoon quick menu for the file list' })
 
         for i, key in ipairs(vim.fn.split('hjklHJKL', '\\zs')) do
-            local lhs = utils.termcodes('<leader>' .. key)
+            local lhs = utils.termcodes('<leader>f' .. key)
             vim.keymap.set('n', lhs, function()
                 files:select(i)
             end, { desc = 'Go to the ' .. i .. 'th harpoon file for the file list' })
