@@ -19,16 +19,15 @@ return {
         })
         local builtin = require('telescope.builtin')
 
+        local function ignored_globs()
+            return { '--glob=!.git/', '--glob=!.venv/', '--glob=!.cache/', '--glob=!build/' }
+        end
+
         local function find_files()
             builtin.find_files({
                 hidden = true,
                 no_ignore = true,
-                file_ignore_patterns = {
-                    '%.git/',
-                    '%.venv/',
-                    '%.cache/',
-                    'build/',
-                },
+                find_command = vim.list_extend({ 'rg', '--files', '--color', 'never' }, ignored_globs()),
             })
         end
 
@@ -41,12 +40,7 @@ return {
                 search = word,
                 hidden = true,
                 no_ignore = true,
-                file_ignore_patterns = {
-                    '%.git/',
-                    '%.venv/',
-                    '%.cache/',
-                    'build/',
-                },
+                additional_args = ignored_globs,
             })
         end
 
@@ -65,12 +59,7 @@ return {
             builtin.live_grep({
                 hidden = true,
                 no_ignore = true,
-                file_ignore_patterns = {
-                    '%.git/',
-                    '%.venv/',
-                    '%.cache/',
-                    'build/',
-                },
+                additional_args = ignored_globs,
             })
         end
 
