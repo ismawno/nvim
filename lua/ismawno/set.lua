@@ -31,4 +31,5 @@ vim.opt.isfname:append('@-@')
 
 vim.opt.updatetime = 50
 
-vim.opt.guifont = 'FiraCode Nerd Font Mono:h14'
+-- Override per machine from the environment, e.g. NVIM_GUIFONT='JetBrains Mono:h20'
+vim.opt.guifont = vim.env.NVIM_GUIFONT or 'FiraCode Nerd Font Mono:h14'
