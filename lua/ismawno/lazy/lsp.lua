@@ -21,12 +21,15 @@ local dependencies = {
 }
 
 if not utils.is_nixos() then
+    local pinned = vim.fn.has('win32') == 1 and { ['clang-format'] = '21.1.2', clangd = '21.1.8' } or {}
     table.insert(dependencies, 'williamboman/mason.nvim')
     table.insert(dependencies, 'williamboman/mason-lspconfig.nvim')
     table.insert(dependencies, {
         'WhoIsSethDaniel/mason-tool-installer.nvim',
         opts = {
-            ensure_installed = {
+            ensure_installed = vim.tbl_map(function(tool)
+                return pinned[tool] and { tool, version = pinned[tool] } or tool
+            end, {
                 'clang-format',
                 'stylua',
                 'lua_ls',
@@ -40,7 +43,7 @@ if not utils.is_nixos() then
                 'shfmt',
                 'bashls',
                 'glsl_analyzer',
-            },
+            }),
         },
     })
 end

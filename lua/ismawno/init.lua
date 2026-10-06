@@ -1,6 +1,9 @@
 require('ismawno.remap')
 require('ismawno.lazy_init')
 require('ismawno.set')
+if vim.fn.has('win32') == 1 then
+    require('ismawno.win32').setup()
+end
 
 local augroup = vim.api.nvim_create_augroup
 local ismawno_group = augroup('Ismawno', {})
